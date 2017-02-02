@@ -1,0 +1,17 @@
+language: generic
+
+sudo: required
+
+services:
+    - docker
+
+env:
+    global:
+        DOCKER_COMPOSE_VERSION: 1.10.0
+
+before_install:
+    - curl -L https://git.io/vMATh | sh
+before_script: make setup
+script:
+    - make test
+    - make cs
