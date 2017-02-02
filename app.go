@@ -50,7 +50,7 @@ func (app *App) HealthStatus(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("ok"))
 }
 
-// Check if the app is ready for accepting request (eg. database is available as well)
+// Checks if the app is ready for accepting request (eg. database is available as well)
 func (app *App) ReadinessStatus(w http.ResponseWriter, r *http.Request) {
 	// If there is an error the service is not ready
 	if true {
