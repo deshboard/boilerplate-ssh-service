@@ -1,9 +1,5 @@
 version: "2.1"
 
 services:
-    service: &service
+    service:
         build: .
-
-    test:
-        <<: *service
-        command: go test -v -integration

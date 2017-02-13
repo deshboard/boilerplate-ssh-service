@@ -10,8 +10,8 @@ env:
         DOCKER_COMPOSE_VERSION: 1.10.0
 
 before_install:
+    - mkdir -p $HOME/bin
+    - curl -L https://git.io/vMZjG | sh -s $HOME/bin
     - curl -L https://git.io/vMATh | sh
 before_script: make setup
-script:
-    - make test
-    - make cs
+script: make INTEGRATION=true test cs
