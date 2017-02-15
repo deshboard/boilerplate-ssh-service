@@ -12,25 +12,27 @@ import (
 	"github.com/sagikazarmark/healthz"
 )
 
+var (
+	version    string
+	commitHash string
+	buildDate  string
+)
+
 func main() {
 	var (
 		healthAddr = flag.String("health", "0.0.0.0:81", "Health service address.")
 	)
 	flag.Parse()
 
-	status := healthz.NewStatusHealthChecker(true)
-	readinessProbe := healthz.NewProbe()
-
-	healthService := healthz.NewHealthService(healthz.NewProbe(), readinessProbe)
-	healthMux := http.NewServeMux()
-	healthService.RegisterHandlers(healthMux)
+	healthHandler, status := healthService()
 
 	healthServer := &http.Server{
 		Addr:    *healthAddr,
-		Handler: healthMux,
+		Handler: healthHandler,
 	}
 
 	log.Println("Starting Boilerplate service...")
+	log.Printf("Version %s (%s) built at %s", version, commitHash, buildDate)
 	log.Printf("Boilerplate Health service listening on %s", healthServer.Addr)
 
 	errChan := make(chan error, 10)
@@ -54,4 +56,16 @@ func main() {
 			os.Exit(0)
 		}
 	}
+}
+
+func healthService() (http.Handler, *healthz.StatusHealthChecker) {
+	status := healthz.NewStatusHealthChecker(true)
+	readinessProbe := healthz.NewProbe()
+
+	healthService := healthz.NewHealthService(healthz.NewProbe(), readinessProbe)
+	healthMux := http.NewServeMux()
+	healthMux.HandleFunc("/healthz", healthService.HealthStatus)
+	healthMux.HandleFunc("/readiness", healthService.ReadinessStatus)
+
+	return healthMux, status
 }
