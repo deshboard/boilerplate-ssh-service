@@ -1,7 +1,5 @@
 # A Self-Documenting Makefile: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
-GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")
-GO_PACKAGES = $(shell go list ./... | grep -v /vendor/)
 VERSION ?= $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT_HASH = $(shell git rev-parse --short HEAD 2>/dev/null)
 BUILD_DATE = $(shell date +%FT%T%z)
@@ -9,6 +7,9 @@ BINARY_NAME = $(shell go list . | cut -d '/' -f 3)
 LDFLAGS = -ldflags "-X main.version=${VERSION} -X main.commitHash=${COMMIT_HASH} -X main.buildDate=${BUILD_DATE}"
 IMAGE ?= deshboard/${BINARY_NAME}
 TAG ?= ${VERSION}
+GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")
+GO_PACKAGES = $(shell go list ./... | grep -v /vendor/)
+GODOTENV=$(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
 
 .PHONY: install build build-linux docker check test test-race fmt csfix envcheck help
 .DEFAULT_GOAL := help
@@ -20,7 +21,11 @@ build: ## Build a binary
 	go build ${LDFLAGS} -o build/${BINARY_NAME}
 
 run: build ## Build and execute a binary
+ifdef GODOTENV
+	${GODOTENV} build/${BINARY_NAME} ${ARGS}
+else
 	build/${BINARY_NAME} ${ARGS}
+endif
 
 watch: ## Watch for file changes and run the built binary
 	reflex -s -t 2s -d none -r '\.go$$' -- $(MAKE) ARGS=${ARGS} run
@@ -56,6 +61,7 @@ envcheck: ## Check environment for all the necessary requirements
 	$(call executable_check,Glide,glide)
 	$(call executable_check,Docker,docker)
 	$(call executable_check,Reflex,reflex)
+	$(call executable_check,Godotenv,godotenv)
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
