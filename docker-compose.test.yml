@@ -1,9 +1,0 @@
-version: "2.1"
-
-services:
-    test:
-        image: golang:1.7-alpine
-        entrypoint: sh -c "if [ "$${0:0:1}" = '-' ]; then set -- $$0 $$@; fi && go-wrapper nope > /dev/null 2>&1 || true && cd /go/src/`go list -e -f '{{.ImportComment}}'` && go test `go list ./... | grep -v /vendor/` $$@"
-        volumes:
-            - ./:/go/src/app
-        working_dir: /go/src/app
