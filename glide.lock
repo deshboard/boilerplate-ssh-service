@@ -1,6 +1,20 @@
-hash: 975f81b79f4d38675c28c49efbbbcc28c8d3326bddccaf2059a87272497176e7
-updated: 2017-02-13T00:49:55.616245139+01:00
+hash: ca62166ef2c403a0c559b888fedcc2fb4516f01e401ae189bc6fd19bd9332cab
+updated: 2017-02-15T17:00:29.083288179+01:00
 imports:
+- name: github.com/airbrake/gobrake
+  version: 668876711219e8b0206e2994bf0a59d889c775aa
+- name: github.com/kelseyhightower/envconfig
+  version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/sagikazarmark/healthz
   version: ab13b9070d185f72ed9fb5ffa4328332815df575
+- name: github.com/Sirupsen/logrus
+  version: c078b1e43f58d563c74cebe63c85789e76ddb627
+- name: golang.org/x/sys
+  version: e24f485414aeafb646f6fca458b0bf869c0880a1
+  subpackages:
+  - unix
+- name: gopkg.in/airbrake/gobrake.v2
+  version: 668876711219e8b0206e2994bf0a59d889c775aa
+- name: gopkg.in/gemnasium/logrus-airbrake-hook.v2
+  version: bfee1239d796830ca346767650cce5ba90d58c57
 testImports: []

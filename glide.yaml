@@ -2,3 +2,11 @@ package: github.com/deshboard/boilerplate-service
 import:
 - package: github.com/sagikazarmark/healthz
   version: ^0.3.0
+- package: github.com/Sirupsen/logrus
+  version: ^0.11.2
+- package: github.com/airbrake/gobrake
+  version: ^2.0.9
+- package: github.com/kelseyhightower/envconfig
+  version: ^1.3.0
+- package: gopkg.in/gemnasium/logrus-airbrake-hook.v2
+  version: ^2.1.1

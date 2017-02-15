@@ -3,22 +3,55 @@ package main // import "github.com/deshboard/boilerplate-service"
 import (
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
+	logrus_airbrake "gopkg.in/gemnasium/logrus-airbrake-hook.v2"
+
+	"github.com/Sirupsen/logrus"
+	"github.com/deshboard/boilerplate-service/app"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/sagikazarmark/healthz"
+	"gopkg.in/airbrake/gobrake.v2"
 )
 
+const (
+	serviceName         = "boilerplate.service"
+	friendlyServiceName = "Boilerplate"
+)
+
+// Provisioned by ldflags
 var (
 	version    string
 	commitHash string
 	buildDate  string
 )
 
+var (
+	config = &app.Configuration{}
+	log    = logrus.New()
+
+	airbrake *gobrake.Notifier
+)
+
+func init() {
+	err := envconfig.Process("app", config)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	initLog()
+}
+
 func main() {
+	if config.AirbrakeEnabled {
+		defer airbrake.Close()
+		defer airbrake.NotifyOnPanic()
+	}
+
 	var (
 		healthAddr = flag.String("health", "0.0.0.0:81", "Health service address.")
 	)
@@ -31,9 +64,10 @@ func main() {
 		Handler: healthHandler,
 	}
 
-	log.Println("Starting Boilerplate service...")
+	log.Printf("Starting %s service", friendlyServiceName)
 	log.Printf("Version %s (%s) built at %s", version, commitHash, buildDate)
-	log.Printf("Boilerplate Health service listening on %s", healthServer.Addr)
+	log.Printf("Environment: %s", config.Environment)
+	log.Printf("%s Health service listening on %s", friendlyServiceName, healthServer.Addr)
 
 	errChan := make(chan error, 10)
 
@@ -58,6 +92,7 @@ func main() {
 	}
 }
 
+// Creates the health service and the status checker
 func healthService() (http.Handler, *healthz.StatusHealthChecker) {
 	status := healthz.NewStatusHealthChecker(true)
 	readinessProbe := healthz.NewProbe()
@@ -68,4 +103,23 @@ func healthService() (http.Handler, *healthz.StatusHealthChecker) {
 	healthMux.HandleFunc("/readiness", healthService.ReadinessStatus)
 
 	return healthMux, status
+}
+
+// Initializes logger
+func initLog() {
+	if config.AirbrakeEnabled {
+		airbrakeHook := logrus_airbrake.NewHook(config.AirbrakeProjectID, config.AirbrakeAPIKey, config.Environment)
+
+		airbrake = airbrakeHook.Airbrake
+
+		airbrake.SetHost(config.AirbrakeHost)
+
+		airbrake.AddFilter(func(notice *gobrake.Notice) *gobrake.Notice {
+			notice.Context["version"] = version
+
+			return notice
+		})
+
+		log.Hooks.Add(airbrakeHook)
+	}
 }
