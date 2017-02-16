@@ -53,7 +53,7 @@ func main() {
 	}
 
 	var (
-		healthAddr = flag.String("health", "0.0.0.0:81", "Health service address.")
+		healthAddr = flag.String("health", "0.0.0.0:90", "Health service address.")
 	)
 	flag.Parse()
 
