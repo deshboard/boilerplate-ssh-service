@@ -58,7 +58,6 @@ func main() {
 	flag.Parse()
 
 	healthHandler, status := healthService()
-
 	healthServer := &http.Server{
 		Addr:    *healthAddr,
 		Handler: healthHandler,
@@ -86,21 +85,16 @@ func main() {
 			}
 		case s := <-signalChan:
 			log.Println(fmt.Sprintf("Captured %v. Exiting...", s))
-			status.SetStatus(false)
+			status.SetStatus(healthz.Unhealthy)
 			os.Exit(0)
 		}
 	}
 }
 
 // Creates the health service and the status checker
-func healthService() (http.Handler, *healthz.StatusHealthChecker) {
-	status := healthz.NewStatusHealthChecker(true)
-	readinessProbe := healthz.NewProbe()
-
-	healthService := healthz.NewHealthService(healthz.NewProbe(), readinessProbe)
-	healthMux := http.NewServeMux()
-	healthMux.HandleFunc("/healthz", healthService.HealthStatus)
-	healthMux.HandleFunc("/readiness", healthService.ReadinessStatus)
+func healthService() (http.Handler, *healthz.StatusChecker) {
+	status := healthz.NewStatusChecker(healthz.Healthy)
+	healthMux := healthz.NewHealthServiceHandler(healthz.NewCheckers(), status)
 
 	return healthMux, status
 }

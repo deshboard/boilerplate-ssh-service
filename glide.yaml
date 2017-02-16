@@ -1,7 +1,7 @@
 package: github.com/deshboard/boilerplate-service
 import:
 - package: github.com/sagikazarmark/healthz
-  version: ^0.3.0
+  version: ^0.4.0
 - package: github.com/Sirupsen/logrus
   version: ^0.11.2
 - package: github.com/airbrake/gobrake

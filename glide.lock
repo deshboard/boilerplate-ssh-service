@@ -1,12 +1,12 @@
-hash: ca62166ef2c403a0c559b888fedcc2fb4516f01e401ae189bc6fd19bd9332cab
-updated: 2017-02-15T17:00:29.083288179+01:00
+hash: cc4945997105aa468f1d8a168d5e8eb5064f73853f4970ae5dd1a6a521aac06a
+updated: 2017-02-16T02:40:29.744403+01:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/sagikazarmark/healthz
-  version: ab13b9070d185f72ed9fb5ffa4328332815df575
+  version: 53e8bd01c95dd968996af7f6e8ab52491b49ff7e
 - name: github.com/Sirupsen/logrus
   version: c078b1e43f58d563c74cebe63c85789e76ddb627
 - name: golang.org/x/sys
