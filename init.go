@@ -11,7 +11,7 @@ func init() {
 	err := envconfig.Process("app", config)
 
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	// Initialize Airbrake
@@ -27,7 +27,7 @@ func init() {
 			return notice
 		})
 
-		log.Hooks.Add(airbrakeHook)
+		logger.Hooks.Add(airbrakeHook)
 		closers = append(closers, airbrake)
 	}
 }

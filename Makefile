@@ -29,7 +29,7 @@ else
 endif
 
 watch: ## Watch for file changes and run the built binary
-	reflex -s -t 2s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
+	reflex -s -t 3s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
 
 build-docker:
 	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o build/${BINARY_NAME}-docker
