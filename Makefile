@@ -1,10 +1,11 @@
 # A Self-Documenting Makefile: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
+PACKAGE = $(shell go list .)
 VERSION ?= $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT_HASH = $(shell git rev-parse --short HEAD 2>/dev/null)
 BUILD_DATE = $(shell date +%FT%T%z)
+LDFLAGS = -ldflags "-X ${PACKAGE}/app.Version=${VERSION} -X ${PACKAGE}/app.CommitHash=${COMMIT_HASH} -X ${PACKAGE}/app.BuildDate=${BUILD_DATE}"
 BINARY_NAME = $(shell go list . | cut -d '/' -f 3)
-LDFLAGS = -ldflags "-X main.version=${VERSION} -X main.commitHash=${COMMIT_HASH} -X main.buildDate=${BUILD_DATE}"
 IMAGE ?= deshboard/${BINARY_NAME}
 TAG ?= ${VERSION}
 GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")

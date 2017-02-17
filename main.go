@@ -1,56 +1,27 @@
 package main // import "github.com/deshboard/boilerplate-service"
-
 import (
 	"flag"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
-	logrus_airbrake "gopkg.in/gemnasium/logrus-airbrake-hook.v2"
-
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-service/app"
-	"github.com/kelseyhightower/envconfig"
 	"github.com/sagikazarmark/healthz"
-	"gopkg.in/airbrake/gobrake.v2"
 )
 
-const (
-	serviceName         = "boilerplate.service"
-	friendlyServiceName = "Boilerplate"
-)
-
-// Provisioned by ldflags
+// Global context
 var (
-	version    string
-	commitHash string
-	buildDate  string
+	config  = &app.Configuration{}
+	log     = logrus.New()
+	closers = []io.Closer{}
 )
-
-var (
-	config = &app.Configuration{}
-	log    = logrus.New()
-
-	airbrake *gobrake.Notifier
-)
-
-func init() {
-	err := envconfig.Process("app", config)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	initLog()
-}
 
 func main() {
-	if config.AirbrakeEnabled {
-		defer airbrake.Close()
-		defer airbrake.NotifyOnPanic()
-	}
+	defer shutdown()
 
 	var (
 		healthAddr = flag.String("health", "0.0.0.0:90", "Health service address.")
@@ -63,10 +34,10 @@ func main() {
 		Handler: healthHandler,
 	}
 
-	log.Printf("Starting %s service", friendlyServiceName)
-	log.Printf("Version %s (%s) built at %s", version, commitHash, buildDate)
+	log.Printf("Starting %s service", app.FriendlyServiceName)
+	log.Printf("Version %s (%s) built at %s", app.Version, app.CommitHash, app.BuildDate)
 	log.Printf("Environment: %s", config.Environment)
-	log.Printf("%s Health service listening on %s", friendlyServiceName, healthServer.Addr)
+	log.Printf("%s Health service listening on %s", app.FriendlyServiceName, healthServer.Addr)
 
 	errChan := make(chan error, 10)
 
@@ -81,7 +52,7 @@ func main() {
 		select {
 		case err := <-errChan:
 			if err != nil {
-				log.Fatal(err)
+				log.Panic(err)
 			}
 		case s := <-signalChan:
 			log.Println(fmt.Sprintf("Captured %v. Exiting...", s))
@@ -91,29 +62,26 @@ func main() {
 	}
 }
 
+// Panic recovery and close handler
+func shutdown() {
+	v := recover()
+	if v != nil {
+		log.Error(v)
+	}
+
+	for _, s := range closers {
+		s.Close()
+	}
+
+	if v != nil {
+		panic(v)
+	}
+}
+
 // Creates the health service and the status checker
 func healthService() (http.Handler, *healthz.StatusChecker) {
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	healthMux := healthz.NewHealthServiceHandler(healthz.NewCheckers(), status)
 
 	return healthMux, status
-}
-
-// Initializes logger
-func initLog() {
-	if config.AirbrakeEnabled {
-		airbrakeHook := logrus_airbrake.NewHook(config.AirbrakeProjectID, config.AirbrakeAPIKey, config.Environment)
-
-		airbrake = airbrakeHook.Airbrake
-
-		airbrake.SetHost(config.AirbrakeHost)
-
-		airbrake.AddFilter(func(notice *gobrake.Notice) *gobrake.Notice {
-			notice.Context["version"] = version
-
-			return notice
-		})
-
-		log.Hooks.Add(airbrakeHook)
-	}
 }
