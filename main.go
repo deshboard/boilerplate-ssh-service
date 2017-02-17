@@ -69,22 +69,8 @@ MainLoop:
 		case s := <-signalChan:
 			logger.Println(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
-			shutdownContext, shutdownCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
-			defer shutdownCancel()
 
-			var wg sync.WaitGroup
-			wg.Add(1)
-
-			go func() {
-				err := healthServer.Shutdown(shutdownContext)
-				if err != nil {
-					logger.Panic(err)
-				}
-
-				wg.Done()
-			}()
-
-			wg.Wait()
+			stopHTTPServers(healthServer)
 
 			// Break the loop, proceed with regular shutdown
 			break MainLoop
@@ -104,6 +90,28 @@ func startHTTPServer(name string, server *http.Server, ch chan<- error) {
 	go func() {
 		ch <- server.ListenAndServe()
 	}()
+}
+
+// Stops multiple HTTP servers to use the same context
+func stopHTTPServers(servers ...*http.Server) {
+	shutdownContext, shutdownCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+	defer shutdownCancel()
+
+	var wg sync.WaitGroup
+	wg.Add(len(servers))
+
+	for _, server := range servers {
+		go func(server *http.Server) {
+			err := server.Shutdown(shutdownContext)
+			if err != nil {
+				logger.Panic(err)
+			}
+
+			wg.Done()
+		}(server)
+	}
+
+	wg.Wait()
 }
 
 // Panic recovery and close handler
