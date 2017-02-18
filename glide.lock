@@ -1,10 +1,12 @@
-hash: cc4945997105aa468f1d8a168d5e8eb5064f73853f4970ae5dd1a6a521aac06a
-updated: 2017-02-16T02:40:29.744403+01:00
+hash: e5d0acbf7bd3f29ba0564af7284fe0843ff6f87e64663f79a4eb359672b722d1
+updated: 2017-02-18T21:38:08.81733354+01:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
+- name: github.com/opentracing/opentracing-go
+  version: 6edb48674bd9467b8e91fda004f2bd7202d60ce4
 - name: github.com/sagikazarmark/healthz
   version: 53e8bd01c95dd968996af7f6e8ab52491b49ff7e
 - name: github.com/Sirupsen/logrus

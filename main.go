@@ -14,6 +14,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-service/app"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/sagikazarmark/healthz"
 )
 
@@ -21,6 +22,7 @@ import (
 var (
 	config  = &app.Configuration{}
 	logger  = logrus.New()
+	tracer  = opentracing.GlobalTracer()
 	closers = []io.Closer{}
 )
 
@@ -74,7 +76,7 @@ MainLoop:
 			} else {
 				logger.Info("Error channel received non-error value")
 
-				// Break the loop, proceed with shutdown
+				// Break the loop, proceed with regular shutdown
 				break MainLoop
 			}
 		case s := <-signalChan:
