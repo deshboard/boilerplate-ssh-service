@@ -39,7 +39,6 @@ func main() {
 		"commitHash":  app.CommitHash,
 		"buildDate":   app.BuildDate,
 		"environment": config.Environment,
-		"service":     app.ServiceName,
 	}).Printf("Starting %s service", app.FriendlyServiceName)
 
 	w := logger.WriterLevel(logrus.ErrorLevel)
@@ -108,7 +107,7 @@ MainLoop:
 	close(errChan)
 	close(signalChan)
 
-	logger.WithField("service", app.ServiceName).Info("Shutting down")
+	logger.Info("Shutting down")
 }
 
 // Panic recovery and shutdown handler
