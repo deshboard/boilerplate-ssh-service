@@ -9,7 +9,6 @@ import (
 
 func init() {
 	err := envconfig.Process("app", config)
-
 	if err != nil {
 		logger.Fatal(err)
 	}

@@ -17,7 +17,7 @@ import (
 	"github.com/sagikazarmark/healthz"
 )
 
-// Global context
+// Global context variables
 var (
 	config  = &app.Configuration{}
 	logger  = logrus.New()
@@ -42,7 +42,6 @@ func main() {
 
 	w := logger.WriterLevel(logrus.ErrorLevel)
 	closers = append(closers, w)
-	errChan := make(chan error, 10)
 
 	healthHandler, status := healthService()
 	healthServer := &http.Server{
@@ -53,6 +52,8 @@ func main() {
 
 	// Force closing server connections (if graceful closing fails)
 	closers = append([]io.Closer{healthServer}, closers...)
+
+	errChan := make(chan error, 10)
 
 	go func() {
 		logger.WithField("port", healthServer.Addr).Infof("%s Health service started", app.FriendlyServiceName)
@@ -68,6 +69,7 @@ MainLoop:
 		case err := <-errChan:
 			// In theory this can only be non-nil
 			if err != nil {
+				// This will be handled (logged) by shutdown
 				panic(err)
 			} else {
 				logger.Info("Error channel received non-error value")
@@ -107,7 +109,7 @@ MainLoop:
 	logger.WithField("service", app.ServiceName).Info("Shutting down")
 }
 
-// Panic recovery and close handler
+// Panic recovery and shutdown handler
 func shutdown() {
 	v := recover()
 	if v != nil {
