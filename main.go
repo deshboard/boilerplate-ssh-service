@@ -69,7 +69,7 @@ MainLoop:
 		case err := <-errChan:
 			// In theory this can only be nil
 			if err != nil {
-				logger.Panic(err)
+				panic(err)
 			} else {
 				logger.Info("Error channel received non-error value")
 
