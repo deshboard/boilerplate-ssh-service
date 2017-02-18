@@ -10,10 +10,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"sync"
-
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-service/app"
+	"github.com/deshboard/boilerplate-service/serverz"
 	"github.com/sagikazarmark/healthz"
 )
 
@@ -36,20 +35,22 @@ func main() {
 	logger.Printf("Version %s (%s) built at %s", app.Version, app.CommitHash, app.BuildDate)
 	logger.Printf("Environment: %s", config.Environment)
 
-	w := logger.Writer()
+	w := logger.WriterLevel(logrus.ErrorLevel)
 	closers = append(closers, w)
-	serverLogger := log.New(w, "", 0)
 
 	healthHandler, status := healthService()
-	healthServer := &http.Server{
-		Addr:     *healthAddr,
-		Handler:  healthHandler,
-		ErrorLog: serverLogger,
-	}
+	healthServer := serverz.NewHTTPServer(
+		&http.Server{
+			Addr:     *healthAddr,
+			Handler:  healthHandler,
+			ErrorLog: log.New(w, fmt.Sprintf("%s Health: ", app.FriendlyServiceName), 0),
+		},
+	)
 
-	errChan := make(chan error, 10)
+	manager := serverz.NewManager(healthServer)
+	closers = append([]io.Closer{manager}, closers...)
 
-	startHTTPServer(fmt.Sprintf("%s Health", app.FriendlyServiceName), healthServer, errChan)
+	errChan := manager.Serve()
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
@@ -69,8 +70,12 @@ MainLoop:
 		case s := <-signalChan:
 			logger.Println(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
+			shutdownContext, shutdownCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 
-			stopHTTPServers(healthServer)
+			manager.Shutdown(shutdownContext)
+
+			// Cancel context if shutdown finished before deadline
+			shutdownCancel()
 
 			// Break the loop, proceed with regular shutdown
 			break MainLoop
@@ -78,40 +83,6 @@ MainLoop:
 	}
 
 	logger.Info("Shutting down")
-}
-
-// Starts an HTTP server
-func startHTTPServer(name string, server *http.Server, ch chan<- error) {
-	// Force closing server connections (if graceful closing fails)
-	closers = append([]io.Closer{server}, closers...)
-
-	logger.Printf("%s service listening on %s", name, server.Addr)
-
-	go func() {
-		ch <- server.ListenAndServe()
-	}()
-}
-
-// Stops multiple HTTP servers to use the same context
-func stopHTTPServers(servers ...*http.Server) {
-	shutdownContext, shutdownCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
-	defer shutdownCancel()
-
-	var wg sync.WaitGroup
-	wg.Add(len(servers))
-
-	for _, server := range servers {
-		go func(server *http.Server) {
-			err := server.Shutdown(shutdownContext)
-			if err != nil {
-				logger.Panic(err)
-			}
-
-			wg.Done()
-		}(server)
-	}
-
-	wg.Wait()
 }
 
 // Panic recovery and close handler
