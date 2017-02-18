@@ -22,6 +22,7 @@ func init() {
 
 		airbrake.AddFilter(func(notice *gobrake.Notice) *gobrake.Notice {
 			notice.Context["version"] = app.Version
+			notice.Context["commit"] = app.CommitHash
 
 			return notice
 		})
