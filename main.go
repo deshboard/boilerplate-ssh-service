@@ -24,14 +24,12 @@ var (
 	closers = []io.Closer{}
 )
 
-// Flags
-var (
-	healthAddr = flag.String("health", "0.0.0.0:90", "Health service address.")
-)
-
 func main() {
 	defer shutdown()
 
+	var (
+		healthAddr = flag.String("health", "0.0.0.0:90", "Health service address.")
+	)
 	flag.Parse()
 
 	logger.WithFields(logrus.Fields{
