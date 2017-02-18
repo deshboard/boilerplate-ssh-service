@@ -67,7 +67,7 @@ MainLoop:
 	for {
 		select {
 		case err := <-errChan:
-			// In theory this can only be nil
+			// In theory this can only be non-nil
 			if err != nil {
 				panic(err)
 			} else {
