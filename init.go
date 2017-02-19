@@ -19,7 +19,7 @@ func init() {
 		airbrakeHook := logrus_airbrake.NewHook(config.AirbrakeProjectID, config.AirbrakeAPIKey, config.Environment)
 		airbrake := airbrakeHook.Airbrake
 
-		airbrake.SetHost(config.AirbrakeHost)
+		airbrake.SetHost(config.AirbrakeEndpoint)
 
 		airbrake.AddFilter(func(notice *gobrake.Notice) *gobrake.Notice {
 			notice.Context["version"] = app.Version
