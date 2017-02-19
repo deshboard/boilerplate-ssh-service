@@ -21,7 +21,7 @@ import (
 // Global context variables
 var (
 	config  = &app.Configuration{}
-	logger  = logrus.New()
+	logger  = logrus.New().WithField("service", app.ServiceName) // Use logrus.FieldLogger type
 	tracer  = opentracing.GlobalTracer()
 	closers = []io.Closer{}
 )
@@ -41,7 +41,7 @@ func main() {
 		"environment": config.Environment,
 	}).Printf("Starting %s service", app.FriendlyServiceName)
 
-	w := logger.WriterLevel(logrus.ErrorLevel)
+	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
 	closers = append(closers, w)
 
 	healthHandler, status := healthService()
@@ -57,7 +57,7 @@ func main() {
 	errChan := make(chan error, 10)
 
 	go func() {
-		logger.WithField("port", healthServer.Addr).Infof("%s Health service started", app.FriendlyServiceName)
+		logger.WithField("addr", healthServer.Addr).Infof("%s Health service started", app.FriendlyServiceName)
 		errChan <- healthServer.ListenAndServe()
 	}()
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/deshboard/boilerplate-service/app"
+	"github.com/evalphobia/logrus_fluent"
 	"github.com/kelseyhightower/envconfig"
 	"gopkg.in/airbrake/gobrake.v2"
 	logrus_airbrake "gopkg.in/gemnasium/logrus-airbrake-hook.v2"
@@ -27,7 +28,22 @@ func init() {
 			return notice
 		})
 
-		logger.Hooks.Add(airbrakeHook)
+		logger.Logger.Hooks.Add(airbrakeHook)
 		closers = append(closers, airbrake)
+	}
+
+	// Initialize Fluentd
+	if config.FluentdEnabled {
+		fluentdHook, err := logrus_fluent.New(config.FluentdHost, config.FluentdPort)
+		if err != nil {
+			logger.Panic(err)
+		}
+
+		closers = append(closers, fluentdHook.Fluent)
+
+		fluentdHook.SetTag(app.ServiceName)
+		fluentdHook.AddFilter("error", logrus_fluent.FilterError)
+
+		logger.Logger.Hooks.Add(fluentdHook)
 	}
 }

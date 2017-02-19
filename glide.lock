@@ -1,18 +1,30 @@
-hash: e5d0acbf7bd3f29ba0564af7284fe0843ff6f87e64663f79a4eb359672b722d1
-updated: 2017-02-18T21:47:39.175628854+01:00
+hash: 04dd33a8d7152d3dfda8d2f4e0a9ae4eacf2d8d54a2379819b8900872277780d
+updated: 2017-02-19T21:16:07.283745971+01:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
+- name: github.com/evalphobia/logrus_fluent
+  version: 86bb83d119886b935a52194cad48fd01815b0125
+- name: github.com/fluent/fluent-logger-golang
+  version: 28bdb662295c1b7aca09c1a4edbf9430010775a9
+  subpackages:
+  - fluent
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/opentracing/opentracing-go
   version: 6edb48674bd9467b8e91fda004f2bd7202d60ce4
   subpackages:
   - log
+- name: github.com/philhofer/fwd
+  version: 98c11a7a6ec829d672b03833c3d69a7fae1ca972
 - name: github.com/sagikazarmark/healthz
   version: 53e8bd01c95dd968996af7f6e8ab52491b49ff7e
 - name: github.com/Sirupsen/logrus
   version: c078b1e43f58d563c74cebe63c85789e76ddb627
+- name: github.com/tinylib/msgp
+  version: 362bfb3384d53ae4d5dd745983a4d70b6d23628c
+  subpackages:
+  - msgp
 - name: golang.org/x/net
   version: 61557ac0112b576429a0df080e1c2cef5dfbb642
   subpackages:
