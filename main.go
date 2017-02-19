@@ -44,7 +44,7 @@ func main() {
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
 	closers = append(closers, w)
 
-	healthHandler, status := healthService()
+	healthHandler, status := newHealthServiceHandler()
 	healthServer := &http.Server{
 		Addr:     *healthAddr,
 		Handler:  healthHandler,
