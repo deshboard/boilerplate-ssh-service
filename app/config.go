@@ -11,4 +11,8 @@ type Configuration struct {
 	AirbrakeHost      string `split_words:"true"`
 	AirbrakeProjectID int64  `envconfig:"airbrake_project_id"`
 	AirbrakeAPIKey    string `envconfig:"airbrake_api_key"`
+
+	FluentdEnabled bool   `split_words:"true"`
+	FluentdHost    string `split_words:"true"`
+	FluentdPort    int    `split_words:"true"`
 }
