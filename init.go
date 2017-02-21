@@ -29,7 +29,7 @@ func init() {
 		})
 
 		logger.Logger.Hooks.Add(airbrakeHook)
-		closers = append(closers, airbrake)
+		shutdown = append(shutdown, airbrake.Close)
 	}
 
 	// Initialize Fluentd
@@ -39,11 +39,10 @@ func init() {
 			logger.Panic(err)
 		}
 
-		closers = append(closers, fluentdHook.Fluent)
-
 		fluentdHook.SetTag(app.ServiceName)
 		fluentdHook.AddFilter("error", logrus_fluent.FilterError)
 
 		logger.Logger.Hooks.Add(fluentdHook)
+		shutdown = append(shutdown, fluentdHook.Fluent.Close)
 	}
 }
