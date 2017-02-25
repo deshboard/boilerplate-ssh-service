@@ -29,8 +29,8 @@ func main() {
 	defer handleShutdown()
 
 	var (
-		healthAddr = flag.String("health", "0.0.0.0:90", "Health service address.")
-		debugAddr  = flag.String("debug", "0.0.0.0:91", "Debug service address.")
+		healthAddr = flag.String("health", "127.0.0.1:10000", "Health service address.")
+		debugAddr  = flag.String("debug", "127.0.0.1:10001", "Debug service address.")
 	)
 	flag.Parse()
 
