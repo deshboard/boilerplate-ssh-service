@@ -73,13 +73,13 @@ MainLoop:
 			logger.Println(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
 
-			shutdownContext, shutdownCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+			ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 
 			var wg sync.WaitGroup
 			wg.Add(1)
 
 			go func() {
-				err := healthServer.Shutdown(shutdownContext)
+				err := healthServer.Shutdown(ctx)
 				if err != nil {
 					logger.Error(err)
 				}
@@ -90,7 +90,7 @@ MainLoop:
 			wg.Wait()
 
 			// Cancel context if shutdown completed earlier
-			shutdownCancel()
+			cancel()
 
 			// Break the loop, proceed with regular shutdown
 			break MainLoop
