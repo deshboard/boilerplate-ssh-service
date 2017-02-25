@@ -31,36 +31,27 @@ func main() {
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
 	shutdown = append(shutdown, w.Close)
 
+	errChan := make(chan error, 10)
+
 	healthHandler, status := newHealthServiceHandler()
+	healthServiceName := fmt.Sprintf("%s Health service", app.FriendlyServiceName)
 	healthServer := &http.Server{
 		Addr:     config.HealthAddr,
 		Handler:  healthHandler,
-		ErrorLog: log.New(w, fmt.Sprintf("%s Health service: ", app.FriendlyServiceName), 0),
+		ErrorLog: log.New(w, fmt.Sprintf("%s: ", healthServiceName), 0),
 	}
 
-	// Force close server connections (if graceful closing fails)
-	shutdown = append([]shutdownHandler{healthServer.Close}, shutdown...)
-
-	errChan := make(chan error, 10)
-
-	go func() {
-		logger.WithField("addr", healthServer.Addr).Infof("%s Health service started", app.FriendlyServiceName)
-		errChan <- healthServer.ListenAndServe()
-	}()
+	go startHTTPServer(healthServiceName, healthServer)(errChan)
 
 	if config.Debug {
+		debugServiceName := fmt.Sprintf("%s Debug service", app.FriendlyServiceName)
 		debugServer := &http.Server{
 			Addr:     config.DebugAddr,
 			Handler:  http.DefaultServeMux,
-			ErrorLog: log.New(w, fmt.Sprintf("%s Debug service: ", app.FriendlyServiceName), 0),
+			ErrorLog: log.New(w, fmt.Sprintf("%s: ", debugServiceName), 0),
 		}
 
-		shutdown = append(shutdown, debugServer.Close)
-
-		go func() {
-			logger.WithField("addr", debugServer.Addr).Infof("%s Debug service started", app.FriendlyServiceName)
-			errChan <- debugServer.ListenAndServe()
-		}()
+		go startHTTPServer(debugServiceName, debugServer)(errChan)
 	}
 
 	signalChan := make(chan os.Signal, 1)
@@ -108,6 +99,17 @@ MainLoop:
 
 	close(errChan)
 	close(signalChan)
+}
+
+// Creates a server starter function which can be called as a goroutine
+func startHTTPServer(name string, server *http.Server) func(ch chan<- error) {
+	// Force close server connections (if graceful closing fails)
+	shutdown = append([]shutdownHandler{server.Close}, shutdown...)
+
+	return func(ch chan<- error) {
+		logger.WithField("addr", server.Addr).Infof("%s started", name)
+		ch <- server.ListenAndServe()
+	}
 }
 
 type shutdownHandler func() error
