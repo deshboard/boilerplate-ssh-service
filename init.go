@@ -1,26 +1,42 @@
 package main
 
 import (
+	"flag"
+	"time"
+
+	"net/http"
+	_ "net/http/pprof"
+
+	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-service/app"
 	"github.com/evalphobia/logrus_fluent"
 	"github.com/kelseyhightower/envconfig"
+	opentracing "github.com/opentracing/opentracing-go"
+	"golang.org/x/net/trace"
 	"gopkg.in/airbrake/gobrake.v2"
 	logrus_airbrake "gopkg.in/gemnasium/logrus-airbrake-hook.v2"
 )
 
-// Trace imports
-import (
-	"net/http"
-	_ "net/http/pprof"
-
-	"golang.org/x/net/trace"
+// Global context variables
+var (
+	config   = &app.Configuration{}
+	logger   = logrus.New().WithField("service", app.ServiceName) // Use logrus.FieldLogger type
+	tracer   = opentracing.GlobalTracer()
+	shutdown = []shutdownHandler{}
 )
 
 func init() {
+	// Load configuration from environment
 	err := envconfig.Process("app", config)
 	if err != nil {
 		logger.Fatal(err)
 	}
+
+	// Load flags into configuration
+	flag.StringVar(&config.ServiceAddr, "service", "127.0.0.1:80", "Service address.")
+	flag.StringVar(&config.HealthAddr, "health", "127.0.0.1:10000", "Health service address.")
+	flag.StringVar(&config.DebugAddr, "debug", "127.0.0.1:10001", "Debug service address.")
+	flag.DurationVar(&config.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
 
 	// This is probably OK as the service runs in Docker
 	trace.AuthRequest = func(req *http.Request) (any, sensitive bool) {

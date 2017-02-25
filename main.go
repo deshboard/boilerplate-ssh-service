@@ -13,25 +13,12 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-service/app"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/sagikazarmark/healthz"
-)
-
-// Global context variables
-var (
-	config   = &app.Configuration{}
-	logger   = logrus.New().WithField("service", app.ServiceName) // Use logrus.FieldLogger type
-	tracer   = opentracing.GlobalTracer()
-	shutdown = []shutdownHandler{}
 )
 
 func main() {
 	defer handleShutdown()
 
-	var (
-		healthAddr = flag.String("health", "127.0.0.1:10000", "Health service address.")
-		debugAddr  = flag.String("debug", "127.0.0.1:10001", "Debug service address.")
-	)
 	flag.Parse()
 
 	logger.WithFields(logrus.Fields{
@@ -46,7 +33,7 @@ func main() {
 
 	healthHandler, status := newHealthServiceHandler()
 	healthServer := &http.Server{
-		Addr:     *healthAddr,
+		Addr:     config.HealthAddr,
 		Handler:  healthHandler,
 		ErrorLog: log.New(w, fmt.Sprintf("%s Health service: ", app.FriendlyServiceName), 0),
 	}
@@ -63,7 +50,7 @@ func main() {
 
 	if config.Debug {
 		debugServer := &http.Server{
-			Addr:     *debugAddr,
+			Addr:     config.DebugAddr,
 			Handler:  http.DefaultServeMux,
 			ErrorLog: log.New(w, fmt.Sprintf("%s Debug service: ", app.FriendlyServiceName), 0),
 		}
