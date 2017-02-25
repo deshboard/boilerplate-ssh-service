@@ -4,9 +4,13 @@ import "time"
 
 // Configuration holds any kind of config that is necessary for running
 type Configuration struct {
-	Environment     string        `default:"production"`
-	ShutdownTimeout time.Duration `default:"3s" split_words:"true"`
-	Debug           bool          `split_words:"true"`
+	Environment string `default:"production"`
+	Debug       bool   `split_words:"true"`
+
+	ServiceAddr     string        `ignored:"true"`
+	HealthAddr      string        `ignored:"true"`
+	DebugAddr       string        `ignored:"true"`
+	ShutdownTimeout time.Duration `ignored:"true"`
 
 	AirbrakeEnabled   bool   `split_words:"true"`
 	AirbrakeEndpoint  string `split_words:"true"`
