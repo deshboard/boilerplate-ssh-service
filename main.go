@@ -30,6 +30,7 @@ func main() {
 
 	var (
 		healthAddr = flag.String("health", "0.0.0.0:90", "Health service address.")
+		debugAddr  = flag.String("debug", "0.0.0.0:91", "Debug service address.")
 	)
 	flag.Parse()
 
@@ -59,6 +60,21 @@ func main() {
 		logger.WithField("addr", healthServer.Addr).Infof("%s Health service started", app.FriendlyServiceName)
 		errChan <- healthServer.ListenAndServe()
 	}()
+
+	if config.Debug {
+		debugServer := &http.Server{
+			Addr:     *debugAddr,
+			Handler:  http.DefaultServeMux,
+			ErrorLog: log.New(w, fmt.Sprintf("%s Debug service: ", app.FriendlyServiceName), 0),
+		}
+
+		shutdown = append(shutdown, debugServer.Close)
+
+		go func() {
+			logger.WithField("addr", debugServer.Addr).Infof("%s Debug service started", app.FriendlyServiceName)
+			errChan <- debugServer.ListenAndServe()
+		}()
+	}
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)

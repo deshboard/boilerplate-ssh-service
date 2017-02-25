@@ -6,6 +6,7 @@ import "time"
 type Configuration struct {
 	Environment     string        `default:"production"`
 	ShutdownTimeout time.Duration `default:"3s" split_words:"true"`
+	Debug           bool          `split_words:"true"`
 
 	AirbrakeEnabled   bool   `split_words:"true"`
 	AirbrakeEndpoint  string `split_words:"true"`

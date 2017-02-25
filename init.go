@@ -8,10 +8,23 @@ import (
 	logrus_airbrake "gopkg.in/gemnasium/logrus-airbrake-hook.v2"
 )
 
+// Trace imports
+import (
+	"net/http"
+	_ "net/http/pprof"
+
+	"golang.org/x/net/trace"
+)
+
 func init() {
 	err := envconfig.Process("app", config)
 	if err != nil {
 		logger.Fatal(err)
+	}
+
+	// This is probably OK as the service runs in Docker
+	trace.AuthRequest = func(req *http.Request) (any, sensitive bool) {
+		return true, true
 	}
 
 	// Initialize Airbrake
