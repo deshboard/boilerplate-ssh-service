@@ -38,7 +38,7 @@ func main() {
 		ErrorLog: log.New(w, fmt.Sprintf("%s Health service: ", app.FriendlyServiceName), 0),
 	}
 
-	// Force closing server connections (if graceful closing fails)
+	// Force close server connections (if graceful closing fails)
 	shutdown = append([]shutdownHandler{healthServer.Close}, shutdown...)
 
 	errChan := make(chan error, 10)
@@ -70,16 +70,14 @@ MainLoop:
 	for {
 		select {
 		case err := <-errChan:
-			// In theory this can only be non-nil
 			if err != nil {
-				// This will be handled (logged) by shutdown
-				panic(err)
+				logger.Error(err)
 			} else {
-				logger.Info("Error channel received non-error value")
-
-				// Break the loop, proceed with regular shutdown
-				break MainLoop
+				logger.Warning("Error channel received non-error value")
 			}
+
+			// Break the loop, proceed with regular shutdown
+			break MainLoop
 		case s := <-signalChan:
 			logger.Println(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
