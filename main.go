@@ -74,18 +74,9 @@ MainLoop:
 			status.SetStatus(healthz.Unhealthy)
 
 			ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+			wg := &sync.WaitGroup{}
 
-			var wg sync.WaitGroup
-			wg.Add(1)
-
-			go func() {
-				err := healthServer.Shutdown(ctx)
-				if err != nil {
-					logger.Error(err)
-				}
-
-				wg.Done()
-			}()
+			go stopHTTPServer(healthServer, wg)(ctx)
 
 			wg.Wait()
 
@@ -109,6 +100,20 @@ func startHTTPServer(name string, server *http.Server) func(ch chan<- error) {
 	return func(ch chan<- error) {
 		logger.WithField("addr", server.Addr).Infof("%s started", name)
 		ch <- server.ListenAndServe()
+	}
+}
+
+// Creates a server stopper function which can be called as a goroutine
+func stopHTTPServer(server *http.Server, wg *sync.WaitGroup) func(ctx context.Context) {
+	wg.Add(1)
+
+	return func(ctx context.Context) {
+		err := server.Shutdown(ctx)
+		if err != nil {
+			logger.Error(err)
+		}
+
+		wg.Done()
 	}
 }
 
