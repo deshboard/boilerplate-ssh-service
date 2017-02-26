@@ -33,16 +33,6 @@ func main() {
 
 	errChan := make(chan error, 10)
 
-	healthHandler, status := newHealthServiceHandler()
-	healthServiceName := fmt.Sprintf("%s Health service", app.FriendlyServiceName)
-	healthServer := &http.Server{
-		Addr:     config.HealthAddr,
-		Handler:  healthHandler,
-		ErrorLog: log.New(w, fmt.Sprintf("%s: ", healthServiceName), 0),
-	}
-
-	go startHTTPServer(healthServiceName, healthServer)(errChan)
-
 	if config.Debug {
 		debugServiceName := fmt.Sprintf("%s Debug service", app.FriendlyServiceName)
 		debugServer := &http.Server{
@@ -53,6 +43,16 @@ func main() {
 
 		go startHTTPServer(debugServiceName, debugServer)(errChan)
 	}
+
+	healthHandler, status := newHealthServiceHandler()
+	healthServiceName := fmt.Sprintf("%s Health service", app.FriendlyServiceName)
+	healthServer := &http.Server{
+		Addr:     config.HealthAddr,
+		Handler:  healthHandler,
+		ErrorLog: log.New(w, fmt.Sprintf("%s: ", healthServiceName), 0),
+	}
+
+	go startHTTPServer(healthServiceName, healthServer)(errChan)
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
