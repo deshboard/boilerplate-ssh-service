@@ -32,10 +32,17 @@ func init() {
 		logger.Fatal(err)
 	}
 
+	defaultAddr := ""
+
+	// Listen on loopback interface in development mode
+	if config.Environment == "development" {
+		defaultAddr = "127.0.0.1"
+	}
+
 	// Load flags into configuration
-	flag.StringVar(&config.ServiceAddr, "service", "127.0.0.1:80", "Service address.")
-	flag.StringVar(&config.HealthAddr, "health", "127.0.0.1:10000", "Health service address.")
-	flag.StringVar(&config.DebugAddr, "debug", "127.0.0.1:10001", "Debug service address.")
+	flag.StringVar(&config.ServiceAddr, "service", defaultAddr+":80", "Service address.")
+	flag.StringVar(&config.HealthAddr, "health", defaultAddr+":10000", "Health service address.")
+	flag.StringVar(&config.DebugAddr, "debug", defaultAddr+":10001", "Debug service address.")
 	flag.DurationVar(&config.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
 
 	// This is probably OK as the service runs in Docker
