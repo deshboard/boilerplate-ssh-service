@@ -11,8 +11,6 @@ import (
 	"sync"
 	"syscall"
 
-	"time"
-
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-service/app"
 	"github.com/sagikazarmark/healthz"
@@ -33,9 +31,6 @@ func main() {
 
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
 	shutdown.Register(w.Close)
-	http.Handle("/looong", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(10 * time.Second)
-	}))
 
 	serverManager := serverz.NewServerManager(logger)
 	errChan := make(chan error, 10)
