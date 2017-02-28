@@ -17,3 +17,5 @@ import:
 - package: golang.org/x/net
   subpackages:
   - trace
+- package: github.com/sagikazarmark/serverz
+  version: ~0.1.0

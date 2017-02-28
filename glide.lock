@@ -1,5 +1,5 @@
-hash: aaedd98690cbd4df3a18e5740a8d17b16c77ce29754846ba0b21f020dbdac818
-updated: 2017-02-24T22:51:53.863040958+01:00
+hash: a7888b225d680b6ec87573b714bcdb4d843ed0377d339fd3eaf0738e6ca18fd7
+updated: 2017-02-28T22:08:09.645301944+01:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -19,8 +19,10 @@ imports:
   version: 98c11a7a6ec829d672b03833c3d69a7fae1ca972
 - name: github.com/sagikazarmark/healthz
   version: 53e8bd01c95dd968996af7f6e8ab52491b49ff7e
+- name: github.com/sagikazarmark/serverz
+  version: f2b8b2cf27595019f4944e8aa085e18622aee8b6
 - name: github.com/Sirupsen/logrus
-  version: c078b1e43f58d563c74cebe63c85789e76ddb627
+  version: 0208149b40d863d2c1a2f8fe5753096a9cf2cc8b
 - name: github.com/tinylib/msgp
   version: 362bfb3384d53ae4d5dd745983a4d70b6d23628c
   subpackages:
@@ -29,6 +31,7 @@ imports:
   version: 61557ac0112b576429a0df080e1c2cef5dfbb642
   subpackages:
   - context
+  - internal/timeseries
   - trace
 - name: golang.org/x/sys
   version: e24f485414aeafb646f6fca458b0bf869c0880a1
