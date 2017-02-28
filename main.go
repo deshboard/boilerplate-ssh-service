@@ -11,13 +11,16 @@ import (
 	"sync"
 	"syscall"
 
+	"time"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-service/app"
 	"github.com/sagikazarmark/healthz"
+	"github.com/sagikazarmark/serverz"
 )
 
 func main() {
-	defer handleShutdown()
+	defer shutdown.Handle()
 
 	flag.Parse()
 
@@ -29,38 +32,49 @@ func main() {
 	}).Printf("Starting %s service", app.FriendlyServiceName)
 
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
-	shutdown = append(shutdown, w.Close)
+	shutdown.Register(w.Close)
+	http.Handle("/looong", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(10 * time.Second)
+	}))
 
+	serverManager := serverz.NewServerManager(logger)
 	errChan := make(chan error, 10)
+	signalChan := make(chan os.Signal, 1)
 
+	var debugServer serverz.Server
 	if config.Debug {
-		debugServiceName := fmt.Sprintf("%s Debug service", app.FriendlyServiceName)
-		debugServer := &http.Server{
-			Addr:     config.DebugAddr,
-			Handler:  http.DefaultServeMux,
-			ErrorLog: log.New(w, fmt.Sprintf("%s: ", debugServiceName), 0),
+		debugServer = &serverz.NamedServer{
+			Server: &http.Server{
+				Handler:  http.DefaultServeMux,
+				ErrorLog: log.New(w, "debug: ", 0),
+			},
+			Name: "debug",
 		}
+		shutdown.RegisterAsFirst(debugServer.Close)
 
-		go startHTTPServer(debugServiceName, debugServer)(errChan)
+		go serverManager.ListenAndStartServer(debugServer, config.DebugAddr)(errChan)
 	}
 
 	healthHandler, status := newHealthServiceHandler()
-	healthServiceName := fmt.Sprintf("%s Health service", app.FriendlyServiceName)
-	healthServer := &http.Server{
-		Addr:     config.HealthAddr,
-		Handler:  healthHandler,
-		ErrorLog: log.New(w, fmt.Sprintf("%s: ", healthServiceName), 0),
+	healthServer := &serverz.NamedServer{
+		Server: &http.Server{
+			Handler:  healthHandler,
+			ErrorLog: log.New(w, "health: ", 0),
+		},
+		Name: "health",
 	}
+	shutdown.RegisterAsFirst(healthServer.Close)
 
-	go startHTTPServer(healthServiceName, healthServer)(errChan)
+	go serverManager.ListenAndStartServer(healthServer, config.HealthAddr)(errChan)
 
-	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 MainLoop:
 	for {
 		select {
 		case err := <-errChan:
+			status.SetStatus(healthz.Unhealthy)
+
 			if err != nil {
 				logger.Error(err)
 			} else {
@@ -70,13 +84,16 @@ MainLoop:
 			// Break the loop, proceed with regular shutdown
 			break MainLoop
 		case s := <-signalChan:
-			logger.Println(fmt.Sprintf("Captured %v", s))
+			logger.Infof(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
 
 			ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 			wg := &sync.WaitGroup{}
 
-			go stopHTTPServer(healthServer, wg)(ctx)
+			if config.Debug {
+				go serverManager.StopServer(debugServer, wg)(ctx)
+			}
+			go serverManager.StopServer(healthServer, wg)(ctx)
 
 			wg.Wait()
 
@@ -90,60 +107,4 @@ MainLoop:
 
 	close(errChan)
 	close(signalChan)
-}
-
-// Creates a server starter function which can be called as a goroutine
-func startHTTPServer(name string, server *http.Server) func(ch chan<- error) {
-	// Force close server connections (if graceful closing fails)
-	shutdown = append([]shutdownHandler{server.Close}, shutdown...)
-
-	return func(ch chan<- error) {
-		logger.WithField("addr", server.Addr).Infof("%s started", name)
-		ch <- server.ListenAndServe()
-	}
-}
-
-// Creates a server stopper function which can be called as a goroutine
-func stopHTTPServer(server *http.Server, wg *sync.WaitGroup) func(ctx context.Context) {
-	wg.Add(1)
-
-	return func(ctx context.Context) {
-		err := server.Shutdown(ctx)
-		if err != nil {
-			logger.Error(err)
-		}
-
-		wg.Done()
-	}
-}
-
-type shutdownHandler func() error
-
-// Wraps a function withot error return type
-func shutdownFunc(fn func()) shutdownHandler {
-	return func() error {
-		fn()
-		return nil
-	}
-}
-
-// Panic recovery and shutdown handler
-func handleShutdown() {
-	v := recover()
-	if v != nil {
-		logger.Error(v)
-	}
-
-	logger.Info("Shutting down")
-
-	for _, handler := range shutdown {
-		err := handler()
-		if err != nil {
-			logger.Error(err)
-		}
-	}
-
-	if v != nil {
-		panic(v)
-	}
 }
