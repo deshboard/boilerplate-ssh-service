@@ -4,6 +4,7 @@ import (
 	"flag"
 	"time"
 
+	_ "expvar"
 	"net/http"
 	_ "net/http/pprof"
 
