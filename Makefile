@@ -12,7 +12,7 @@ GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -n
 GO_PACKAGES = $(shell go list ./... | grep -v /vendor/)
 GODOTENV = $(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
 
-.PHONY: setup install build run watch build-docker docker clean check test watch-test fmt csfix envcheck help
+.PHONY: setup install clean build run watch build-docker docker check test watch-test fmt csfix envcheck help
 .DEFAULT_GOAL := help
 
 setup: envcheck install .env ## Setup the project for development
@@ -22,6 +22,9 @@ install: ## Install dependencies
 
 .env: ## Create local env file
 	cp .env.example .env
+
+clean: ## Clean the working area
+	rm -rf build/ vendor/ .env
 
 build: ## Build a binary
 	go build ${LDFLAGS} -o build/${BINARY_NAME}
@@ -44,9 +47,6 @@ docker: build-docker ## Build a Docker image
 ifeq (${TAG}, master)
 	docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
 endif
-
-clean: ## Clean the working area
-	rm -rf build/ vendor/ .env
 
 check: test fmt ## Run tests and linters
 
