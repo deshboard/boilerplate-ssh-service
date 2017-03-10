@@ -15,7 +15,7 @@ GODOTENV = $(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
 .PHONY: setup install clean build run watch build-docker docker check test watch-test fmt csfix envcheck help
 .DEFAULT_GOAL := help
 
-setup: envcheck install .env ## Setup the project for development
+setup:: envcheck install .env ## Setup the project for development
 
 install: ## Install dependencies
 	@glide install
@@ -23,7 +23,7 @@ install: ## Install dependencies
 .env: ## Create local env file
 	cp .env.example .env
 
-clean: ## Clean the working area
+clean:: ## Clean the working area
 	rm -rf build/ vendor/ .env
 
 build: ## Build a binary
@@ -48,13 +48,13 @@ ifeq (${TAG}, master)
 	docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
 endif
 
-check: test fmt ## Run tests and linters
+check:: test fmt ## Run tests and linters
 
-test: ## Run unit tests
+test:: ## Run unit tests
 	@go test ${GO_PACKAGES}
 
 watch-test: ## Watch for file changes and run tests
-	reflex -t 2s -d none -r '\.go$$' -- go test ${GO_PACKAGES}
+	reflex -t 2s -d none -r '\.go$$' -- $(MAKE) test
 
 fmt: ## Check that all source files follow the Coding Style
 	@gofmt -l ${GO_SOURCE_FILES} | read something && echo "Code differs from gofmt's style" 1>&2 && exit 1 || true
@@ -62,7 +62,7 @@ fmt: ## Check that all source files follow the Coding Style
 csfix: ## Fix Coding Standard violations
 	@gofmt -l -w -s ${GO_SOURCE_FILES}
 
-envcheck: ## Check environment for all the necessary requirements
+envcheck:: ## Check environment for all the necessary requirements
 	$(call executable_check,Go,go)
 	$(call executable_check,Glide,glide)
 	$(call executable_check,Docker,docker)
@@ -74,4 +74,4 @@ define executable_check
 endef
 
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
