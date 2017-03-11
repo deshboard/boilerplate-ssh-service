@@ -4,6 +4,7 @@ sudo: false
 
 services:
     - docker
+
 go:
     - 1.8.x
     - tip
@@ -12,7 +13,7 @@ before_install:
     - mkdir -p $HOME/bin
     - curl -s https://raw.githubusercontent.com/sagikazarmark/traviscripts/e106b6d593915a0cb736919ecb3804e8eb5e0440/scripts/glide.sh | bash
 
-install: make install
+install: make install .env
 
 before_script:
     - export VERSION=${TRAVIS_TAG:-$TRAVIS_BRANCH}

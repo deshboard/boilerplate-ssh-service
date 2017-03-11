@@ -51,10 +51,14 @@ endif
 check:: test fmt ## Run tests and linters
 
 test:: ## Run unit tests
-	@go test ${GO_PACKAGES}
+ifdef GODOTENV
+	@${GODOTENV} go test ${ARGS} ${GO_PACKAGES}
+else
+	@go test ${ARGS} ${GO_PACKAGES}
+endif
 
 watch-test: ## Watch for file changes and run tests
-	reflex -t 2s -d none -r '\.go$$' -- $(MAKE) test
+	reflex -t 2s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" test
 
 fmt: ## Check that all source files follow the Coding Style
 	@gofmt -l ${GO_SOURCE_FILES} | read something && echo "Code differs from gofmt's style" 1>&2 && exit 1 || true
