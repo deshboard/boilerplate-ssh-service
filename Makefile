@@ -12,10 +12,10 @@ GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -n
 GO_PACKAGES = $(shell go list ./... | grep -v /vendor/)
 GODOTENV = $(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
 
-.PHONY: setup install clean build run watch build-docker docker check test watch-test fmt csfix envcheck help
+.PHONY: setup install clean run watch build build-docker docker check test watch-test fmt csfix envcheck help
 .DEFAULT_GOAL := help
 
-setup:: envcheck install .env ## Setup the project for development
+setup:: install .env ## Setup the project for development
 
 install: ## Install dependencies
 	@glide install
@@ -26,18 +26,14 @@ install: ## Install dependencies
 clean:: ## Clean the working area
 	rm -rf build/ vendor/ .env
 
-build: ## Build a binary
-	go build ${LDFLAGS} -o build/${BINARY_NAME}
-
 run: build ## Build and execute a binary
-ifdef GODOTENV
 	${GODOTENV} build/${BINARY_NAME} ${ARGS}
-else
-	build/${BINARY_NAME} ${ARGS}
-endif
 
 watch: ## Watch for file changes and run the built binary
 	reflex -s -t 3s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
+
+build: ## Build a binary
+	go build ${LDFLAGS} -o build/${BINARY_NAME}
 
 build-docker:
 	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o build/${BINARY_NAME}-docker
@@ -50,12 +46,8 @@ endif
 
 check:: test fmt ## Run tests and linters
 
-test:: ## Run unit tests
-ifdef GODOTENV
+test: ## Run unit tests
 	@${GODOTENV} go test ${ARGS} ${GO_PACKAGES}
-else
-	@go test ${ARGS} ${GO_PACKAGES}
-endif
 
 watch-test: ## Watch for file changes and run tests
 	reflex -t 2s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" test
@@ -79,3 +71,6 @@ endef
 
 help:
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+include service.mk
+-include custom.mk

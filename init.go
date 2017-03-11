@@ -32,7 +32,7 @@ func init() {
 	logrus.RegisterExitHandler(shutdown.Handle)
 
 	// Load configuration from environment
-	err := envconfig.Process("app", config)
+	err := envconfig.Process("", config)
 	if err != nil {
 		logger.Fatal(err)
 	}
