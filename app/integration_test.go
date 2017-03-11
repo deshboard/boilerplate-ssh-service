@@ -1,19 +1,16 @@
 // +build integration
 
-package app_test
+package app
 
 import (
 	"os"
 	"testing"
 
-	"github.com/deshboard/boilerplate-service/app"
 	"github.com/kelseyhightower/envconfig"
 )
 
-var config = &app.Configuration{}
-
 func TestMain(m *testing.M) {
-	config = &app.Configuration{}
+	config := &Configuration{}
 
 	envconfig.MustProcess("", config)
 
@@ -27,9 +24,9 @@ func TestMain(m *testing.M) {
 }
 
 // Integration test initialization
-func setUp(config *app.Configuration) {
+func setUp(config *Configuration) {
 }
 
 // Cleanup after integration tests
-func tearDown(config *app.Configuration) {
+func tearDown(config *Configuration) {
 }
