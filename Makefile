@@ -4,7 +4,7 @@ PACKAGE = $(shell go list .)
 VERSION ?= $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT_HASH = $(shell git rev-parse --short HEAD 2>/dev/null)
 BUILD_DATE = $(shell date +%FT%T%z)
-LDFLAGS = -ldflags "-X ${PACKAGE}/app.Version=${VERSION} -X ${PACKAGE}/app.CommitHash=${COMMIT_HASH} -X ${PACKAGE}/app.BuildDate=${BUILD_DATE}"
+LDFLAGS = -ldflags "-w -X ${PACKAGE}/app.Version=${VERSION} -X ${PACKAGE}/app.CommitHash=${COMMIT_HASH} -X ${PACKAGE}/app.BuildDate=${BUILD_DATE}"
 BINARY_NAME = $(shell go list . | cut -d '/' -f 3)
 IMAGE ?= deshboard/${BINARY_NAME}
 TAG ?= ${VERSION}
@@ -33,10 +33,10 @@ watch: ## Watch for file changes and run the built binary
 	reflex -s -t 3s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
 
 build: ## Build a binary
-	go build ${LDFLAGS} -o build/${BINARY_NAME}
+	CGO_ENABLED=0 go build ${LDFLAGS} -o build/${BINARY_NAME}
 
 build-docker:
-	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o build/${BINARY_NAME}-docker
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o build/${BINARY_NAME}-docker
 
 docker: build-docker ## Build a Docker image
 	docker build --build-arg BINARY_NAME=${BINARY_NAME}-docker -t ${IMAGE}:${TAG} .
