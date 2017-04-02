@@ -1,5 +1,5 @@
-hash: fe9200929c357cb7fff224b3a7f4c4d3985a632d0a4187f9ed42d4879e8bd4d3
-updated: 2017-03-09T11:05:05.17510666+01:00
+hash: 738a9c80cd549a136f852f9dcc241ffea11db459678bdd055aefbf003495b5ab
+updated: 2017-04-02T16:51:40.287465719+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -22,11 +22,11 @@ imports:
 - name: github.com/philhofer/fwd
   version: 98c11a7a6ec829d672b03833c3d69a7fae1ca972
 - name: github.com/sagikazarmark/healthz
-  version: 53d84ee314bb0f042a6d5c2fb65bab4301686dcf
+  version: 941786782b035e1a9a533ca7b8c685792b3cbedb
 - name: github.com/sagikazarmark/serverz
   version: 6795311fdd32a52d3decca847d2ae602e66af310
 - name: github.com/Sirupsen/logrus
-  version: 0208149b40d863d2c1a2f8fe5753096a9cf2cc8b
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/tinylib/msgp
   version: 362bfb3384d53ae4d5dd745983a4d70b6d23628c
   subpackages:
@@ -46,12 +46,13 @@ imports:
   subpackages:
   - unix
 - name: google.golang.org/grpc
-  version: 708a7f9f3283aa2d4f6132d287d78683babe55c8
+  version: cdee119ee21e61eef7093a41ba148fa83585e143
   subpackages:
   - codes
   - credentials
   - grpclog
   - internal
+  - keepalive
   - metadata
   - naming
   - peer
