@@ -20,5 +20,5 @@ type Configuration struct {
 
 	FluentdEnabled bool   `split_words:"true"`
 	FluentdHost    string `split_words:"true"`
-	FluentdPort    int    `split_words:"true"`
+	FluentdPort    int    `split_words:"true" default:"24224"`
 }
