@@ -13,7 +13,7 @@ import:
 - package: github.com/opentracing/opentracing-go
   version: ^1.0.1
 - package: github.com/evalphobia/logrus_fluent
-  version: ^0.1.0
+  version: ~0.1.0
 - package: golang.org/x/net
   subpackages:
   - trace
