@@ -15,7 +15,7 @@ GODOTENV = $(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
 .PHONY: setup install clean run watch build build-docker docker check test watch-test fmt csfix envcheck help
 .DEFAULT_GOAL := help
 
-setup:: install .env ## Setup the project for development
+setup:: install .env .env.test ## Setup the project for development
 
 install: ## Install dependencies
 	@glide install
@@ -23,8 +23,11 @@ install: ## Install dependencies
 .env: ## Create local env file
 	cp .env.example .env
 
+.env.test: ## Create local env file for running tests
+	cp .env.example .env.test
+
 clean:: ## Clean the working area
-	rm -rf build/ vendor/ .env
+	rm -rf build/ vendor/ .env .env.test
 
 run: build ## Build and execute a binary
 	${GODOTENV} build/${BINARY_NAME} ${ARGS}
@@ -46,8 +49,12 @@ endif
 
 check:: test fmt ## Run tests and linters
 
-test: ## Run unit tests
-	@${GODOTENV} go test ${ARGS} ${GO_PACKAGES}
+test: .env.test ## Run unit tests
+ifdef GODOTENV
+	@${GODOTENV} -f .env.test go test ${ARGS} ${GO_PACKAGES}
+else
+	@go test ${ARGS} ${GO_PACKAGES}
+endif
 
 watch-test: ## Watch for file changes and run tests
 	reflex -t 2s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" test
