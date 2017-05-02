@@ -11,8 +11,8 @@ go:
 
 before_install:
     - mkdir -p $HOME/bin
-    - curl -sL http://get.binhq.io/githubin | DEST=$HOME/bin bash
-    - githubin get Masterminds/glide 0.12.3 -o $HOME/bin
+    - curl -sL http://get.binhq.io/gitbin | DEST=$HOME/bin bash
+    - gitbin get Masterminds/glide 0.12.3 -o $HOME/bin
     - make envcheck
 
 install: make setup
