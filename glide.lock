@@ -1,5 +1,5 @@
 hash: 5460d6a56443fdd5cbd2293f6c7639a96655a603418138cc6f1f284e13784f5b
-updated: 2017-04-12T12:40:07.521497817+02:00
+updated: 2017-05-02T21:44:37.72976153+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -46,7 +46,7 @@ imports:
   subpackages:
   - unix
 - name: google.golang.org/grpc
-  version: 8050b9cbc271307e5a716a9d782803d09b0d6f2d
+  version: cdee119ee21e61eef7093a41ba148fa83585e143
   subpackages:
   - codes
   - credentials
