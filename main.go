@@ -101,7 +101,4 @@ MainLoop:
 			break MainLoop
 		}
 	}
-
-	close(errChan)
-	close(signalChan)
 }
