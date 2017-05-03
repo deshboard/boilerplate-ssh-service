@@ -1,13 +1,19 @@
 # A Self-Documenting Makefile: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
+# Build variables
 PACKAGE = $(shell go list .)
 VERSION ?= $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT_HASH = $(shell git rev-parse --short HEAD 2>/dev/null)
 BUILD_DATE = $(shell date +%FT%T%z)
 LDFLAGS = -ldflags "-w -X ${PACKAGE}/app.Version=${VERSION} -X ${PACKAGE}/app.CommitHash=${COMMIT_HASH} -X ${PACKAGE}/app.BuildDate=${BUILD_DATE}"
-BINARY_NAME = $(shell go list . | cut -d '/' -f 3)
-IMAGE ?= deshboard/${BINARY_NAME}
-TAG ?= ${VERSION}
+BINARY_NAME = $(shell echo ${PACKAGE} | cut -d '/' -f 3)
+
+# Docker variables
+DOCKER_IMAGE ?= $(shell echo ${PACKAGE} | cut -d '/' -f 2,3)
+DOCKER_TAG ?= ${VERSION}
+DOCKER_LATEST ?= false
+
+# Dev variables
 GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")
 GO_PACKAGES = $(shell go list ./... | grep -v /vendor/)
 GODOTENV = $(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
@@ -42,9 +48,9 @@ build-docker:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o build/${BINARY_NAME}-docker
 
 docker: build-docker ## Build a Docker image
-	docker build --build-arg BINARY_NAME=${BINARY_NAME}-docker -t ${IMAGE}:${TAG} .
-ifeq (${TAG}, master)
-	docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
+	docker build --build-arg BINARY_NAME=${BINARY_NAME}-docker -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+ifeq (${DOCKER_LATEST}, true)
+	docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
 endif
 
 check:: test fmt ## Run tests and linters

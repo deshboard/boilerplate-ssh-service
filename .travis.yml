@@ -19,11 +19,12 @@ install: make setup
 
 before_script:
     - export VERSION=${TRAVIS_TAG:-$TRAVIS_BRANCH}
-    - export DOCKER_IMAGE=deshboard/$(go list . | cut -d '/' -f 3)
+    - export DOCKER_IMAGE=$(go list . | cut -d '/' -f 2,3)
 
 script:
     - make ARGS="-tags=integration" check
-    - if [[ $TRAVIS_EVENT_TYPE = push ]]; then make IMAGE=$DOCKER_IMAGE VERSION=$VERSION docker; fi
+    - if [[ $TRAVIS_TAG = "$VERSION" ]]; then export DOCKER_LATEST=true; fi
+    - if [[ $TRAVIS_EVENT_TYPE = push ]]; then make docker; fi
 
 deploy:
     provider: script
