@@ -1,5 +1,5 @@
-hash: 5460d6a56443fdd5cbd2293f6c7639a96655a603418138cc6f1f284e13784f5b
-updated: 2017-05-02T21:44:37.72976153+02:00
+hash: 156126fff9595257a6c59ba7abd6cc9f6e398bae3783a1260ac6de204f17187a
+updated: 2017-05-16T02:49:36.179329994+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -13,10 +13,11 @@ imports:
   version: 69b215d01a5606c843240eab4937eab3acee6530
   subpackages:
   - proto
+  - ptypes/any
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/opentracing/opentracing-go
-  version: 6edb48674bd9467b8e91fda004f2bd7202d60ce4
+  version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
   subpackages:
   - log
 - name: github.com/philhofer/fwd
@@ -24,7 +25,12 @@ imports:
 - name: github.com/sagikazarmark/healthz
   version: 941786782b035e1a9a533ca7b8c685792b3cbedb
 - name: github.com/sagikazarmark/serverz
-  version: 6795311fdd32a52d3decca847d2ae602e66af310
+  version: 59a44e00a01fbec7f080dc8d0e13366100439f32
+- name: github.com/sagikazarmark/utilz
+  version: 5b9d3f7d70e84fd8c7ad3142775016998e117e4e
+  subpackages:
+  - errors
+  - util
 - name: github.com/Sirupsen/logrus
   version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/tinylib/msgp
@@ -32,7 +38,7 @@ imports:
   subpackages:
   - msgp
 - name: golang.org/x/net
-  version: 61557ac0112b576429a0df080e1c2cef5dfbb642
+  version: feeb485667d1fdabe727840fe00adc22431bc86e
   subpackages:
   - context
   - http2
@@ -45,11 +51,23 @@ imports:
   version: e24f485414aeafb646f6fca458b0bf869c0880a1
   subpackages:
   - unix
+- name: golang.org/x/text
+  version: f28f36722d5ef2f9655ad3de1f248e3e52ad5ebd
+  subpackages:
+  - secure/bidirule
+  - transform
+  - unicode/bidi
+  - unicode/norm
+- name: google.golang.org/genproto
+  version: de9f5e90fe9b278809363f08c2072d2f2a429de7
+  subpackages:
+  - googleapis/rpc/status
 - name: google.golang.org/grpc
-  version: cdee119ee21e61eef7093a41ba148fa83585e143
+  version: d2e1b51f33ff8c5e4a15560ff049d200e83726c5
   subpackages:
   - codes
   - credentials
+  - grpclb/grpc_lb_v1
   - grpclog
   - internal
   - keepalive
@@ -57,6 +75,7 @@ imports:
   - naming
   - peer
   - stats
+  - status
   - tap
   - transport
 - name: gopkg.in/airbrake/gobrake.v2
