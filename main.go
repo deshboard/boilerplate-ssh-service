@@ -18,10 +18,8 @@ import (
 )
 
 func main() {
-	defer func() {
-		logger.Info("Shutting down")
-		shutdownManager.Shutdown()
-	}()
+	defer logger.Info("Shutting down")
+	defer shutdownManager.Shutdown()
 
 	flag.Parse()
 
