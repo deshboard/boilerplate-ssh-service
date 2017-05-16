@@ -23,7 +23,7 @@ import (
 // Global context variables
 var (
 	config          = &app.Configuration{}
-	logger          = logrus.New().WithField("service", app.ServiceName) // Use logrus.FieldLogger type
+	logger          = logrus.New().WithField("service", app.ServiceName)
 	tracer          = opentracing.GlobalTracer()
 	shutdownManager = util.NewShutdownManager(errors.NewLogHandler(logger))
 )
@@ -81,7 +81,13 @@ func init() {
 			logger.Panic(err)
 		}
 
-		fluentdHook.SetTag(app.ServiceName)
+		// Configure fluent tag
+		if app.FluentdTag != "" {
+			fluentdHook.SetTag(app.FluentdTag)
+		} else {
+			fluentdHook.SetTag(app.ServiceName)
+		}
+
 		fluentdHook.AddFilter("error", logrus_fluent.FilterError)
 
 		logger.Logger.Hooks.Add(fluentdHook)

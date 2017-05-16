@@ -28,7 +28,7 @@ func main() {
 		"commitHash":  app.CommitHash,
 		"buildDate":   app.BuildDate,
 		"environment": config.Environment,
-	}).Printf("Starting %s service", app.FriendlyServiceName)
+	}).Printf("Starting %s", app.FriendlyServiceName)
 
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
 	shutdownManager.Register(w.Close)
