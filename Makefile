@@ -1,15 +1,14 @@
 # A Self-Documenting Makefile: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
+include variables.mk
+
 # Build variables
-PACKAGE = $(shell go list .)
 VERSION ?= $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT_HASH = $(shell git rev-parse --short HEAD 2>/dev/null)
 BUILD_DATE = $(shell date +%FT%T%z)
 LDFLAGS = -ldflags "-w -X ${PACKAGE}/app.Version=${VERSION} -X ${PACKAGE}/app.CommitHash=${COMMIT_HASH} -X ${PACKAGE}/app.BuildDate=${BUILD_DATE}"
-BINARY_NAME = $(shell echo ${PACKAGE} | cut -d '/' -f 3)
 
 # Docker variables
-DOCKER_IMAGE ?= $(shell echo ${PACKAGE} | cut -d '/' -f 2,3)
 DOCKER_TAG ?= ${VERSION}
 DOCKER_LATEST ?= false
 
