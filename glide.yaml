@@ -20,7 +20,7 @@ import:
 - package: github.com/sagikazarmark/serverz
   version: ~0.3.0
 - package: github.com/sagikazarmark/utilz
-  version: ~0.1.0
+  version: ~0.2.0
 testImport:
 - package: github.com/DATA-DOG/godog
   version: ^0.7.2

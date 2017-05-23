@@ -1,5 +1,5 @@
-hash: db69a762c7923394f3d3a75a00f48e75f73af24da7423122933f769728b3b529
-updated: 2017-05-23T22:22:10.386299766+02:00
+hash: ac71c06379ebebc5d770ed5ccfd714dc2842fa0bed468be5c66591b1838f156d
+updated: 2017-05-23T22:24:47.785586513+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -27,7 +27,7 @@ imports:
 - name: github.com/sagikazarmark/serverz
   version: 59a44e00a01fbec7f080dc8d0e13366100439f32
 - name: github.com/sagikazarmark/utilz
-  version: 5b9d3f7d70e84fd8c7ad3142775016998e117e4e
+  version: a25eb2121e4945c240475f89dd3bc1bdd6fef1c9
   subpackages:
   - errors
   - util
