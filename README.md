@@ -5,6 +5,8 @@
 
 ## Documentation
 
+See the [docs](docs/) directory.
+
 
 ## License
 
