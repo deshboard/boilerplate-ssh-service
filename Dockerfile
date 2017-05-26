@@ -1,8 +1,9 @@
 FROM scratch
 
+ARG BUILD_DIR
 ARG BINARY_NAME
 
-COPY build/$BINARY_NAME /service
+COPY $BUILD_DIR/$BINARY_NAME /service
 
 EXPOSE 80 10000 10001
 CMD ["/service"]

@@ -19,12 +19,12 @@ install: make setup
 
 before_script:
     - export VERSION=${TRAVIS_TAG:-$TRAVIS_BRANCH}
-    - export DOCKER_IMAGE=$(go list . | cut -d '/' -f 2,3)
+    - export $(make varexport-DOCKER_IMAGE)
 
 script:
-    - make ARGS="-tags=integration" check
+    - make ARGS="-tags='acceptance integration' -v" check
     - if [[ $TRAVIS_TAG = "$VERSION" ]]; then export DOCKER_LATEST=true; fi
-    - if [[ $TRAVIS_EVENT_TYPE = push ]]; then make docker; fi
+    - make docker
 
 deploy:
     provider: script
