@@ -17,8 +17,7 @@ GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -n
 GO_PACKAGES = $(shell go list ./... | grep -v /vendor/)
 GODOTENV = $(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
 
-.PHONY: setup install clean run watch build build-docker docker check test watch-test fmt csfix envcheck help
-.DEFAULT_GOAL := help
+.PHONY: setup install clean run watch build build-docker docker check test watch-test fmt csfix envcheck
 
 setup:: install .env .env.test ## Setup the project for development
 
@@ -81,6 +80,8 @@ define executable_check
     @printf "\033[36m%-30s\033[0m %s\n" "$(1)" `if which $(2) > /dev/null 2>&1; then echo "\033[0;32m✓\033[0m"; else echo "\033[0;31m✗\033[0m"; fi`
 endef
 
+.PHONY: help
+.DEFAULT_GOAL := help
 help:
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
