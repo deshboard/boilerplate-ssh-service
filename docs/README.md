@@ -14,6 +14,7 @@ This folder contains documentation for the service. It mainly includes informati
 - [GNU Make](https://www.gnu.org/software/make/)
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
+- [Go](https://golang.org/) (1.8 or above)
 - [Glide](http://glide.sh/)
 
 
