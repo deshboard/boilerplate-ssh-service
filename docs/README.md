@@ -7,6 +7,7 @@ This folder contains documentation for the service. It mainly includes informati
 
 - [Requirements](#requirements)
 - [Setup](setup.md)
+- [Testing](testing.md)
 
 
 ## Requirements
