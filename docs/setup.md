@@ -78,5 +78,5 @@ The Docker environment is disposable, you can easily destroy it and give it a fr
 
 ``` bash
 $ docker-compose down
-$ rm -rf var/
+$ rm -rf .docker/
 ```

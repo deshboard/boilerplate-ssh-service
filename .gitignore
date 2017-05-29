@@ -1,7 +1,7 @@
 /build/
 /custom.mk
+/.docker/
 /docker-compose.override.yml
 /.env
 /.env.test
-/var/
 /vendor/
