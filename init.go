@@ -38,6 +38,11 @@ func init() {
 		logger.Fatal(err)
 	}
 
+	// Log debug level messages if debug mode is turned on
+	if config.Debug {
+		logger.Logger.Level = logrus.DebugLevel
+	}
+
 	defaultAddr := ""
 
 	// Listen on loopback interface in development mode

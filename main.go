@@ -29,7 +29,7 @@ func main() {
 		"commitHash":  app.CommitHash,
 		"buildDate":   app.BuildDate,
 		"environment": config.Environment,
-	}).Printf("Starting %s", app.FriendlyServiceName)
+	}).Infof("Starting %s", app.FriendlyServiceName)
 
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
 	shutdownManager.Register(w.Close)
@@ -57,6 +57,8 @@ func main() {
 	healthHandler := healthz.NewHealthServiceHandler(healthz.NewCheckers(), readiness)
 
 	if config.MetricsEnabled {
+		logger.Debug("Serving metrics under health endpoint")
+
 		healthHandler := healthHandler.(*http.ServeMux)
 		healthHandler.Handle("/metrics", promhttp.Handler())
 	}
@@ -91,6 +93,8 @@ MainLoop:
 		case s := <-signalChan:
 			logger.Infof(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
+
+			logger.Debugf("Shutting down with timeout %v", config.ShutdownTimeout)
 
 			ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 			wg := &sync.WaitGroup{}
