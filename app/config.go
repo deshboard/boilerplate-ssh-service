@@ -13,6 +13,9 @@ type Configuration struct {
 	DebugAddr       string        `ignored:"true"`
 	ShutdownTimeout time.Duration `ignored:"true"`
 
+	// Enable Prometheus metrics to be exposed in the health service under /metrics endpoint.
+	MetricsEnabled bool `split_words:"true"`
+
 	AirbrakeEnabled   bool   `split_words:"true"`
 	AirbrakeEndpoint  string `split_words:"true"`
 	AirbrakeProjectID int64  `envconfig:"airbrake_project_id"`
