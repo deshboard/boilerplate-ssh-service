@@ -23,6 +23,12 @@ $ make clean
 Although in most cases the automatic installation should be just fine, it's possible to go through the same steps manually.
 Consider this part an explanation of the section above.
 
+As the minus one step you might want to check if every dependency is installed:
+
+``` bash
+$ make envcheck
+```
+
 First thing you need to do is installing the dependencies. This project uses [Glide](http://glide.sh/) for dependency management.
 
 ``` bash

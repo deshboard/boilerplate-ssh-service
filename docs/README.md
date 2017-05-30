@@ -22,6 +22,8 @@ This folder contains documentation for the service. It mainly includes informati
 
 These are not hard requirements of the project.
 
+- [Godotenv](https://github.com/joho/godotenv) (strongly recommended)
+- [Reflex](https://github.com/cespare/reflex) (required for watching code changes)
 - [Docker Compose](https://docs.docker.com/compose/)
 
 
