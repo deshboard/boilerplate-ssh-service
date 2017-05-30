@@ -58,7 +58,7 @@ func main() {
 
 	if config.MetricsEnabled {
 		healthHandler := healthHandler.(*http.ServeMux)
-		healthHandler.Handle("/", promhttp.Handler())
+		healthHandler.Handle("/metrics", promhttp.Handler())
 	}
 
 	healthServer := &serverz.NamedServer{
