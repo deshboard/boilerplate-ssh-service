@@ -16,7 +16,7 @@ import:
   subpackages:
   - trace
 - package: github.com/sagikazarmark/healthz
-  version: ~0.6.0
+  version: ~0.7.0
 - package: github.com/sagikazarmark/serverz
   version: ~0.3.0
 - package: github.com/sagikazarmark/utilz

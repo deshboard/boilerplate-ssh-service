@@ -13,6 +13,7 @@ import (
 	"github.com/evalphobia/logrus_fluent"
 	"github.com/kelseyhightower/envconfig"
 	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/sagikazarmark/healthz"
 	"github.com/sagikazarmark/utilz/errors"
 	"github.com/sagikazarmark/utilz/util"
 	"golang.org/x/net/trace"
@@ -22,10 +23,11 @@ import (
 
 // Global context variables
 var (
-	config          = &app.Configuration{}
-	logger          = logrus.New().WithField("service", app.ServiceName)
-	tracer          = opentracing.GlobalTracer()
-	shutdownManager = util.NewShutdownManager(errors.NewLogHandler(logger))
+	config           = &app.Configuration{}
+	logger           = logrus.New().WithField("service", app.ServiceName)
+	tracer           = opentracing.GlobalTracer()
+	shutdownManager  = util.NewShutdownManager(errors.NewLogHandler(logger))
+	checkerCollector = healthz.Collector{}
 )
 
 func init() {

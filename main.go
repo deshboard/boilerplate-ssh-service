@@ -53,11 +53,12 @@ func main() {
 	}
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	healthService := healthz.NewHealthService(healthz.NewCheckers(), status)
+	checkerCollector.RegisterChecker(healthz.ReadinessCheck, status)
+	healthService := checkerCollector.NewHealthService()
 	healthHandler := http.NewServeMux()
 
-	healthHandler.HandleFunc("/healthz", healthService.HealthStatus)
-	healthHandler.HandleFunc("/readiness", healthService.ReadinessStatus)
+	healthHandler.Handle("/healthz", healthService.Handler(healthz.LivenessCheck))
+	healthHandler.Handle("/readiness", healthService.Handler(healthz.ReadinessCheck))
 
 	if config.MetricsEnabled {
 		logger.Debug("Serving metrics under health endpoint")
