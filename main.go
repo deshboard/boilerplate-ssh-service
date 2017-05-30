@@ -47,8 +47,8 @@ func main() {
 			},
 			Name: "debug",
 		}
-		shutdownManager.RegisterAsFirst(debugServer.Close)
 
+		shutdownManager.RegisterAsFirst(debugServer.Close)
 		go serverManager.ListenAndStartServer(debugServer, config.DebugAddr)(errChan)
 	}
 
@@ -72,8 +72,8 @@ func main() {
 		},
 		Name: "health",
 	}
-	shutdownManager.RegisterAsFirst(healthServer.Close)
 
+	shutdownManager.RegisterAsFirst(healthServer.Close)
 	go serverManager.ListenAndStartServer(healthServer, config.HealthAddr)(errChan)
 
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
