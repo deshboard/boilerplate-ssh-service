@@ -31,10 +31,10 @@ install: ## Install dependencies
 	cp .env.example .env.test
 
 clean:: ## Clean the working area
-	rm -rf build/ vendor/ .env .env.test
+	rm -rf ${BUILD_DIR}/ vendor/ .env .env.test
 
 run: build ## Build and execute a binary
-	${GODOTENV} build/${BINARY_NAME} ${ARGS}
+	${GODOTENV} ${BUILD_DIR}/${BINARY_NAME} ${ARGS}
 
 watch: ## Watch for file changes and run the built binary
 	reflex -s -t 3s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
