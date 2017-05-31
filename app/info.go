@@ -1,4 +1,4 @@
-package app
+package main
 
 // Provisioned by ldflags
 var (
