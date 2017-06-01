@@ -1,6 +1,6 @@
 // +build acceptance
 
-package app
+package service
 
 import (
 	"os"
