@@ -100,7 +100,7 @@ MainLoop:
 			logger.Infof(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
 
-			logger.Debugf("Shutting down with timeout %v", config.ShutdownTimeout)
+			logger.Debugf("Shutting down with '%v' timeout", config.ShutdownTimeout)
 
 			ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 			wg := &sync.WaitGroup{}
