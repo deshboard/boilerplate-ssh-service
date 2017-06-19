@@ -2,22 +2,25 @@ package main
 
 import (
 	"flag"
+	"io"
 	"time"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/goph/emperror"
+	"github.com/goph/healthz"
+	"github.com/goph/log/logrus"
+	"github.com/goph/shutdown"
 	"github.com/kelseyhightower/envconfig"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/sagikazarmark/healthz"
-	"github.com/sagikazarmark/utilz/errors"
-	"github.com/sagikazarmark/utilz/util"
 )
 
 // Global context variables
 var (
 	config           = &Configuration{}
-	logger           = logrus.New().WithField("service", ServiceName)
+	logger           = &logrus.Logger{}
+	logWriter        io.WriteCloser
+	errorHandler     emperror.Handler
 	tracer           = opentracing.GlobalTracer()
-	shutdownManager  = util.NewShutdownManager(errors.NewLogHandler(logger))
+	shutdownManager  = shutdown.NewManager()
 	checkerCollector = healthz.Collector{}
 )
 
@@ -25,7 +28,7 @@ func init() {
 	// Load configuration from environment
 	err := envconfig.Process("", config)
 	if err != nil {
-		logger.Fatal(err)
+		panic(err)
 	}
 
 	defaultAddr := ""

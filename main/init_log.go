@@ -1,52 +1,41 @@
 package main
 
 import (
-	"github.com/Sirupsen/logrus"
-	"github.com/evalphobia/logrus_fluent"
-	"gopkg.in/airbrake/gobrake.v2"
-	logrus_airbrake "gopkg.in/gemnasium/logrus-airbrake-hook.v2"
+	"github.com/fluent/fluent-logger-golang/fluent"
+	_fluent "github.com/goph/log/logrus/hooks/fluent"
+	"github.com/sirupsen/logrus"
 )
 
 func init() {
+	logrusLogger := logrus.New()
+
 	// Register shutdown handler in logrus
 	logrus.RegisterExitHandler(shutdownManager.Shutdown)
 
 	// Log debug level messages if debug mode is turned on
 	if config.Debug {
-		logger.Logger.Level = logrus.DebugLevel
+		logrusLogger.Level = logrus.DebugLevel
 	}
 
-	// Initialize Airbrake
-	if config.AirbrakeEnabled {
-		airbrakeHook := logrus_airbrake.NewHook(config.AirbrakeProjectID, config.AirbrakeAPIKey, config.Environment)
-		airbrake := airbrakeHook.Airbrake
+	logger.Logger = logrusLogger.WithField("service", ServiceName)
 
-		airbrake.SetHost(config.AirbrakeEndpoint)
-
-		airbrake.AddFilter(func(notice *gobrake.Notice) *gobrake.Notice {
-			notice.Context["version"] = Version
-			notice.Context["commit"] = CommitHash
-
-			return notice
-		})
-
-		logger.Logger.Hooks.Add(airbrakeHook)
-		shutdownManager.Register(airbrake.Close)
-	}
+	logWriter = logger.Logger.(*logrus.Entry).WriterLevel(logrus.ErrorLevel)
+	shutdownManager.Register(logWriter.Close)
 
 	// Initialize Fluentd
-	if config.FluentdEnabled {
-		fluentdHook, err := logrus_fluent.New(config.FluentdHost, config.FluentdPort)
-		if err != nil {
-			logger.Panic(err)
+	if config.FluentEnabled {
+		f, _ := fluent.New(fluent.Config{
+			FluentHost:   config.FluentHost,
+			FluentPort:   config.FluentPort,
+			AsyncConnect: true, // In case of AsyncConnect there is no error returned
+		})
+
+		fluentHook := &_fluent.Hook{
+			Fluent: f,
+			Tag:    LogTag,
 		}
 
-		// Configure fluent tag
-		fluentdHook.SetTag(LogTag)
-
-		fluentdHook.AddFilter("error", logrus_fluent.FilterError)
-
-		logger.Logger.Hooks.Add(fluentdHook)
-		shutdownManager.Register(fluentdHook.Fluent.Close)
+		logrusLogger.Hooks.Add(fluentHook)
+		shutdownManager.Register(fluentHook.Fluent.Close)
 	}
 }
