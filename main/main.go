@@ -63,12 +63,7 @@ func main() {
 
 	healthHandler.Handle("/healthz", checkerCollector.Handler(healthz.LivenessCheck))
 	healthHandler.Handle("/readiness", checkerCollector.Handler(healthz.ReadinessCheck))
-
-	if config.MetricsEnabled {
-		logger.Debug("Serving metrics under health endpoint")
-
-		healthHandler.Handle("/metrics", promhttp.Handler())
-	}
+	healthHandler.Handle("/metrics", promhttp.Handler())
 
 	healthServer := &serverz.NamedServer{
 		Server: &http.Server{
