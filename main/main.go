@@ -4,22 +4,36 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 
+	"github.com/goph/emperror"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/kelseyhightower/envconfig"
 )
 
 func main() {
-	defer shutdownManager.Shutdown()
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	config := newConfigWithFlags(flags)
 
-	flag.Parse()
+	// Load configuration from environment
+	err := envconfig.Process("", config)
+	if err != nil {
+		panic(err)
+	}
+
+	// Load configuration from flags
+	flags.Parse(os.Args[1:])
+
+	logger, logWriter, closer := newLogger(config)
+	defer closer.Close()
+
+	errorHandler, closer := newErrorHandler(config, logger)
+	defer closer.Close()
+	defer emperror.HandleRecover(errorHandler)
 
 	logger.Info(
 		fmt.Sprintf("Starting %s", FriendlyServiceName),
@@ -39,42 +53,23 @@ func main() {
 	signalChan := make(chan os.Signal, 1)
 
 	if config.Debug {
-		debugServer := &serverz.NamedServer{
-			Server: &http.Server{
-				Handler:  http.DefaultServeMux,
-				ErrorLog: log.New(logWriter, "debug: ", 0),
-			},
-			Name: "debug",
-		}
-
+		debugServer := newDebugServer(logWriter)
 		serverQueue.Append(debugServer, config.DebugAddr)
-		shutdownManager.RegisterAsFirst(debugServer.Close)
+		defer debugServer.Close()
 	}
 
-	server := bootstrap()
+	checkerCollector := healthz.Collector{}
 
+	server := bootstrap(config, logWriter, checkerCollector)
 	serverQueue.Prepend(server, config.ServiceAddr)
-	shutdownManager.RegisterAsFirst(server.Close)
+	defer server.Close()
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	checkerCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
-	healthHandler := http.NewServeMux()
-
-	healthHandler.Handle("/healthz", checkerCollector.Handler(healthz.LivenessCheck))
-	healthHandler.Handle("/readiness", checkerCollector.Handler(healthz.ReadinessCheck))
-	healthHandler.Handle("/metrics", promhttp.Handler())
-
-	healthServer := &serverz.NamedServer{
-		Server: &http.Server{
-			Handler:  healthHandler,
-			ErrorLog: log.New(logWriter, "health: ", 0),
-		},
-		Name: "health",
-	}
-
+	healthServer := newHealthServer(logWriter, checkerCollector)
 	serverQueue.Prepend(healthServer, config.HealthAddr)
-	shutdownManager.RegisterAsFirst(healthServer.Close)
+	defer healthServer.Close()
 
 	errChan := serverQueue.Start()
 
@@ -85,10 +80,8 @@ MainLoop:
 		select {
 		case err := <-errChan:
 			status.SetStatus(healthz.Unhealthy)
-
-			if err != nil {
-				logger.Error(err)
-			}
+			logger.Debug("Error received from error channel")
+			emperror.HandleIfErr(errorHandler, err)
 
 			// Break the loop, proceed with regular shutdown
 			break MainLoop

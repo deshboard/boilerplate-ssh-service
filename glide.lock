@@ -1,5 +1,5 @@
-hash: e4f38236d1e0d5ca14de667ea193c9b2bc282216039c09f4746fd1c8c7a8d42a
-updated: 2017-06-19T07:59:04.814501909+02:00
+hash: 3f863a94933f8ca189c73e35b2edd7e3038af2573943d8519542b6e83d37baf9
+updated: 2017-06-23T01:04:36.173988525+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 3e9a4999b0371bf26c63fda81cc849383919b3da
@@ -12,11 +12,11 @@ imports:
   subpackages:
   - fluent
 - name: github.com/golang/protobuf
-  version: e325f446bebc2998605911c0a2650d9920361d4a
+  version: 6a1fa9404c0aebf36c879bc50152edcc953910d2
   subpackages:
   - proto
 - name: github.com/goph/emperror
-  version: d094d596d8555c2ea01e2f1fd2598aeffe8836ee
+  version: 13dfdf50f95fa8839424b75198b8a95d7f4d60e9
   subpackages:
   - airbrake
 - name: github.com/goph/healthz
@@ -28,8 +28,11 @@ imports:
   - logrus/hooks/fluent
 - name: github.com/goph/serverz
   version: 3c459b6f542fd43aa376e3d47029992e469f2ceb
-- name: github.com/goph/shutdown
-  version: 1d8394a7f51e20acbbb474c8af1c251a1a189f86
+- name: github.com/goph/stdlib
+  version: 71b7a6837095932e17a2a28264fd71d3a56083a1
+  subpackages:
+  - errors
+  - ext
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/matttproud/golang_protobuf_extensions
@@ -52,13 +55,13 @@ imports:
   subpackages:
   - go
 - name: github.com/prometheus/common
-  version: 0d0c3d572886e0f2323ed376557f9eb99b97d25b
+  version: 0866df4b85a18d652b6965be022d007cdf076822
   subpackages:
   - expfmt
   - internal/bitbucket.org/ww/goautoneg
   - model
 - name: github.com/prometheus/procfs
-  version: a3bfc74126ea9e45ee5d5c6f7fc86191b7d488fb
+  version: 822d4a1f8edcbcbc71e8d1fd6527b12331a6d0ad
   subpackages:
   - xfs
 - name: github.com/sirupsen/logrus
@@ -68,7 +71,7 @@ imports:
   subpackages:
   - msgp
 - name: golang.org/x/net
-  version: 973f3f3bbd50e92b13faa6c53ec16f49b45e851c
+  version: 057a25b06247e0c51ba15d8ae475feb2fcb72164
   subpackages:
   - context
   - internal/timeseries

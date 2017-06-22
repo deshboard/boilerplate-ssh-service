@@ -1,26 +1,31 @@
 package main
 
 import (
+	"io"
+
 	"github.com/fluent/fluent-logger-golang/fluent"
+	"github.com/goph/log"
+	_logrus "github.com/goph/log/logrus"
 	_fluent "github.com/goph/log/logrus/hooks/fluent"
+	"github.com/goph/stdlib/ext"
 	"github.com/sirupsen/logrus"
 )
 
-func init() {
+func newLogger(config *Configuration) (log.LevelLogger, io.Writer, ext.Closer) {
 	logrusLogger := logrus.New()
-
-	// Register shutdown handler in logrus
-	logrus.RegisterExitHandler(shutdownManager.Shutdown)
+	closers := ext.Closers{}
 
 	// Log debug level messages if debug mode is turned on
 	if config.Debug {
 		logrusLogger.Level = logrus.DebugLevel
 	}
 
-	logger.Logger = logrusLogger.WithField("service", ServiceName)
+	logger := &_logrus.Logger{
+		Logger: logrusLogger.WithField("service", ServiceName),
+	}
 
-	logWriter = logger.Logger.(*logrus.Entry).WriterLevel(logrus.ErrorLevel)
-	shutdownManager.Register(logWriter.Close)
+	logWriter := logger.Logger.(*logrus.Entry).WriterLevel(logrus.ErrorLevel)
+	closers = append(closers, logWriter)
 
 	// Initialize Fluentd
 	if config.FluentEnabled {
@@ -36,6 +41,8 @@ func init() {
 		}
 
 		logrusLogger.Hooks.Add(fluentHook)
-		shutdownManager.Register(fluentHook.Fluent.Close)
+		closers = append(closers, fluentHook.Fluent)
 	}
+
+	return logger, logWriter, closers
 }

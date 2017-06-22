@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"flag"
+	"time"
+)
 
 // Configuration holds any kind of config that is necessary for running
 type Configuration struct {
@@ -21,4 +24,23 @@ type Configuration struct {
 	FluentEnabled bool   `split_words:"true"`
 	FluentHost    string `split_words:"true"`
 	FluentPort    int    `split_words:"true" default:"24224"`
+}
+
+func newConfigWithFlags(flags *flag.FlagSet) *Configuration {
+	config := &Configuration{}
+
+	defaultAddr := ""
+
+	// Listen on loopback interface in development mode
+	if config.Environment == "development" {
+		defaultAddr = "127.0.0.1"
+	}
+
+	// Load flags into configuration
+	flags.StringVar(&config.ServiceAddr, "service", defaultAddr+":80", "Service address.")
+	flags.StringVar(&config.HealthAddr, "health", defaultAddr+":10000", "Health service address.")
+	flags.StringVar(&config.DebugAddr, "debug", defaultAddr+":10001", "Debug service address.")
+	flags.DurationVar(&config.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
+
+	return config
 }

@@ -4,10 +4,13 @@ import (
 	"github.com/airbrake/gobrake"
 	"github.com/goph/emperror"
 	"github.com/goph/emperror/airbrake"
+	"github.com/goph/log"
+	"github.com/goph/stdlib/ext"
 )
 
-func init() {
+func newErrorHandler(config *Configuration, logger log.LevelLogger) (emperror.Handler, ext.Closer) {
 	var handlers []emperror.Handler
+	closers := ext.Closers{}
 
 	// Initialize Airbrake
 	if config.AirbrakeEnabled {
@@ -26,7 +29,7 @@ func init() {
 			return notice
 		})
 
-		shutdownManager.Register(notifier.Close)
+		closers = append(closers, notifier)
 
 		handlers = append(
 			handlers,
@@ -39,5 +42,7 @@ func init() {
 
 	handlers = append(handlers, emperror.NewLogHandler(logger))
 
-	errorHandler = emperror.NewCompositeHandler(handlers...)
+	errorHandler := emperror.NewCompositeHandler(handlers...)
+
+	return errorHandler, closers
 }
