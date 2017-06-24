@@ -26,17 +26,17 @@ type Configuration struct {
 	FluentPort    int    `split_words:"true" default:"24224"`
 }
 
-func configureFlags(config *Configuration, flags *flag.FlagSet) {
+func (c *Configuration) flags(flags *flag.FlagSet) {
 	defaultAddr := ""
 
 	// Listen on loopback interface in development mode.
-	if config.Environment == "development" {
+	if c.Environment == "development" {
 		defaultAddr = "127.0.0.1"
 	}
 
 	// Load flags into configuration.
-	flags.StringVar(&config.ServiceAddr, "service", defaultAddr+":80", "Service address.")
-	flags.StringVar(&config.HealthAddr, "health", defaultAddr+":10000", "Health service address.")
-	flags.StringVar(&config.DebugAddr, "debug", defaultAddr+":10001", "Debug service address.")
-	flags.DurationVar(&config.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
+	flags.StringVar(&c.ServiceAddr, "service", defaultAddr+":80", "Service address.")
+	flags.StringVar(&c.HealthAddr, "health", defaultAddr+":10000", "Health service address.")
+	flags.StringVar(&c.DebugAddr, "debug", defaultAddr+":10001", "Debug service address.")
+	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
 }

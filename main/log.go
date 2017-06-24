@@ -1,31 +1,38 @@
 package main
 
 import (
-	"io"
-
 	"github.com/fluent/fluent-logger-golang/fluent"
-	"github.com/goph/log"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	_logrus "github.com/goph/log/logrus"
 	_fluent "github.com/goph/logrus-hooks/fluent"
 	"github.com/goph/stdlib/ext"
 	"github.com/sirupsen/logrus"
 )
 
-func newLogger(config *Configuration) (log.Logger, io.Writer, ext.Closer) {
-	logrusLogger := logrus.New()
+// newLogger creates a new logger instance.
+func newLogger(config *Configuration) (log.Logger, ext.Closer) {
+	logrusLogger, closers := newLogrus(config)
+	var logger log.Logger = &_logrus.Logger{Logger: logrusLogger}
+
+	// Default to Info level.
+	logger = level.NewInjector(logger, level.InfoValue())
+
+	// Only log debug level messages if debug mode is turned on.
+	if config.Debug == false {
+		logger = level.NewFilter(logger, level.AllowInfo())
+	}
+
+	logger = log.WithPrefix(logger, "service", ServiceName)
+
+	return logger, closers
+}
+
+// newLogrus creates a new logrus logger.
+func newLogrus(config *Configuration) (*logrus.Logger, ext.Closers) {
+	logger := logrus.New()
+	logger.Level = logrus.DebugLevel
 	closers := ext.Closers{}
-
-	// Log debug level messages if debug mode is turned on
-	if config.Debug {
-		logrusLogger.Level = logrus.DebugLevel
-	}
-
-	logger := &_logrus.Logger{
-		Logger: logrusLogger.WithField("service", ServiceName),
-	}
-
-	logWriter := logger.Logger.(*logrus.Entry).WriterLevel(logrus.ErrorLevel)
-	closers = append(closers, logWriter)
 
 	// Initialize Fluentd
 	if config.FluentEnabled {
@@ -40,9 +47,9 @@ func newLogger(config *Configuration) (log.Logger, io.Writer, ext.Closer) {
 			Tag:    LogTag,
 		}
 
-		logrusLogger.Hooks.Add(fluentHook)
+		logger.Hooks.Add(fluentHook)
 		closers = append(closers, fluentHook.Fluent)
 	}
 
-	return logger, logWriter, closers
+	return logger, closers
 }

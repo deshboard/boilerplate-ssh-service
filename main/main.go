@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
@@ -25,11 +26,11 @@ func main() {
 
 	// Load configuration from flags.
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	configureFlags(config, flags)
+	config.flags(flags)
 	flags.Parse(os.Args[1:])
 
 	// Create a new logger.
-	logger, logWriter, closer := newLogger(config)
+	logger, closer := newLogger(config)
 	defer closer.Close()
 
 	// Create a new error handler.
@@ -47,8 +48,7 @@ func main() {
 	healthCollector := healthz.Collector{}
 	signalChan := make(chan os.Signal, 1)
 
-	logger.Log(
-		"level", "info",
+	level.Info(logger).Log(
 		"msg", fmt.Sprintf("Starting %s", FriendlyServiceName),
 		"version", Version,
 		"commitHash", CommitHash,
@@ -57,19 +57,19 @@ func main() {
 	)
 
 	if config.Debug {
-		debugServer := newDebugServer(logWriter)
+		debugServer := newDebugServer(logger)
 		serverQueue.Append(debugServer, config.DebugAddr)
 		defer debugServer.Close()
 	}
 
-	server := bootstrap(config, logWriter, healthCollector)
+	server := newServer(config, logger, healthCollector)
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer server.Close()
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
-	healthServer := newHealthServer(logWriter, healthCollector)
+	healthServer := newHealthServer(logger, healthCollector)
 	serverQueue.Prepend(healthServer, config.HealthAddr)
 	defer healthServer.Close()
 
@@ -82,23 +82,16 @@ MainLoop:
 		select {
 		case err := <-errChan:
 			status.SetStatus(healthz.Unhealthy)
-			logger.Log(
-				"level", "debug",
-				"msg", "Error received from error channel",
-			)
+			level.Debug(logger).Log("msg", "Error received from error channel")
 			emperror.HandleIfErr(errorHandler, err)
 
 			// Break the loop, proceed with regular shutdown
 			break MainLoop
 		case s := <-signalChan:
-			logger.Log(
-				"level", "info",
-				"msg", fmt.Sprintf("Captured %v", s),
-			)
+			level.Info(logger).Log("msg", fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
 
-			logger.Log(
-				"level", "debug",
+			level.Debug(logger).Log(
 				"msg", "Shutting down with timeout",
 				"timeout", config.ShutdownTimeout,
 			)

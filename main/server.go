@@ -1,17 +1,19 @@
 package main
 
 import (
-	"io"
-	"log"
+	stdlog "log"
 	"net/http"
 	"time"
 
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
 	opentracing "github.com/opentracing/opentracing-go"
 )
 
-func bootstrap(config *Configuration, logWriter io.Writer, checkerCollector healthz.Collector) serverz.Server {
+// newServer creates the main server instance for the service.
+func newServer(config *Configuration, logger log.Logger, checkerCollector healthz.Collector) serverz.Server {
 	serviceChecker := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	checkerCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 	_ = opentracing.GlobalTracer()
@@ -25,7 +27,7 @@ func bootstrap(config *Configuration, logWriter io.Writer, checkerCollector heal
 	return &serverz.NamedServer{
 		Server: &http.Server{
 			Handler:  mux,
-			ErrorLog: log.New(logWriter, "http: ", 0),
+			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(logger)), "http: ", 0),
 		},
 		Name: "http",
 	}

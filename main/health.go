@@ -1,16 +1,17 @@
 package main
 
 import (
-	"io"
-	"log"
+	stdlog "log"
 	"net/http"
 
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func newHealthServer(logWriter io.Writer, checkerCollector healthz.Collector) serverz.Server {
+func newHealthServer(logger log.Logger, checkerCollector healthz.Collector) serverz.Server {
 	healthHandler := http.NewServeMux()
 
 	healthHandler.Handle("/healthz", checkerCollector.Handler(healthz.LivenessCheck))
@@ -20,7 +21,7 @@ func newHealthServer(logWriter io.Writer, checkerCollector healthz.Collector) se
 	return &serverz.NamedServer{
 		Server: &http.Server{
 			Handler:  healthHandler,
-			ErrorLog: log.New(logWriter, "health: ", 0),
+			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(logger)), "health: ", 0),
 		},
 		Name: "health",
 	}

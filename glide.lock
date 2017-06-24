@@ -1,5 +1,5 @@
-hash: 2c5127e8b7e3f1d23210780fa54a02bc741ce4bba2a70f6fc8f6413e3a82d45d
-updated: 2017-06-24T07:26:46.981923783+02:00
+hash: baaeb0d6328eed668b0e5add6c211126cb4f99295c132545c3aa044dc4b4c26d
+updated: 2017-06-24T21:48:12.788279682+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 3e9a4999b0371bf26c63fda81cc849383919b3da
@@ -11,6 +11,15 @@ imports:
   version: 28bdb662295c1b7aca09c1a4edbf9430010775a9
   subpackages:
   - fluent
+- name: github.com/go-kit/kit
+  version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
+  subpackages:
+  - log
+  - log/level
+- name: github.com/go-logfmt/logfmt
+  version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
+- name: github.com/go-stack/stack
+  version: 7a2f19628aabfe68f0766b59e74d6315f8347d22
 - name: github.com/golang/protobuf
   version: 6a1fa9404c0aebf36c879bc50152edcc953910d2
   subpackages:
@@ -22,7 +31,7 @@ imports:
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/log
-  version: 1215dff062e81ad04803d57665e2568c7b63a50c
+  version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
   subpackages:
   - logrus
 - name: github.com/goph/logrus-hooks
@@ -38,6 +47,8 @@ imports:
   - ext
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
+- name: github.com/kr/logfmt
+  version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
 - name: github.com/matttproud/golang_protobuf_extensions
   version: c12348ce28de40eed0136aa2b644d0ee0650e56c
   subpackages:
