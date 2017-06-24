@@ -1,23 +1,41 @@
-hash: 97626bb9f451f33bcb90e06c440126e8dde68b1a9ccf8a088394bb0c62e5aa0c
-updated: 2017-05-31T00:38:51.132027+02:00
+hash: 2c5127e8b7e3f1d23210780fa54a02bc741ce4bba2a70f6fc8f6413e3a82d45d
+updated: 2017-06-24T07:26:46.981923783+02:00
 imports:
 - name: github.com/airbrake/gobrake
-  version: 668876711219e8b0206e2994bf0a59d889c775aa
+  version: 3e9a4999b0371bf26c63fda81cc849383919b3da
 - name: github.com/beorn7/perks
   version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
   subpackages:
   - quantile
-- name: github.com/evalphobia/logrus_fluent
-  version: 86bb83d119886b935a52194cad48fd01815b0125
 - name: github.com/fluent/fluent-logger-golang
   version: 28bdb662295c1b7aca09c1a4edbf9430010775a9
   subpackages:
   - fluent
 - name: github.com/golang/protobuf
-  version: 69b215d01a5606c843240eab4937eab3acee6530
+  version: 6a1fa9404c0aebf36c879bc50152edcc953910d2
   subpackages:
   - proto
-  - ptypes/any
+- name: github.com/goph/emperror
+  version: c6b285b0497b09cc78d555f89eefc8815f2d4c45
+  subpackages:
+  - airbrake
+- name: github.com/goph/healthz
+  version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
+- name: github.com/goph/log
+  version: 1215dff062e81ad04803d57665e2568c7b63a50c
+  subpackages:
+  - logrus
+- name: github.com/goph/logrus-hooks
+  version: 29f7a2c5e91120e78a2be74cd13d907d8f2b48d2
+  subpackages:
+  - fluent
+- name: github.com/goph/serverz
+  version: 1635119aa741772984dd8884b8e19a5b9532ca2a
+- name: github.com/goph/stdlib
+  version: 71b7a6837095932e17a2a28264fd71d3a56083a1
+  subpackages:
+  - errors
+  - ext
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/matttproud/golang_protobuf_extensions
@@ -29,7 +47,7 @@ imports:
   subpackages:
   - log
 - name: github.com/philhofer/fwd
-  version: 98c11a7a6ec829d672b03833c3d69a7fae1ca972
+  version: 1612a298117663d7bc9a760ae20d383413859798
 - name: github.com/prometheus/client_golang
   version: c5b7fccd204277076155f10851dad72b76a49317
   subpackages:
@@ -40,75 +58,31 @@ imports:
   subpackages:
   - go
 - name: github.com/prometheus/common
-  version: 13ba4ddd0caa9c28ca7b7bffe1dfa9ed8d5ef207
+  version: 0866df4b85a18d652b6965be022d007cdf076822
   subpackages:
   - expfmt
   - internal/bitbucket.org/ww/goautoneg
   - model
 - name: github.com/prometheus/procfs
-  version: 65c1f6f8f0fc1e2185eb9863a3bc751496404259
+  version: 822d4a1f8edcbcbc71e8d1fd6527b12331a6d0ad
   subpackages:
   - xfs
-- name: github.com/sagikazarmark/healthz
-  version: 56a37e11d56a482c469e454fdaba6041916e3650
-- name: github.com/sagikazarmark/serverz
-  version: 59a44e00a01fbec7f080dc8d0e13366100439f32
-- name: github.com/sagikazarmark/utilz
-  version: 616992984d7477c8fcf31bea6a64b296f26e82ce
-  subpackages:
-  - errors
-  - util
-- name: github.com/Sirupsen/logrus
-  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+- name: github.com/sirupsen/logrus
+  version: 202f25545ea4cf9b191ff7f846df5d87c9382c2b
 - name: github.com/tinylib/msgp
-  version: 362bfb3384d53ae4d5dd745983a4d70b6d23628c
+  version: 02d047e07459c5a7b02b1244161d0f2f6d8f660d
   subpackages:
   - msgp
 - name: golang.org/x/net
-  version: feeb485667d1fdabe727840fe00adc22431bc86e
+  version: 5f8847ae0d0e90b6a9dc8148e7ad616874625171
   subpackages:
   - context
-  - http2
-  - http2/hpack
-  - idna
   - internal/timeseries
-  - lex/httplex
   - trace
 - name: golang.org/x/sys
-  version: e24f485414aeafb646f6fca458b0bf869c0880a1
+  version: fb4cac33e3196ff7f507ab9b2d2a44b0142f5b5a
   subpackages:
   - unix
-- name: golang.org/x/text
-  version: f28f36722d5ef2f9655ad3de1f248e3e52ad5ebd
-  subpackages:
-  - secure/bidirule
-  - transform
-  - unicode/bidi
-  - unicode/norm
-- name: google.golang.org/genproto
-  version: de9f5e90fe9b278809363f08c2072d2f2a429de7
-  subpackages:
-  - googleapis/rpc/status
-- name: google.golang.org/grpc
-  version: d2e1b51f33ff8c5e4a15560ff049d200e83726c5
-  subpackages:
-  - codes
-  - credentials
-  - grpclb/grpc_lb_v1
-  - grpclog
-  - internal
-  - keepalive
-  - metadata
-  - naming
-  - peer
-  - stats
-  - status
-  - tap
-  - transport
-- name: gopkg.in/airbrake/gobrake.v2
-  version: 668876711219e8b0206e2994bf0a59d889c775aa
-- name: gopkg.in/gemnasium/logrus-airbrake-hook.v2
-  version: bfee1239d796830ca346767650cce5ba90d58c57
 testImports:
 - name: github.com/DATA-DOG/godog
   version: 92fbee719c9593813b24a6ef042bcad40324ede4
