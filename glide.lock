@@ -1,5 +1,5 @@
-hash: db4356fac1195328e58f1204d8f8eaebf7af0e599ce0f6e525ec8c5b13c36b0e
-updated: 2017-06-24T07:04:24.088376167+02:00
+hash: 2c5127e8b7e3f1d23210780fa54a02bc741ce4bba2a70f6fc8f6413e3a82d45d
+updated: 2017-06-24T07:26:46.981923783+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 3e9a4999b0371bf26c63fda81cc849383919b3da
@@ -16,7 +16,7 @@ imports:
   subpackages:
   - proto
 - name: github.com/goph/emperror
-  version: da90b8381d64c36e1da7ae3bed39ac297329be11
+  version: c6b285b0497b09cc78d555f89eefc8815f2d4c45
   subpackages:
   - airbrake
 - name: github.com/goph/healthz
