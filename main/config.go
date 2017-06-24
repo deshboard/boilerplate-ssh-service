@@ -26,6 +26,9 @@ type configuration struct {
 	FluentPort    int    `split_words:"true" default:"24224"`
 }
 
+// flags configures a flagset
+//
+// Note: the current behaviour relies on the fact that at this point environment variables are already loaded.
 func (c *configuration) flags(flags *flag.FlagSet) {
 	defaultAddr := ""
 
