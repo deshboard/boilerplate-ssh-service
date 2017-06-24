@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 
 	"github.com/goph/emperror"
@@ -16,41 +15,46 @@ import (
 )
 
 func main() {
-	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	config := newConfigWithFlags(flags)
+	config := &Configuration{}
 
-	// Load configuration from environment
+	// Load configuration from environment.
 	err := envconfig.Process("", config)
 	if err != nil {
 		panic(err)
 	}
 
-	// Load configuration from flags
+	// Load configuration from flags.
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	configureFlags(config, flags)
 	flags.Parse(os.Args[1:])
 
+	// Create a new logger.
 	logger, logWriter, closer := newLogger(config)
 	defer closer.Close()
 
+	// Create a new error handler.
 	errorHandler, closer := newErrorHandler(config, logger)
 	defer closer.Close()
+
+	// Register error handler to recover from panics.
 	defer emperror.HandleRecover(errorHandler)
 
-	logger.Info(
-		fmt.Sprintf("Starting %s", FriendlyServiceName),
-		map[string]interface{}{
-			"version":     Version,
-			"commitHash":  CommitHash,
-			"buildDate":   BuildDate,
-			"environment": config.Environment,
+	serverQueue := serverz.NewQueue(
+		&serverz.Manager{
+			Logger: logger,
 		},
 	)
-
-	serverManager := &serverz.Manager{
-		Logger:       logger,
-		ErrorHandler: errorHandler,
-	}
-	serverQueue := serverz.NewQueue(serverManager)
+	healthCollector := healthz.Collector{}
 	signalChan := make(chan os.Signal, 1)
+
+	logger.Log(
+		"level", "info",
+		"msg", fmt.Sprintf("Starting %s", FriendlyServiceName),
+		"version", Version,
+		"commitHash", CommitHash,
+		"buildDate", BuildDate,
+		"environment", config.Environment,
+	)
 
 	if config.Debug {
 		debugServer := newDebugServer(logWriter)
@@ -58,16 +62,14 @@ func main() {
 		defer debugServer.Close()
 	}
 
-	checkerCollector := healthz.Collector{}
-
-	server := bootstrap(config, logWriter, checkerCollector)
+	server := bootstrap(config, logWriter, healthCollector)
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer server.Close()
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	checkerCollector.RegisterChecker(healthz.ReadinessCheck, status)
+	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
-	healthServer := newHealthServer(logWriter, checkerCollector)
+	healthServer := newHealthServer(logWriter, healthCollector)
 	serverQueue.Prepend(healthServer, config.HealthAddr)
 	defer healthServer.Close()
 
@@ -80,23 +82,33 @@ MainLoop:
 		select {
 		case err := <-errChan:
 			status.SetStatus(healthz.Unhealthy)
-			logger.Debug("Error received from error channel")
+			logger.Log(
+				"level", "debug",
+				"msg", "Error received from error channel",
+			)
 			emperror.HandleIfErr(errorHandler, err)
 
 			// Break the loop, proceed with regular shutdown
 			break MainLoop
 		case s := <-signalChan:
-			logger.Info(fmt.Sprintf("Captured %v", s))
+			logger.Log(
+				"level", "info",
+				"msg", fmt.Sprintf("Captured %v", s),
+			)
 			status.SetStatus(healthz.Unhealthy)
 
-			logger.Debug("Shutting down with timeout", map[string]interface{}{"timeout": config.ShutdownTimeout})
+			logger.Log(
+				"level", "debug",
+				"msg", "Shutting down with timeout",
+				"timeout", config.ShutdownTimeout,
+			)
 
 			ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
-			wg := &sync.WaitGroup{}
 
-			serverQueue.Stop(ctx)
-
-			wg.Wait()
+			err := serverQueue.Stop(ctx)
+			if err != nil {
+				errorHandler.Handle(err)
+			}
 
 			// Cancel context if shutdown completed earlier
 			cancel()

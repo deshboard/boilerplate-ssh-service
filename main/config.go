@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Configuration holds any kind of config that is necessary for running
+// Configuration holds any kind of config that is necessary for running.
 type Configuration struct {
 	// Recommended values are: production, development, staging, release/123, etc
 	Environment string `default:"production"`
@@ -26,21 +26,17 @@ type Configuration struct {
 	FluentPort    int    `split_words:"true" default:"24224"`
 }
 
-func newConfigWithFlags(flags *flag.FlagSet) *Configuration {
-	config := &Configuration{}
-
+func configureFlags(config *Configuration, flags *flag.FlagSet) {
 	defaultAddr := ""
 
-	// Listen on loopback interface in development mode
+	// Listen on loopback interface in development mode.
 	if config.Environment == "development" {
 		defaultAddr = "127.0.0.1"
 	}
 
-	// Load flags into configuration
+	// Load flags into configuration.
 	flags.StringVar(&config.ServiceAddr, "service", defaultAddr+":80", "Service address.")
 	flags.StringVar(&config.HealthAddr, "health", defaultAddr+":10000", "Health service address.")
 	flags.StringVar(&config.DebugAddr, "debug", defaultAddr+":10001", "Debug service address.")
 	flags.DurationVar(&config.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
-
-	return config
 }

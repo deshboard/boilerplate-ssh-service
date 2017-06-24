@@ -8,7 +8,7 @@ import (
 	"github.com/goph/stdlib/ext"
 )
 
-func newErrorHandler(config *Configuration, logger log.LevelLogger) (emperror.Handler, ext.Closer) {
+func newErrorHandler(config *Configuration, logger log.Logger) (emperror.Handler, ext.Closer) {
 	var handlers []emperror.Handler
 	closers := ext.Closers{}
 

@@ -1,5 +1,5 @@
-hash: 3f863a94933f8ca189c73e35b2edd7e3038af2573943d8519542b6e83d37baf9
-updated: 2017-06-23T01:04:36.173988525+02:00
+hash: db4356fac1195328e58f1204d8f8eaebf7af0e599ce0f6e525ec8c5b13c36b0e
+updated: 2017-06-24T07:04:24.088376167+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 3e9a4999b0371bf26c63fda81cc849383919b3da
@@ -16,18 +16,21 @@ imports:
   subpackages:
   - proto
 - name: github.com/goph/emperror
-  version: 13dfdf50f95fa8839424b75198b8a95d7f4d60e9
+  version: da90b8381d64c36e1da7ae3bed39ac297329be11
   subpackages:
   - airbrake
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/log
-  version: 1b969ab1abaaa3abca24d3fae37395b15bbf8be5
+  version: 1215dff062e81ad04803d57665e2568c7b63a50c
   subpackages:
   - logrus
-  - logrus/hooks/fluent
+- name: github.com/goph/logrus-hooks
+  version: 29f7a2c5e91120e78a2be74cd13d907d8f2b48d2
+  subpackages:
+  - fluent
 - name: github.com/goph/serverz
-  version: 3c459b6f542fd43aa376e3d47029992e469f2ceb
+  version: 1635119aa741772984dd8884b8e19a5b9532ca2a
 - name: github.com/goph/stdlib
   version: 71b7a6837095932e17a2a28264fd71d3a56083a1
   subpackages:
@@ -71,7 +74,7 @@ imports:
   subpackages:
   - msgp
 - name: golang.org/x/net
-  version: 057a25b06247e0c51ba15d8ae475feb2fcb72164
+  version: 5f8847ae0d0e90b6a9dc8148e7ad616874625171
   subpackages:
   - context
   - internal/timeseries

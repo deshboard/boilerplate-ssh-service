@@ -6,12 +6,12 @@ import (
 	"github.com/fluent/fluent-logger-golang/fluent"
 	"github.com/goph/log"
 	_logrus "github.com/goph/log/logrus"
-	_fluent "github.com/goph/log/logrus/hooks/fluent"
+	_fluent "github.com/goph/logrus-hooks/fluent"
 	"github.com/goph/stdlib/ext"
 	"github.com/sirupsen/logrus"
 )
 
-func newLogger(config *Configuration) (log.LevelLogger, io.Writer, ext.Closer) {
+func newLogger(config *Configuration) (log.Logger, io.Writer, ext.Closer) {
 	logrusLogger := logrus.New()
 	closers := ext.Closers{}
 
