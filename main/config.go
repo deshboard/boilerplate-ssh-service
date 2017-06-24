@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// Configuration holds any kind of config that is necessary for running
-type Configuration struct {
+// configuration holds any kind of config that is necessary for running
+type configuration struct {
 	// Recommended values are: production, development, staging, release/123, etc
 	Environment string `default:"production"`
 	Debug       bool   `split_words:"true"`
@@ -26,7 +26,7 @@ type Configuration struct {
 	FluentPort    int    `split_words:"true" default:"24224"`
 }
 
-func (c *Configuration) flags(flags *flag.FlagSet) {
+func (c *configuration) flags(flags *flag.FlagSet) {
 	defaultAddr := ""
 
 	// Listen on loopback interface in development mode

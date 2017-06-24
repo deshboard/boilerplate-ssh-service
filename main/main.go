@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	config := &Configuration{}
+	config := &configuration{}
 
 	// Load configuration from environment
 	err := envconfig.Process("", config)
@@ -40,8 +40,9 @@ func main() {
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(errorHandler)
 
-	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
 	healthCollector := healthz.Collector{}
+	tracer := newTracer(config)
+	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
 	signalChan := make(chan os.Signal, 1)
 
 	level.Info(logger).Log(
@@ -58,8 +59,9 @@ func main() {
 		defer debugServer.Close()
 	}
 
-	server := newServer(config, logger, healthCollector)
+	server, closer := newServer(config, logger, tracer, healthCollector)
 	serverQueue.Prepend(server, config.ServiceAddr)
+	defer closer.Close()
 	defer server.Close()
 
 	healthServer, status := newHealthServer(logger, healthCollector)

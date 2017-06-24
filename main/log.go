@@ -11,7 +11,7 @@ import (
 )
 
 // newLogger creates a new logger instance
-func newLogger(config *Configuration) (log.Logger, ext.Closer) {
+func newLogger(config *configuration) (log.Logger, ext.Closer) {
 	logrusLogger, closers := newLogrus(config)
 	var logger log.Logger = &_logrus.Logger{Logger: logrusLogger}
 
@@ -29,7 +29,7 @@ func newLogger(config *Configuration) (log.Logger, ext.Closer) {
 }
 
 // newLogrus creates a new logrus logger
-func newLogrus(config *Configuration) (*logrus.Logger, ext.Closers) {
+func newLogrus(config *configuration) (*logrus.Logger, ext.Closers) {
 	logger := logrus.New()
 	logger.Level = logrus.DebugLevel
 	closers := ext.Closers{}

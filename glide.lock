@@ -1,5 +1,5 @@
-hash: baaeb0d6328eed668b0e5add6c211126cb4f99295c132545c3aa044dc4b4c26d
-updated: 2017-06-24T21:48:12.788279682+02:00
+hash: 7742b1351e14e028446e9c8166a85f5bf684f70e03c2e77ffcd6f7eae079e4c3
+updated: 2017-06-24T23:51:30.864455199+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 3e9a4999b0371bf26c63fda81cc849383919b3da
@@ -41,7 +41,7 @@ imports:
 - name: github.com/goph/serverz
   version: 1635119aa741772984dd8884b8e19a5b9532ca2a
 - name: github.com/goph/stdlib
-  version: 71b7a6837095932e17a2a28264fd71d3a56083a1
+  version: fbfe82e22f9b889be712b0d1428050181323f0d1
   subpackages:
   - errors
   - ext
