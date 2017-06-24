@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Configuration holds any kind of config that is necessary for running.
+// Configuration holds any kind of config that is necessary for running
 type Configuration struct {
 	// Recommended values are: production, development, staging, release/123, etc
 	Environment string `default:"production"`
@@ -29,12 +29,12 @@ type Configuration struct {
 func (c *Configuration) flags(flags *flag.FlagSet) {
 	defaultAddr := ""
 
-	// Listen on loopback interface in development mode.
+	// Listen on loopback interface in development mode
 	if c.Environment == "development" {
 		defaultAddr = "127.0.0.1"
 	}
 
-	// Load flags into configuration.
+	// Load flags into configuration
 	flags.StringVar(&c.ServiceAddr, "service", defaultAddr+":80", "Service address.")
 	flags.StringVar(&c.HealthAddr, "health", defaultAddr+":10000", "Health service address.")
 	flags.StringVar(&c.DebugAddr, "debug", defaultAddr+":10001", "Debug service address.")

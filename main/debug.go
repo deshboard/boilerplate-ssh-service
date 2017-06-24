@@ -13,13 +13,13 @@ import (
 )
 
 func init() {
-	// This is probably OK as the service runs in Docker.
+	// This is probably OK as the service runs in Docker
 	trace.AuthRequest = func(req *http.Request) (any, sensitive bool) {
 		return true, true
 	}
 }
 
-// newDebugServer creates a debug server.
+// newDebugServer creates a debug server
 func newDebugServer(logger log.Logger) serverz.Server {
 	return &serverz.NamedServer{
 		Server: &http.Server{

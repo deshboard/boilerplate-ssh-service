@@ -10,15 +10,15 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// newLogger creates a new logger instance.
+// newLogger creates a new logger instance
 func newLogger(config *Configuration) (log.Logger, ext.Closer) {
 	logrusLogger, closers := newLogrus(config)
 	var logger log.Logger = &_logrus.Logger{Logger: logrusLogger}
 
-	// Default to Info level.
+	// Default to Info level
 	logger = level.NewInjector(logger, level.InfoValue())
 
-	// Only log debug level messages if debug mode is turned on.
+	// Only log debug level messages if debug mode is turned on
 	if config.Debug == false {
 		logger = level.NewFilter(logger, level.AllowInfo())
 	}
@@ -28,7 +28,7 @@ func newLogger(config *Configuration) (log.Logger, ext.Closer) {
 	return logger, closers
 }
 
-// newLogrus creates a new logrus logger.
+// newLogrus creates a new logrus logger
 func newLogrus(config *Configuration) (*logrus.Logger, ext.Closers) {
 	logger := logrus.New()
 	logger.Level = logrus.DebugLevel

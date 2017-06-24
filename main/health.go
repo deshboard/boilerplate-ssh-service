@@ -11,11 +11,15 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func newHealthServer(logger log.Logger, checkerCollector healthz.Collector) serverz.Server {
+// newHealthServer creates a new health server and a status checker
+func newHealthServer(logger log.Logger, healthCollector healthz.Collector) (serverz.Server, *healthz.StatusChecker) {
+	status := healthz.NewStatusChecker(healthz.Healthy)
+	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
+
 	healthHandler := http.NewServeMux()
 
-	healthHandler.Handle("/healthz", checkerCollector.Handler(healthz.LivenessCheck))
-	healthHandler.Handle("/readiness", checkerCollector.Handler(healthz.ReadinessCheck))
+	healthHandler.Handle("/healthz", healthCollector.Handler(healthz.LivenessCheck))
+	healthHandler.Handle("/readiness", healthCollector.Handler(healthz.ReadinessCheck))
 	healthHandler.Handle("/metrics", promhttp.Handler())
 
 	return &serverz.NamedServer{
@@ -24,5 +28,5 @@ func newHealthServer(logger log.Logger, checkerCollector healthz.Collector) serv
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(logger)), "health: ", 0),
 		},
 		Name: "health",
-	}
+	}, status
 }

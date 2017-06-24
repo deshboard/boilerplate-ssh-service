@@ -18,33 +18,29 @@ import (
 func main() {
 	config := &Configuration{}
 
-	// Load configuration from environment.
+	// Load configuration from environment
 	err := envconfig.Process("", config)
 	if err != nil {
 		panic(err)
 	}
 
-	// Load configuration from flags.
+	// Load configuration from flags
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	config.flags(flags)
 	flags.Parse(os.Args[1:])
 
-	// Create a new logger.
+	// Create a new logger
 	logger, closer := newLogger(config)
 	defer closer.Close()
 
-	// Create a new error handler.
+	// Create a new error handler
 	errorHandler, closer := newErrorHandler(config, logger)
 	defer closer.Close()
 
-	// Register error handler to recover from panics.
+	// Register error handler to recover from panics
 	defer emperror.HandleRecover(errorHandler)
 
-	serverQueue := serverz.NewQueue(
-		&serverz.Manager{
-			Logger: logger,
-		},
-	)
+	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
 	healthCollector := healthz.Collector{}
 	signalChan := make(chan os.Signal, 1)
 
@@ -66,10 +62,7 @@ func main() {
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer server.Close()
 
-	status := healthz.NewStatusChecker(healthz.Healthy)
-	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
-
-	healthServer := newHealthServer(logger, healthCollector)
+	healthServer, status := newHealthServer(logger, healthCollector)
 	serverQueue.Prepend(healthServer, config.HealthAddr)
 	defer healthServer.Close()
 

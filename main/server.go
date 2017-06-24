@@ -12,7 +12,7 @@ import (
 	opentracing "github.com/opentracing/opentracing-go"
 )
 
-// newServer creates the main server instance for the service.
+// newServer creates the main server instance for the service
 func newServer(config *Configuration, logger log.Logger, checkerCollector healthz.Collector) serverz.Server {
 	serviceChecker := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	checkerCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
