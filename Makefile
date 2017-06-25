@@ -25,10 +25,10 @@ install: ## Install dependencies
 	@glide install
 
 .env: ## Create local env file
-	cp .env.example .env
+	cp .env.dist .env
 
 .env.test: ## Create local env file for running tests
-	cp .env.example .env.test
+	cp .env.dist .env.test
 
 clean:: ## Clean the working area
 	rm -rf ${BUILD_DIR}/ vendor/ .env .env.test

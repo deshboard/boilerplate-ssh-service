@@ -35,12 +35,12 @@ First thing you need to do is installing the dependencies. This project uses [Gl
 $ glide install # Or make install
 ```
 
-Next you need to setup the environment configuration. You can use `.env.example` as a base, it contains the default values.
+Next you need to setup the environment configuration. You can use `.env.dist` as a base, it contains the default values.
 For testing there is a separate environment which usually can be the same as the development environment.
 
 ``` bash
-$ cp .env.example .env # or make .env
-$ cp .env.example .env.test # or make .env.test
+$ cp .env.dist .env # or make .env
+$ cp .env.dist .env.test # or make .env.test
 ```
 
 Cleaning up is as easy as deleting the files created above:
@@ -66,10 +66,10 @@ There are usually custom configurations you can make (port mappings, volumes for
 By default the project should just work OOTB without those, but if you want to access for example the database
 or want to persist it during the development, so your data is not lost between restarts, it's recommended to make those configurations.
 
-As always, sane defaults should be provided in a `docker-compose.override.yml.example` file.
+As always, sane defaults should be provided in a `docker-compose.override.yml.dist` file.
 
 ``` bash
-$ cp docker-compose.override.yml.example docker-compose.override.yml
+$ cp docker-compose.override.yml.dist docker-compose.override.yml
 ```
 
 **Note:** Although custom Docker config is optional you might need it to run integration or acceptance tests.
