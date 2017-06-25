@@ -13,19 +13,22 @@ func init() {
 	runs = append(runs, func() int {
 		format := "progress"
 		for _, arg := range os.Args[1:] {
-			if arg == "-test.v=true" { // go test transforms -v option
+			// go test transforms -v option
+			if arg == "-test.v=true" {
 				format = "pretty"
 				break
 			}
 		}
 
-		return godog.RunWithOptions("godog", func(s *godog.Suite) {
-			FeatureContext(s)
-		}, godog.Options{
-			Format:    format,
-			Paths:     []string{"features"},
-			Randomize: time.Now().UTC().UnixNano(), // randomize scenario execution order
-		})
+		return godog.RunWithOptions(
+			"godog",
+			FeatureContext,
+			godog.Options{
+				Format:    format,
+				Paths:     []string{"features"},
+				Randomize: time.Now().UTC().UnixNano(), // randomize scenario execution order
+			},
+		)
 	})
 }
 
