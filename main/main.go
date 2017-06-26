@@ -59,7 +59,7 @@ func main() {
 		defer debugServer.Close()
 	}
 
-	server, closer := newServer(config, logger, tracer, healthCollector)
+	server, closer := newServer(config, logger, errorHandler, tracer, healthCollector)
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer closer.Close()
 	defer server.Close()
