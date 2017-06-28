@@ -1,5 +1,5 @@
-hash: 7742b1351e14e028446e9c8166a85f5bf684f70e03c2e77ffcd6f7eae079e4c3
-updated: 2017-06-24T23:51:30.864455199+02:00
+hash: 61b6ef07a542a46e3bac346c96c6f31d07d211bfc5e72dbbf3d9b58fc7b98a2c
+updated: 2017-06-28T22:48:05.868181762+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 3e9a4999b0371bf26c63fda81cc849383919b3da
@@ -7,10 +7,6 @@ imports:
   version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
   subpackages:
   - quantile
-- name: github.com/fluent/fluent-logger-golang
-  version: 28bdb662295c1b7aca09c1a4edbf9430010775a9
-  subpackages:
-  - fluent
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
   subpackages:
@@ -32,14 +28,8 @@ imports:
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/log
   version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
-  subpackages:
-  - logrus
-- name: github.com/goph/logrus-hooks
-  version: 29f7a2c5e91120e78a2be74cd13d907d8f2b48d2
-  subpackages:
-  - fluent
 - name: github.com/goph/serverz
-  version: 1635119aa741772984dd8884b8e19a5b9532ca2a
+  version: e266e0deaa569bd7b2691a221d5ae1e725412004
 - name: github.com/goph/stdlib
   version: fbfe82e22f9b889be712b0d1428050181323f0d1
   subpackages:
@@ -57,8 +47,6 @@ imports:
   version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
   subpackages:
   - log
-- name: github.com/philhofer/fwd
-  version: 1612a298117663d7bc9a760ae20d383413859798
 - name: github.com/prometheus/client_golang
   version: c5b7fccd204277076155f10851dad72b76a49317
   subpackages:
@@ -78,22 +66,12 @@ imports:
   version: 822d4a1f8edcbcbc71e8d1fd6527b12331a6d0ad
   subpackages:
   - xfs
-- name: github.com/sirupsen/logrus
-  version: 202f25545ea4cf9b191ff7f846df5d87c9382c2b
-- name: github.com/tinylib/msgp
-  version: 02d047e07459c5a7b02b1244161d0f2f6d8f660d
-  subpackages:
-  - msgp
 - name: golang.org/x/net
   version: 5f8847ae0d0e90b6a9dc8148e7ad616874625171
   subpackages:
   - context
   - internal/timeseries
   - trace
-- name: golang.org/x/sys
-  version: fb4cac33e3196ff7f507ab9b2d2a44b0142f5b5a
-  subpackages:
-  - unix
 testImports:
 - name: github.com/DATA-DOG/godog
   version: 92fbee719c9593813b24a6ef042bcad40324ede4
