@@ -15,11 +15,6 @@ type configuration struct {
 	HealthAddr      string        `ignored:"true"`
 	DebugAddr       string        `ignored:"true"`
 	ShutdownTimeout time.Duration `ignored:"true"`
-
-	AirbrakeEnabled   bool   `split_words:"true"`
-	AirbrakeEndpoint  string `split_words:"true"`
-	AirbrakeProjectID int64  `envconfig:"airbrake_project_id"`
-	AirbrakeAPIKey    string `envconfig:"airbrake_api_key"`
 }
 
 // flags configures a flagset
