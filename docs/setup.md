@@ -32,7 +32,7 @@ $ make envcheck
 First thing you need to do is installing the dependencies. This project uses [Glide](http://glide.sh/) for dependency management.
 
 ``` bash
-$ glide install # Or make install
+$ glide install # or make install
 ```
 
 Next you need to setup the environment configuration. You can use `.env.dist` as a base, it contains the default values.
@@ -46,17 +46,17 @@ $ cp .env.dist .env.test # or make .env.test
 Cleaning up is as easy as deleting the files created above:
 
 ``` bash
-$ rm -rf vendor/ .env .env.test
+$ rm -rf vendor/ .env .env.test # or make clean
 ```
 
 
 ## Docker
 
-Some projects may come with a Docker environment as well in form of a [Docker Compose](https://docs.docker.com/compose/) config.
+The project comes with a Docker environment as well in form of a [Docker Compose](https://docs.docker.com/compose/) config.
 Using Docker to create a disposable development environment is optional, but it's usually easier,
 especially when the project has a lot of dependencies.
 
-Since it's optional, if the project contains a Docker setup as well you need to start it manually:
+Since it's optional, you need to start it manually:
 
 ``` bash
 $ docker-compose up -d

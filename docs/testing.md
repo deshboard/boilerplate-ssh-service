@@ -11,7 +11,7 @@ As most of the other development related tasks, test running is also included in
 $ make check
 ```
 
-Besides running tests, the above code also runs code style checks. You can fix any upcoming code style breaks by executing:
+Besides running tests, the above code also runs code style checks. You can fix any code style breaks by executing:
 
 ``` bash
 $ make csfix
@@ -52,9 +52,9 @@ The above make commands run tests for all the packages in the project.
 
 The builtin testing package provides a flexible way to write unit/integration tests, benchmarks and even so called examples which then gets built into the documentation.
 
-In order to add support for BDD style acceptance tests, this project depends on [godog](https://github.com/DATA-DOG/godog). It allows you to write user stories in Gherkin.
+In order to add support for BDD style acceptance tests, this project depends on [godog](https://github.com/DATA-DOG/godog). It allows you to write user stories using [Gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin) language.
 
-Normally you would want to run unit level tests locally in most of the cases as acceptance and integration tests can take a long time to run.
+Normally you would want to run unit level tests locally as in most of the cases as acceptance and integration tests can take a long time to run.
 But of course from time to time you have to run those as well. To separate different tests this project uses go build tags.
 
 In order to run those tests locally you need to execute the following commands:
