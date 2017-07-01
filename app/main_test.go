@@ -6,14 +6,14 @@ import (
 	"os"
 )
 
-var runs []func() int
+var runners []func() int
 
 func TestMain(m *testing.M) {
 	result := 0
 
-	runs := append(runs, m.Run)
+	runners := append(runners, m.Run)
 
-	for _, run := range runs {
+	for _, run := range runners {
 		if r := run(); r > result {
 			result = r
 		}
