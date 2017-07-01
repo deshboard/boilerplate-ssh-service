@@ -6,7 +6,7 @@ This folder contains documentation for the service. It mainly includes informati
 ## Table of Contents
 
 - [Requirements](#requirements)
-- [Framework overview](#framework-overview)
+- [Framework overview](framework.md)
 - [Setup](setup.md)
 - [Testing](testing.md)
 
@@ -29,8 +29,3 @@ These are not hard requirements of the project.
 
 
 Please make sure that you have the latest versions installed.
-
-
-## Framework overview
-
-This project does not use any third-party framework (except ones required by the application logic), but relies heavily on the standard library and separate third-party components. The integration layer for these components and the main execution logic can be found in the [main/](../main/) directory.

@@ -1,10 +1,6 @@
-hash: 28e21bce2f61302a8a0518efc8bbbe5b3e1038ae6f55ec4419bcbded4fdc70c5
-updated: 2017-07-02T00:10:14.730994142+02:00
+hash: 2834a4e3bde8a1760234e5d82214941d3f26ee659f5c9e797b5fffe435fb67d7
+updated: 2017-07-02T00:35:23.846651671+02:00
 imports:
-- name: github.com/beorn7/perks
-  version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
-  subpackages:
-  - quantile
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
   subpackages:
@@ -14,10 +10,6 @@ imports:
   version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
 - name: github.com/go-stack/stack
   version: 7a2f19628aabfe68f0766b59e74d6315f8347d22
-- name: github.com/golang/protobuf
-  version: 6a1fa9404c0aebf36c879bc50152edcc953910d2
-  subpackages:
-  - proto
 - name: github.com/goph/emperror
   version: c6b285b0497b09cc78d555f89eefc8815f2d4c45
 - name: github.com/goph/healthz
@@ -35,33 +27,12 @@ imports:
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
   version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
-- name: github.com/matttproud/golang_protobuf_extensions
-  version: c12348ce28de40eed0136aa2b644d0ee0650e56c
-  subpackages:
-  - pbutil
 - name: github.com/opentracing/opentracing-go
   version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
   subpackages:
   - log
-- name: github.com/prometheus/client_golang
-  version: c5b7fccd204277076155f10851dad72b76a49317
-  subpackages:
-  - prometheus
-  - prometheus/promhttp
-- name: github.com/prometheus/client_model
-  version: 6f3806018612930941127f2a7c6c453ba2c527d2
-  subpackages:
-  - go
-- name: github.com/prometheus/common
-  version: 0866df4b85a18d652b6965be022d007cdf076822
-  subpackages:
-  - expfmt
-  - internal/bitbucket.org/ww/goautoneg
-  - model
-- name: github.com/prometheus/procfs
-  version: 822d4a1f8edcbcbc71e8d1fd6527b12331a6d0ad
-  subpackages:
-  - xfs
+- name: github.com/uber-go/tally
+  version: 88e9c75b0cfc84139ad1bae3b7f123786cfd0770
 - name: golang.org/x/net
   version: 5f8847ae0d0e90b6a9dc8148e7ad616874625171
   subpackages:

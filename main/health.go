@@ -8,13 +8,12 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // newHealthServer creates a new health server and a status checker.
 //
 // The status checher can be used to manually mark the service unhealthy.
-func newHealthServer(logger log.Logger, healthCollector healthz.Collector) (serverz.Server, *healthz.StatusChecker) {
+func newHealthServer(logger log.Logger, healthCollector healthz.Collector, metricsReporter interface{}) (serverz.Server, *healthz.StatusChecker) {
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
@@ -22,7 +21,13 @@ func newHealthServer(logger log.Logger, healthCollector healthz.Collector) (serv
 
 	healthHandler.Handle("/healthz", healthCollector.Handler(healthz.LivenessCheck))
 	healthHandler.Handle("/readiness", healthCollector.Handler(healthz.ReadinessCheck))
-	healthHandler.Handle("/metrics", promhttp.Handler())
+
+	if mReporter, ok := metricsReporter.(interface {
+		// HTTPHandler provides a scrape handler.
+		HTTPHandler() http.Handler
+	}); ok {
+		healthHandler.Handle("/metrics", mReporter.HTTPHandler())
+	}
 
 	return &serverz.NamedServer{
 		Server: &http.Server{

@@ -42,6 +42,8 @@ func main() {
 
 	healthCollector := healthz.Collector{}
 	tracer := newTracer(config)
+	metricsReporter := newMetricsReporter(config)
+
 	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
 	signalChan := make(chan os.Signal, 1)
 
@@ -59,12 +61,12 @@ func main() {
 		defer debugServer.Close()
 	}
 
-	server, closer := newServer(config, logger, errorHandler, tracer, healthCollector)
+	server, closer := newServer(config, logger, errorHandler, tracer, healthCollector, metricsReporter)
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer closer.Close()
 	defer server.Close()
 
-	healthServer, status := newHealthServer(logger, healthCollector)
+	healthServer, status := newHealthServer(logger, healthCollector, metricsReporter)
 	serverQueue.Prepend(healthServer, config.HealthAddr)
 	defer healthServer.Close()
 
