@@ -19,7 +19,7 @@ func init() {
 	}
 }
 
-// newDebugServer creates a debug server
+// newDebugServer creates a debug server.
 func newDebugServer(logger log.Logger) serverz.Server {
 	return &serverz.NamedServer{
 		Server: &http.Server{

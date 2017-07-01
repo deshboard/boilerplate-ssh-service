@@ -11,7 +11,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// newHealthServer creates a new health server and a status checker
+// newHealthServer creates a new health server and a status checker.
+//
+// The status checher can be used to manually mark the service unhealthy.
 func newHealthServer(logger log.Logger, healthCollector healthz.Collector) (serverz.Server, *healthz.StatusChecker) {
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)

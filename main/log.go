@@ -8,7 +8,7 @@ import (
 	"github.com/goph/stdlib/ext"
 )
 
-// newLogger creates a new logger instance
+// newLogger creates a new logger instance.
 func newLogger(config *configuration) (log.Logger, ext.Closer) {
 	var logger log.Logger
 
