@@ -31,7 +31,3 @@ func init() {
 		)
 	})
 }
-
-func FeatureContext(s *godog.Suite) {
-	// Add steps here
-}
