@@ -18,6 +18,7 @@ import (
 	"github.com/goph/serverz"
 	"github.com/goph/stdlib/ext"
 	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/spf13/cobra"
 	gossh "golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -145,32 +146,33 @@ type command struct {
 
 // handler is the SSH handler function.
 func handler(s ssh.Session) {
-	prompt := fmt.Sprintf("%s@localhost:$ ", s.User())
+	prompt := fmt.Sprintf("%s@deshboard:$ ", s.User())
 	t := terminal.NewTerminal(s, prompt)
 
 	io.WriteString(s, fmt.Sprintf("Hello, %s!\n", s.User()))
 
-	commandMap := map[string]*command{
-		"adduser": &command{
-			desc: "Add a user to the database",
-			man: `
+	commandMap := map[string]*cobra.Command{
+		"adduser": &cobra.Command{
+			Use:   "adduser [options] user [group]",
+			Short: "Add a user to the database",
+			Long: `
 Lorem ipsum dolor
 `,
-			action: func(args []string) error {
+			Run: func(cmd *cobra.Command, args []string) {
 				io.WriteString(s, "Password:")
 
 				t.SetPrompt("")
 				password, err := t.ReadLine()
 				if err != nil {
 					io.WriteString(s, fmt.Sprintf("%v\n", err))
-					return nil
+					return
 				}
 				t.SetPrompt(prompt)
 
 				io.WriteString(s, fmt.Sprintf("Password: %s\n", password))
 
 				io.WriteString(s, fmt.Sprintf("User \"%s\" added\n", args[0]))
-				return nil
+				return
 			},
 		},
 	}
@@ -180,6 +182,7 @@ Lorem ipsum dolor
 
 		// Ctrl+D received
 		if err == io.EOF {
+			io.WriteString(s, "\n")
 			s.Exit(0)
 		} else if err == nil {
 			if line != "" {
@@ -195,13 +198,15 @@ Lorem ipsum dolor
 
 							continue
 						} else {
-							io.WriteString(s, fmt.Sprintf("%s\n", cmd.man))
+							cmd.SetOutput(s)
+							cmd.SetArgs([]string{args[1], "--help"})
+							cmd.Execute()
 						}
 					}
 
 				case "help":
 					for name, cmd := range commandMap {
-						io.WriteString(s, fmt.Sprintf("%s - %s\n", name, cmd.desc))
+						io.WriteString(s, fmt.Sprintf("%s - %s\n", name, cmd.Short))
 					}
 
 				default:
@@ -210,7 +215,9 @@ Lorem ipsum dolor
 
 						continue
 					} else {
-						cmd.action(args[1:])
+						cmd.SetArgs(args[1:])
+						cmd.SetOutput(s)
+						cmd.Execute()
 					}
 				}
 			}

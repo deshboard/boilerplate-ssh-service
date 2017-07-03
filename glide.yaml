@@ -23,6 +23,7 @@ import:
   version: ^1.0.1
 - package: github.com/gliderlabs/ssh
   version: bf3073636e5b2255b85a09640b2003b01ab4a070
+- package: github.com/spf13/cobra
 testImport:
 - package: github.com/DATA-DOG/godog
   version: ^0.7.2

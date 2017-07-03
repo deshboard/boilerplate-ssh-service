@@ -1,5 +1,5 @@
-hash: ebd236e8e6daa7c3ac0384d713e2391f65032c5261b38be511c119d970874868
-updated: 2017-07-03T18:25:42.486283903+02:00
+hash: 753df4c65423229075c62a567228f8d92fcf91e850db05946ca1033f8622198b
+updated: 2017-07-03T22:44:47.896269394+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -27,6 +27,8 @@ imports:
   subpackages:
   - errors
   - ext
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
@@ -35,6 +37,10 @@ imports:
   version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
   subpackages:
   - log
+- name: github.com/spf13/cobra
+  version: 8c6fa02d2225de0f9bdcb7ca912556f68d172d8c
+- name: github.com/spf13/pflag
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/uber-go/tally
   version: 88e9c75b0cfc84139ad1bae3b7f123786cfd0770
 - name: golang.org/x/crypto
@@ -44,12 +50,17 @@ imports:
   - ed25519
   - ed25519/internal/edwards25519
   - ssh
+  - ssh/terminal
 - name: golang.org/x/net
   version: 5f8847ae0d0e90b6a9dc8148e7ad616874625171
   subpackages:
   - context
   - internal/timeseries
   - trace
+- name: golang.org/x/sys
+  version: fb4cac33e3196ff7f507ab9b2d2a44b0142f5b5a
+  subpackages:
+  - unix
 testImports:
 - name: github.com/DATA-DOG/godog
   version: 70f777599da0f5de682b8848d356611c1738b695
