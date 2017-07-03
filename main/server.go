@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gliderlabs/ssh"
@@ -18,6 +19,7 @@ import (
 	"github.com/goph/stdlib/ext"
 	opentracing "github.com/opentracing/opentracing-go"
 	gossh "golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 // newServer creates the main server instance for the service.
@@ -37,10 +39,8 @@ func newServer(config *configuration, logger log.Logger, errorHandler emperror.H
 
 	return &serverz.NamedServer{
 		Server: &ssh.Server{
-			HostSigners: []ssh.Signer{signer},
-			Handler: func(s ssh.Session) {
-				io.WriteString(s, fmt.Sprintf("Hello, %s!\n", s.User()))
-			},
+			HostSigners:      []ssh.Signer{signer},
+			Handler:          handler,
 			PublicKeyHandler: publicKeyHandler(config, publicKeys, logger),
 		},
 		Name: "ssh",
@@ -132,5 +132,86 @@ func publicKeyHandler(config *configuration, keys []ssh.PublicKey, logger log.Lo
 		}
 
 		return false
+	}
+}
+
+type command struct {
+	desc   string
+	man    string
+	action func([]string) error
+}
+
+// handler is the SSH handler function.
+func handler(s ssh.Session) {
+	prompt := fmt.Sprintf("%s@localhost:$ ", s.User())
+	t := terminal.NewTerminal(s, prompt)
+
+	io.WriteString(s, fmt.Sprintf("Hello, %s!\n", s.User()))
+
+	commandMap := map[string]*command{
+		"adduser": &command{
+			desc: "Add a user to the database",
+			man: `
+Lorem ipsum dolor
+`,
+			action: func(args []string) error {
+				io.WriteString(s, "Password:")
+
+				t.SetPrompt("")
+				password, err := t.ReadLine()
+				if err != nil {
+					io.WriteString(s, fmt.Sprintf("%v\n", err))
+					return nil
+				}
+				t.SetPrompt(prompt)
+
+				io.WriteString(s, fmt.Sprintf("Password: %s\n", password))
+
+				io.WriteString(s, fmt.Sprintf("User \"%s\" added\n", args[0]))
+				return nil
+			},
+		},
+	}
+
+	for {
+		line, err := t.ReadLine()
+
+		// Ctrl+D received
+		if err == io.EOF {
+			s.Exit(0)
+		} else if err == nil {
+			if line != "" {
+				args := strings.Split(line, " ")
+
+				switch args[0] {
+				case "man":
+					if len(args) < 2 {
+						io.WriteString(s, "What manual page do you want?\n")
+					} else {
+						if cmd, ok := commandMap[args[1]]; !ok {
+							io.WriteString(s, fmt.Sprintf("No manual entry for %s\n", args[1]))
+
+							continue
+						} else {
+							io.WriteString(s, fmt.Sprintf("%s\n", cmd.man))
+						}
+					}
+
+				case "help":
+					for name, cmd := range commandMap {
+						io.WriteString(s, fmt.Sprintf("%s - %s\n", name, cmd.desc))
+					}
+
+				default:
+					if cmd, ok := commandMap[args[0]]; !ok {
+						io.WriteString(s, fmt.Sprintf("command not found: %s\n", args[0]))
+
+						continue
+					} else {
+						cmd.action(args[1:])
+					}
+				}
+			}
+		}
 	}
 }
