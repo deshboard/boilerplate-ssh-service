@@ -1,4 +1,4 @@
-package: github.com/deshboard/boilerplate-service
+package: github.com/deshboard/boilerplate-ssh-service
 import:
 - package: github.com/kelseyhightower/envconfig
   version: ^1.3.0
@@ -21,6 +21,8 @@ import:
   version: ^3.0.2
 - package: github.com/opentracing/opentracing-go
   version: ^1.0.1
+- package: github.com/gliderlabs/ssh
+  version: bf3073636e5b2255b85a09640b2003b01ab4a070
 testImport:
 - package: github.com/DATA-DOG/godog
   version: ^0.7.2
