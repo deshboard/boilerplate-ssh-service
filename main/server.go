@@ -129,6 +129,8 @@ func publicKeyHandler(config *configuration, keys []ssh.PublicKey, logger log.Lo
 					return true
 				}
 			}
+		} else {
+			// Add user authentication here
 		}
 
 		return false
