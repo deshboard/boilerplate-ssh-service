@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
@@ -68,9 +70,18 @@ func createSigner(config *configuration) (ssh.Signer, error) {
 		config.HostPrivateKey = string(privateKey)
 	}
 
-	block, _ := pem.Decode([]byte(config.HostPrivateKey))
+	var privateKey *rsa.PrivateKey
+	var err error
 
-	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	// Generate host key if none configured
+	if config.HostPrivateKey == "" {
+		privateKey, err = rsa.GenerateKey(rand.Reader, 768)
+	} else {
+		block, _ := pem.Decode([]byte(config.HostPrivateKey))
+
+		privateKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	}
+
 	if err != nil {
 		return nil, err
 	}
