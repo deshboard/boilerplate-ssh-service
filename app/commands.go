@@ -13,6 +13,7 @@ import (
 type Application struct {
 	session  ssh.Session
 	term     *terminal.Terminal
+	prompt   string
 	commands map[string]*cobra.Command
 }
 
@@ -21,6 +22,7 @@ func NewApplication(session ssh.Session, term *terminal.Terminal, prompt string)
 	app := &Application{
 		session:  session,
 		term:     term,
+		prompt:   prompt,
 		commands: make(map[string]*cobra.Command),
 	}
 
