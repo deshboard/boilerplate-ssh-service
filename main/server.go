@@ -138,12 +138,6 @@ func publicKeyHandler(config *configuration, keys []ssh.PublicKey, logger log.Lo
 	}
 }
 
-type command struct {
-	desc   string
-	man    string
-	action func([]string) error
-}
-
 // handler is the SSH handler function.
 func handler(s ssh.Session) {
 	prompt := fmt.Sprintf("%s@deshboard:$ ", s.User())
