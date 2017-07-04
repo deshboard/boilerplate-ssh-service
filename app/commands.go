@@ -25,44 +25,27 @@ func NewApplication(session ssh.Session) *Application {
 	term := terminal.NewTerminal(session, prompt)
 
 	app := &Application{
-		session:  session,
-		term:     term,
-		prompt:   prompt,
-		commands: make(map[string]*cobra.Command),
-	}
-
-	helpCmd := &helpCommand{
-		session:  session,
-		commands: app.commands,
-	}
-
-	manCmd := &manCommand{
-		session:  session,
-		commands: app.commands,
-	}
-
-	helloCmd := &helloCommand{
 		session: session,
 		term:    term,
 		prompt:  prompt,
 	}
 
-	app.commands["help"] = &cobra.Command{
-		Use:   "help",
-		Short: "Shows the list of available commands",
-		Run:   helpCmd.Run,
-	}
-
-	app.commands["man"] = &cobra.Command{
-		Use:   "man command",
-		Short: "Shows the manual for a command",
-		Run:   manCmd.Run,
-	}
-
-	app.commands["hello"] = &cobra.Command{
-		Use:   "hello",
-		Short: "Asks your name and welcomes you",
-		Run:   helloCmd.Run,
+	app.commands = map[string]*cobra.Command{
+		"help": &cobra.Command{
+			Use:   "help",
+			Short: "Shows the list of available commands",
+			Run:   (&helpCommand{app}).Run,
+		},
+		"man": &cobra.Command{
+			Use:   "man command",
+			Short: "Shows the manual for a command",
+			Run:   (&manCommand{app}).Run,
+		},
+		"hello": &cobra.Command{
+			Use:   "hello",
+			Short: "Asks your name and welcomes you",
+			Run:   (&helloCommand{app}).Run,
+		},
 	}
 
 	return app
@@ -97,44 +80,57 @@ func (a *Application) Execute(args []string) {
 	}
 }
 
+// ReadInput temporarily changes the prompt and reads a line.
+func (a *Application) ReadInput() (input string, err error) {
+	a.term.SetPrompt("")
+	input, err = a.term.ReadLine()
+	a.term.SetPrompt(a.prompt)
+	return
+}
+
 // helpCommand lists the available commands.
 type helpCommand struct {
-	session  ssh.Session
-	commands map[string]*cobra.Command
+	app *Application
 }
 
 // Run lists the available commands.
 func (c *helpCommand) Run(cmd *cobra.Command, args []string) {
 	var keys []string
-	for key := range c.commands {
+	for key := range c.app.commands {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 
 	// To perform the opertion you want
 	for _, k := range keys {
-		io.WriteString(c.session, fmt.Sprintf("%s - %s\n", k, c.commands[k].Short))
+		io.WriteString(c.app.session, fmt.Sprintf("%s - %s\n", k, c.app.commands[k].Short))
 	}
 }
 
 // manCommand shows the manual for a command.
 type manCommand struct {
-	session  ssh.Session
-	commands map[string]*cobra.Command
+	app *Application
 }
 
 // Run shows the manual for a command.
 func (c *manCommand) Run(cmd *cobra.Command, args []string) {
 	if len(args) < 1 {
-		io.WriteString(c.session, "What manual page do you want?\n")
+		io.WriteString(c.app.session, "What manual page do you want?\n")
 
 		return
 	}
 
-	if cmd, ok := c.commands[args[0]]; !ok {
-		io.WriteString(c.session, fmt.Sprintf("No manual entry for %s\n", args[0]))
+	// Without this man man would end up in always showing manual for man no matter the command argument
+	if args[0] == "man" {
+		io.WriteString(c.app.session, "Usage: man [command]\n")
+
+		return
+	}
+
+	if cmd, ok := c.app.commands[args[0]]; !ok {
+		io.WriteString(c.app.session, fmt.Sprintf("No manual entry for %s\n", args[0]))
 	} else {
-		cmd.SetOutput(c.session)
+		cmd.SetOutput(c.app.session)
 		cmd.SetArgs([]string{args[0], "--help"})
 		cmd.Execute()
 	}
@@ -142,23 +138,19 @@ func (c *manCommand) Run(cmd *cobra.Command, args []string) {
 
 // helloCommand asks your name and welcomes you.
 type helloCommand struct {
-	session ssh.Session
-	term    *terminal.Terminal
-	prompt  string
+	app *Application
 }
 
 // Run asks your name and welcomes you.
 func (c *helloCommand) Run(cmd *cobra.Command, args []string) {
-	io.WriteString(c.session, "What is your name? ")
+	io.WriteString(c.app.session, "What is your name? ")
 
-	c.term.SetPrompt("")
-	name, err := c.term.ReadLine()
-	c.term.SetPrompt(c.prompt)
+	name, err := c.app.ReadInput()
 
 	if err != nil {
-		io.WriteString(c.session, fmt.Sprintf("%v\n", err))
+		io.WriteString(c.app.session, fmt.Sprintf("%v\n", err))
 		return
 	}
 
-	io.WriteString(c.session, fmt.Sprintf("Welcome, %s!\n", name))
+	io.WriteString(c.app.session, fmt.Sprintf("Welcome, %s!\n", name))
 }
