@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-// Application holds a list of commands.
+// Application wraps a list of commands and handles their execution.
 type Application struct {
 	session  ssh.Session
 	term     *terminal.Terminal
@@ -61,7 +61,7 @@ func NewApplication(session ssh.Session, term *terminal.Terminal, prompt string)
 	return app
 }
 
-// Execute looks for the command and executes it.
+// Execute handles the command execution.
 func (a *Application) Execute(args []string) {
 	if cmd, ok := a.commands[args[0]]; !ok {
 		io.WriteString(a.session, fmt.Sprintf("command not found: %s\n", args[0]))
