@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/deshboard/boilerplate-ssh-service/app"
 	"github.com/gliderlabs/ssh"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -18,7 +19,6 @@ import (
 	"github.com/goph/serverz"
 	"github.com/goph/stdlib/ext"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/spf13/cobra"
 	gossh "golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -145,31 +145,7 @@ func handler(s ssh.Session) {
 
 	io.WriteString(s, fmt.Sprintf("Hello, %s!\n", s.User()))
 
-	commandMap := map[string]*cobra.Command{
-		"adduser": &cobra.Command{
-			Use:   "adduser [options] user [group]",
-			Short: "Add a user to the database",
-			Long: `
-Lorem ipsum dolor
-`,
-			Run: func(cmd *cobra.Command, args []string) {
-				io.WriteString(s, "Password:")
-
-				t.SetPrompt("")
-				password, err := t.ReadLine()
-				if err != nil {
-					io.WriteString(s, fmt.Sprintf("%v\n", err))
-					return
-				}
-				t.SetPrompt(prompt)
-
-				io.WriteString(s, fmt.Sprintf("Password: %s\n", password))
-
-				io.WriteString(s, fmt.Sprintf("User \"%s\" added\n", args[0]))
-				return
-			},
-		},
-	}
+	app := app.NewApplication(s, t, prompt)
 
 	for {
 		line, err := t.ReadLine()
@@ -181,39 +157,7 @@ Lorem ipsum dolor
 		} else if err == nil {
 			if line != "" {
 				args := strings.Split(line, " ")
-
-				switch args[0] {
-				case "man":
-					if len(args) < 2 {
-						io.WriteString(s, "What manual page do you want?\n")
-					} else {
-						if cmd, ok := commandMap[args[1]]; !ok {
-							io.WriteString(s, fmt.Sprintf("No manual entry for %s\n", args[1]))
-
-							continue
-						} else {
-							cmd.SetOutput(s)
-							cmd.SetArgs([]string{args[1], "--help"})
-							cmd.Execute()
-						}
-					}
-
-				case "help":
-					for name, cmd := range commandMap {
-						io.WriteString(s, fmt.Sprintf("%s - %s\n", name, cmd.Short))
-					}
-
-				default:
-					if cmd, ok := commandMap[args[0]]; !ok {
-						io.WriteString(s, fmt.Sprintf("command not found: %s\n", args[0]))
-
-						continue
-					} else {
-						cmd.SetArgs(args[1:])
-						cmd.SetOutput(s)
-						cmd.Execute()
-					}
-				}
+				app.Execute(args)
 			}
 		}
 	}
