@@ -38,8 +38,14 @@ func newServer(config *configuration, logger log.Logger, errorHandler emperror.H
 
 	return &serverz.NamedServer{
 		Server: &ssh.Server{
-			HostSigners:      []ssh.Signer{signer},
-			Handler:          handler,
+			HostSigners: []ssh.Signer{signer},
+			Handler: func(s ssh.Session) {
+				io.WriteString(s, fmt.Sprintf("Hello, %s!\n", s.User()))
+
+				app := app.NewApplication(s)
+
+				app.Run()
+			},
 			PublicKeyHandler: publicKeyHandler(config, publicKeys, logger),
 		},
 		Name: "ssh",
@@ -134,13 +140,4 @@ func publicKeyHandler(config *configuration, keys []ssh.PublicKey, logger log.Lo
 
 		return false
 	}
-}
-
-// handler is the SSH handler function.
-func handler(s ssh.Session) {
-	io.WriteString(s, fmt.Sprintf("Hello, %s!\n", s.User()))
-
-	app := app.NewApplication(s)
-
-	app.Run()
 }

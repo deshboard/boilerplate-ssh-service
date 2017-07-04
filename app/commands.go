@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 
 	"github.com/gliderlabs/ssh"
@@ -48,7 +49,7 @@ func NewApplication(session ssh.Session) *Application {
 
 	app.commands["help"] = &cobra.Command{
 		Use:   "help",
-		Short: "Lists the commands",
+		Short: "Shows the list of available commands",
 		Run:   helpCmd.Run,
 	}
 
@@ -67,7 +68,7 @@ func NewApplication(session ssh.Session) *Application {
 	return app
 }
 
-// Execute handles the command execution.
+// Run handles the main loop.
 func (a *Application) Run() {
 	for {
 		line, err := a.term.ReadLine()
@@ -104,8 +105,15 @@ type helpCommand struct {
 
 // Run lists the available commands.
 func (c *helpCommand) Run(cmd *cobra.Command, args []string) {
-	for name, cmd := range c.commands {
-		io.WriteString(c.session, fmt.Sprintf("%s - %s\n", name, cmd.Short))
+	var keys []string
+	for key := range c.commands {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+
+	// To perform the opertion you want
+	for _, k := range keys {
+		io.WriteString(c.session, fmt.Sprintf("%s - %s\n", k, c.commands[k].Short))
 	}
 }
 
