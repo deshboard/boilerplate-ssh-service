@@ -101,7 +101,7 @@ func loadRootAuthorizedKeys(config *configuration) ([]ssh.PublicKey, error) {
 		}
 
 		// Avoid duplicates
-		if key, ok := authorizedKeysMap[string(pubKey.Marshal())]; !ok || !key {
+		if _, ok := authorizedKeysMap[string(pubKey.Marshal())]; !ok {
 			authorizedKeysMap[string(pubKey.Marshal())] = true
 			authorizedKeys = append(authorizedKeys, pubKey)
 		}
