@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/gliderlabs/ssh"
 	"github.com/spf13/cobra"
@@ -18,7 +19,10 @@ type Application struct {
 }
 
 // NewApplication returns a new Application.
-func NewApplication(session ssh.Session, term *terminal.Terminal, prompt string) *Application {
+func NewApplication(session ssh.Session) *Application {
+	prompt := fmt.Sprintf("%s@deshboard:$ ", session.User())
+	term := terminal.NewTerminal(session, prompt)
+
 	app := &Application{
 		session:  session,
 		term:     term,
@@ -61,6 +65,24 @@ func NewApplication(session ssh.Session, term *terminal.Terminal, prompt string)
 	}
 
 	return app
+}
+
+// Execute handles the command execution.
+func (a *Application) Run() {
+	for {
+		line, err := a.term.ReadLine()
+
+		// Ctrl+D received
+		if err == io.EOF {
+			io.WriteString(a.session, "\n")
+			a.session.Exit(0)
+		} else if err == nil {
+			if line != "" {
+				args := strings.Split(line, " ")
+				a.Execute(args)
+			}
+		}
+	}
 }
 
 // Execute handles the command execution.

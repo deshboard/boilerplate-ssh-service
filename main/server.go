@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/deshboard/boilerplate-ssh-service/app"
@@ -20,7 +19,6 @@ import (
 	"github.com/goph/stdlib/ext"
 	opentracing "github.com/opentracing/opentracing-go"
 	gossh "golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 // newServer creates the main server instance for the service.
@@ -140,25 +138,9 @@ func publicKeyHandler(config *configuration, keys []ssh.PublicKey, logger log.Lo
 
 // handler is the SSH handler function.
 func handler(s ssh.Session) {
-	prompt := fmt.Sprintf("%s@deshboard:$ ", s.User())
-	t := terminal.NewTerminal(s, prompt)
-
 	io.WriteString(s, fmt.Sprintf("Hello, %s!\n", s.User()))
 
-	app := app.NewApplication(s, t, prompt)
+	app := app.NewApplication(s)
 
-	for {
-		line, err := t.ReadLine()
-
-		// Ctrl+D received
-		if err == io.EOF {
-			io.WriteString(s, "\n")
-			s.Exit(0)
-		} else if err == nil {
-			if line != "" {
-				args := strings.Split(line, " ")
-				app.Execute(args)
-			}
-		}
-	}
+	app.Run()
 }
