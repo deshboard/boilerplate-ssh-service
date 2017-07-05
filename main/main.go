@@ -61,9 +61,8 @@ func main() {
 		defer debugServer.Close()
 	}
 
-	server, closer := newServer(config, logger, errorHandler, tracer, healthCollector, metricsReporter)
+	server := newServer(config, logger, errorHandler, tracer, healthCollector, metricsReporter)
 	serverQueue.Prepend(server, config.ServiceAddr)
-	defer closer.Close()
 	defer server.Close()
 
 	healthServer, status := newHealthServer(logger, healthCollector, metricsReporter)

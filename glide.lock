@@ -1,5 +1,5 @@
-hash: 2834a4e3bde8a1760234e5d82214941d3f26ee659f5c9e797b5fffe435fb67d7
-updated: 2017-07-02T00:35:23.846651671+02:00
+hash: ad8f35a61589c2c991c13519d97d083835818c5a9d3d45779c421b3696086425
+updated: 2017-07-05T21:42:23.922902921+02:00
 imports:
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
@@ -17,7 +17,12 @@ imports:
 - name: github.com/goph/log
   version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
 - name: github.com/goph/serverz
-  version: e266e0deaa569bd7b2691a221d5ae1e725412004
+  version: 5156db1eb65ea803c86941fe5170edfa65d76d6d
+  subpackages:
+  - aio
+  - internal/errors
+  - internal/ext
+  - named
 - name: github.com/goph/stdlib
   version: fbfe82e22f9b889be712b0d1428050181323f0d1
   subpackages:
@@ -41,7 +46,7 @@ imports:
   - trace
 testImports:
 - name: github.com/DATA-DOG/godog
-  version: 92fbee719c9593813b24a6ef042bcad40324ede4
+  version: 70f777599da0f5de682b8848d356611c1738b695
   subpackages:
   - colors
   - gherkin

@@ -9,6 +9,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/serverz"
+	"github.com/goph/serverz/named"
 	"golang.org/x/net/trace"
 )
 
@@ -21,11 +22,11 @@ func init() {
 
 // newDebugServer creates a debug server.
 func newDebugServer(logger log.Logger) serverz.Server {
-	return &serverz.NamedServer{
+	return &named.Server{
 		Server: &http.Server{
 			Handler:  http.DefaultServeMux,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(logger)), "debug: ", 0),
 		},
-		Name: "debug",
+		ServerName: "debug",
 	}
 }

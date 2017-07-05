@@ -10,12 +10,12 @@ import (
 	"github.com/goph/emperror"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
-	"github.com/goph/stdlib/ext"
+	"github.com/goph/serverz/aio"
 	opentracing "github.com/opentracing/opentracing-go"
 )
 
 // newServer creates the main server instance for the service.
-func newServer(config *configuration, logger log.Logger, errorHandler emperror.Handler, tracer opentracing.Tracer, healthCollector healthz.Collector, metricsReporter interface{}) (serverz.Server, ext.Closer) {
+func newServer(config *configuration, logger log.Logger, errorHandler emperror.Handler, tracer opentracing.Tracer, healthCollector healthz.Collector, metricsReporter interface{}) serverz.Server {
 	serviceChecker := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
@@ -25,11 +25,11 @@ func newServer(config *configuration, logger log.Logger, errorHandler emperror.H
 		w.Write([]byte("It works!"))
 	})
 
-	return &serverz.NamedServer{
+	return &aio.Server{
 		Server: &http.Server{
 			Handler:  mux,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(logger)), "http: ", 0),
 		},
-		Name: "http",
-	}, ext.NoopCloser
+		ServerName: "http",
+	}
 }

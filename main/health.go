@@ -8,6 +8,7 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
+	"github.com/goph/serverz/named"
 )
 
 // newHealthServer creates a new health server and a status checker.
@@ -29,11 +30,11 @@ func newHealthServer(logger log.Logger, healthCollector healthz.Collector, metri
 		healthHandler.Handle("/metrics", mReporter.HTTPHandler())
 	}
 
-	return &serverz.NamedServer{
+	return &named.Server{
 		Server: &http.Server{
 			Handler:  healthHandler,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(logger)), "health: ", 0),
 		},
-		Name: "health",
+		ServerName: "health",
 	}, status
 }
