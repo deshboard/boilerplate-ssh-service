@@ -17,10 +17,10 @@ import:
 - package: golang.org/x/net
   subpackages:
   - trace
-- package: github.com/uber-go/tally
-  version: ^3.0.2
 - package: github.com/opentracing/opentracing-go
   version: ^1.0.1
+- package: github.com/uber-go/tally
+  version: ^3.0.2
 testImport:
 - package: github.com/DATA-DOG/godog
   version: ^0.7.2
