@@ -19,7 +19,7 @@ GODOTENV = $(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
 
 .PHONY: setup dep clean run watch build build-docker docker check test watch-test cs csfix envcheck
 
-setup:: install .env .env.test ## Setup the project for development
+setup:: dep .env .env.test ## Setup the project for development
 
 dep: ## Install dependencies
 	@glide install
