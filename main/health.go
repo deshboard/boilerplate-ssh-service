@@ -14,16 +14,16 @@ import (
 // newHealthServer creates a new health server and a status checker.
 //
 // The status checher can be used to manually mark the service unhealthy.
-func newHealthServer(logger log.Logger, healthCollector healthz.Collector, metricsReporter interface{}) (serverz.Server, *healthz.StatusChecker) {
+func newHealthServer(app *application) (serverz.Server, *healthz.StatusChecker) {
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
+	app.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
 	healthHandler := http.NewServeMux()
 
-	healthHandler.Handle("/healthz", healthCollector.Handler(healthz.LivenessCheck))
-	healthHandler.Handle("/readiness", healthCollector.Handler(healthz.ReadinessCheck))
+	healthHandler.Handle("/healthz", app.healthCollector.Handler(healthz.LivenessCheck))
+	healthHandler.Handle("/readiness", app.healthCollector.Handler(healthz.ReadinessCheck))
 
-	if mReporter, ok := metricsReporter.(interface {
+	if mReporter, ok := app.metricsReporter.(interface {
 		// HTTPHandler provides a scrape handler.
 		HTTPHandler() http.Handler
 	}); ok {
@@ -33,7 +33,7 @@ func newHealthServer(logger log.Logger, healthCollector healthz.Collector, metri
 	return &named.Server{
 		Server: &http.Server{
 			Handler:  healthHandler,
-			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(logger)), "health: ", 0),
+			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(app.logger)), "health: ", 0),
 		},
 		ServerName: "health",
 	}, status

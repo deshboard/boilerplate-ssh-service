@@ -45,6 +45,16 @@ func main() {
 	tracer := newTracer(config)
 	metricsReporter := newMetricsReporter(config)
 
+	// Application context
+	app := &application{
+		config:          config,
+		logger:          logger,
+		errorHandler:    errorHandler,
+		healthCollector: healthCollector,
+		tracer:          tracer,
+		metricsReporter: metricsReporter,
+	}
+
 	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
 
 	level.Info(logger).Log(
@@ -61,11 +71,11 @@ func main() {
 		defer debugServer.Close()
 	}
 
-	server := newServer(config, logger, errorHandler, tracer, healthCollector, metricsReporter)
+	server := newServer(app)
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer server.Close()
 
-	healthServer, status := newHealthServer(logger, healthCollector, metricsReporter)
+	healthServer, status := newHealthServer(app)
 	serverQueue.Prepend(healthServer, config.HealthAddr)
 	defer healthServer.Close()
 
