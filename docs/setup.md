@@ -32,7 +32,7 @@ $ make envcheck
 First thing you need to do is installing the dependencies. This project uses [Glide](http://glide.sh/) for dependency management.
 
 ``` bash
-$ glide install # or make install
+$ glide install # or make dep
 ```
 
 Next you need to setup the environment configuration. You can use `.env.dist` as a base, it contains the default values.

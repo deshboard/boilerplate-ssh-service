@@ -1,5 +1,5 @@
-hash: 753df4c65423229075c62a567228f8d92fcf91e850db05946ca1033f8622198b
-updated: 2017-07-03T22:44:47.896269394+02:00
+hash: 7dd8de293676bbfb594caf73981c666e49edb6bde82175712fe513654fa13263
+updated: 2017-07-06T01:10:12.281493247+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -21,9 +21,12 @@ imports:
 - name: github.com/goph/log
   version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
 - name: github.com/goph/serverz
-  version: e266e0deaa569bd7b2691a221d5ae1e725412004
+  version: 5156db1eb65ea803c86941fe5170edfa65d76d6d
+  subpackages:
+  - internal/errors
+  - named
 - name: github.com/goph/stdlib
-  version: fbfe82e22f9b889be712b0d1428050181323f0d1
+  version: e9f467be97d46b5f96731ac084856cf4dc9925d5
   subpackages:
   - errors
   - ext
@@ -44,7 +47,7 @@ imports:
 - name: github.com/uber-go/tally
   version: 88e9c75b0cfc84139ad1bae3b7f123786cfd0770
 - name: golang.org/x/crypto
-  version: 69be088f860613049aa58c65154d1b1d32bbdf90
+  version: 51714a8c4ac1764f07ab4127d7f739351ced4759
   subpackages:
   - curve25519
   - ed25519
