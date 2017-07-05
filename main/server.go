@@ -13,9 +13,9 @@ import (
 )
 
 // newServer creates the main server instance for the service.
-func newServer(app *application) serverz.Server {
-	serviceChecker := healthz.NewTCPChecker(app.config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
-	app.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
+func newServer(appCtx *application) serverz.Server {
+	serviceChecker := healthz.NewTCPChecker(appCtx.config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
+	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
 	mux := http.NewServeMux()
 
@@ -26,7 +26,7 @@ func newServer(app *application) serverz.Server {
 	return &aio.Server{
 		Server: &http.Server{
 			Handler:  mux,
-			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(app.logger)), "http: ", 0),
+			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "http: ", 0),
 		},
 		ServerName: "http",
 	}

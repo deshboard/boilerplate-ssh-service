@@ -46,7 +46,7 @@ func main() {
 	metricsReporter := newMetricsReporter(config)
 
 	// Application context
-	app := &application{
+	appCtx := &application{
 		config:          config,
 		logger:          logger,
 		errorHandler:    errorHandler,
@@ -71,11 +71,11 @@ func main() {
 		defer debugServer.Close()
 	}
 
-	server := newServer(app)
+	server := newServer(appCtx)
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer server.Close()
 
-	healthServer, status := newHealthServer(app)
+	healthServer, status := newHealthServer(appCtx)
 	serverQueue.Prepend(healthServer, config.HealthAddr)
 	defer healthServer.Close()
 
