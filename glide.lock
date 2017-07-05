@@ -1,5 +1,5 @@
-hash: 48099a799cf1d640741958d6f201a8e8b3ff1cac9c04df12e31584c110db0a4d
-updated: 2017-07-06T01:03:50.661833696+02:00
+hash: 710a6181f4086609dca48fc0e408ddaee18546e528d0a2564bf578d4f1816ff8
+updated: 2017-07-06T01:25:05.370256959+02:00
 imports:
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
@@ -17,7 +17,7 @@ imports:
 - name: github.com/goph/log
   version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
 - name: github.com/goph/serverz
-  version: 5156db1eb65ea803c86941fe5170edfa65d76d6d
+  version: 5278f820ec3b7991964364ece5ac54c9368326d8
   subpackages:
   - aio
   - internal/errors
