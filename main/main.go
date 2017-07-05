@@ -46,7 +46,6 @@ func main() {
 	metricsReporter := newMetricsReporter(config)
 
 	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
-	signalChan := make(chan os.Signal, 1)
 
 	level.Info(logger).Log(
 		"msg", fmt.Sprintf("Starting %s", FriendlyServiceName),
@@ -72,6 +71,7 @@ func main() {
 
 	errChan := serverQueue.Start()
 
+	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 MainLoop:
