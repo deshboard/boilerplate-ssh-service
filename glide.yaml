@@ -13,7 +13,7 @@ import:
 - package: github.com/goph/healthz
   version: ~0.9.0
 - package: github.com/goph/serverz
-  version: ~0.9.1
+  version: ~0.9.0
 - package: golang.org/x/net
   subpackages:
   - trace
