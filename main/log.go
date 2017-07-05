@@ -5,11 +5,10 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"github.com/goph/stdlib/ext"
 )
 
 // newLogger creates a new logger instance.
-func newLogger(config *configuration) (log.Logger, ext.Closer) {
+func newLogger(config *configuration) log.Logger {
 	var logger log.Logger
 
 	// Use JSON when in production
@@ -30,5 +29,5 @@ func newLogger(config *configuration) (log.Logger, ext.Closer) {
 		logger = level.NewFilter(logger, level.AllowInfo())
 	}
 
-	return logger, ext.NoopCloser
+	return logger
 }

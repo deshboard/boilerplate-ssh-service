@@ -12,6 +12,7 @@ import (
 	"github.com/goph/emperror"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
+	"github.com/goph/stdlib/ext"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -30,12 +31,12 @@ func main() {
 	flags.Parse(os.Args[1:])
 
 	// Create a new logger
-	logger, closer := newLogger(config)
-	defer closer.Close()
+	logger := newLogger(config)
+	defer ext.Close(logger)
 
 	// Create a new error handler
-	errorHandler, closer := newErrorHandler(config, logger)
-	defer closer.Close()
+	errorHandler := newErrorHandler(config, logger)
+	defer ext.Close(errorHandler)
 
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(errorHandler)
