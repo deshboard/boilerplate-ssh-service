@@ -1,5 +1,5 @@
 hash: 7dd8de293676bbfb594caf73981c666e49edb6bde82175712fe513654fa13263
-updated: 2017-07-06T02:05:07.726674376+02:00
+updated: 2017-07-06T02:11:36.647157759+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -21,7 +21,7 @@ imports:
 - name: github.com/goph/log
   version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
 - name: github.com/goph/serverz
-  version: 5278f820ec3b7991964364ece5ac54c9368326d8
+  version: 896eb4b27239569d94ff9a23527f960c06388c38
   subpackages:
   - internal/errors
   - named
