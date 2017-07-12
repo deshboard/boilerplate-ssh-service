@@ -1,5 +1,5 @@
-hash: 7dd8de293676bbfb594caf73981c666e49edb6bde82175712fe513654fa13263
-updated: 2017-07-06T02:11:36.647157759+02:00
+hash: efe0b6ef3868b556b53c02a8e84e495ae0f73dc6b11417cdd55306faa4e2aa62
+updated: 2017-07-12T13:41:38.521514399+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -15,7 +15,9 @@ imports:
 - name: github.com/go-stack/stack
   version: 7a2f19628aabfe68f0766b59e74d6315f8347d22
 - name: github.com/goph/emperror
-  version: c6b285b0497b09cc78d555f89eefc8815f2d4c45
+  version: 9a1f931558972dfd6867293a0d27e3556f8727a0
+  subpackages:
+  - internal
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/log
@@ -26,7 +28,7 @@ imports:
   - internal/errors
   - named
 - name: github.com/goph/stdlib
-  version: e9f467be97d46b5f96731ac084856cf4dc9925d5
+  version: 5b726a57f399a0fcae1040c8d928330b8aac992d
   subpackages:
   - errors
   - ext

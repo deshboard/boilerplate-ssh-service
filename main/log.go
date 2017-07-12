@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/go-kit/kit/log"
@@ -10,12 +11,17 @@ import (
 // newLogger creates a new logger instance.
 func newLogger(config *configuration) log.Logger {
 	var logger log.Logger
+	w := log.NewSyncWriter(os.Stdout)
 
-	// Use JSON when in production
-	if "production" == config.Environment {
-		logger = log.NewJSONLogger(log.NewSyncWriter(os.Stdout))
-	} else {
-		logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
+	switch config.LogFormat {
+	case "logfmt":
+		logger = log.NewLogfmtLogger(w)
+
+	case "json":
+		logger = log.NewJSONLogger(w)
+
+	default:
+		panic(fmt.Errorf("Unsupported log format: %s", config.LogFormat))
 	}
 
 	// Add default context
