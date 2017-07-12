@@ -1,5 +1,5 @@
-hash: 48099a799cf1d640741958d6f201a8e8b3ff1cac9c04df12e31584c110db0a4d
-updated: 2017-07-06T02:09:18.896023307+02:00
+hash: 4433a63cb85fa7fac47a51244d79f467543ff55fc4a768fe0aad3fbb3808c42f
+updated: 2017-07-12T12:20:31.026955617+02:00
 imports:
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
@@ -11,7 +11,9 @@ imports:
 - name: github.com/go-stack/stack
   version: 7a2f19628aabfe68f0766b59e74d6315f8347d22
 - name: github.com/goph/emperror
-  version: c6b285b0497b09cc78d555f89eefc8815f2d4c45
+  version: 9a1f931558972dfd6867293a0d27e3556f8727a0
+  subpackages:
+  - internal
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/log
@@ -24,7 +26,7 @@ imports:
   - internal/ext
   - named
 - name: github.com/goph/stdlib
-  version: e9f467be97d46b5f96731ac084856cf4dc9925d5
+  version: 5b726a57f399a0fcae1040c8d928330b8aac992d
   subpackages:
   - errors
   - ext
