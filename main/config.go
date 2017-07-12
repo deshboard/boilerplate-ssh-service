@@ -10,6 +10,7 @@ type configuration struct {
 	// Recommended values are: production, development, staging, release/123, etc
 	Environment string `default:"production"`
 	Debug       bool   `split_words:"true"`
+	LogFormat   string `split_words:"true" default:"json"`
 
 	ServiceAddr     string        `ignored:"true"`
 	HealthAddr      string        `ignored:"true"`
