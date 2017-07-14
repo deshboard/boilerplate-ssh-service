@@ -1,5 +1,7 @@
 package main
 
+import "time"
+
 // ServiceName is an identifier-like name used anywhere this app needs to be identified.
 //
 // It identifies the service itself, the actual instance needs to be identified via environment
@@ -16,3 +18,6 @@ const FriendlyServiceName = "Boilerplate service"
 //
 // Falls back to the ServiceName.
 const LogTag string = ServiceName
+
+// MetricReportInterval is the reporing interval for tally.
+const MetricReportInterval time.Duration = time.Second
