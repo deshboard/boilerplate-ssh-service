@@ -23,7 +23,7 @@ func newHealthServer(appCtx *application) (serverz.Server, *healthz.StatusChecke
 	healthHandler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
 	healthHandler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
-	if scope, ok := appCtx.metricScope.(interface {
+	if scope, ok := appCtx.metrics.(interface {
 		// HTTPHandler provides a scrape handler.
 		HTTPHandler() http.Handler
 	}); ok {

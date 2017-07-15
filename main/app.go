@@ -19,5 +19,5 @@ type application struct {
 	errorHandler    emperror.Handler
 	healthCollector healthz.Collector
 	tracer          opentracing.Tracer
-	metricScope     tally.Scope
+	metrics         tally.Scope
 }
