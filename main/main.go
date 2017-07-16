@@ -43,8 +43,8 @@ func main() {
 
 	healthCollector := healthz.Collector{}
 	tracer := newTracer(config)
-	metrics, closer := newMetrics(config)
-	defer closer.Close()
+	metrics := newMetrics(config)
+	defer ext.Close(metrics)
 
 	// Application context
 	appCtx := &application{

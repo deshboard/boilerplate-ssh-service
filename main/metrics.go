@@ -7,8 +7,19 @@ import (
 )
 
 // newMetrics returns a new tally.Scope used as a root scope.
-func newMetrics(config *configuration) (tally.Scope, io.Closer) {
+func newMetrics(config *configuration) interface {
+	tally.Scope
+	io.Closer
+} {
 	options := tally.ScopeOptions{}
 
-	return tally.NewRootScope(options, MetricReportInterval)
+	scope, closer := tally.NewRootScope(options, MetricReportInterval)
+
+	return struct {
+		tally.Scope
+		io.Closer
+	}{
+		Scope:  scope,
+		Closer: closer,
+	}
 }
