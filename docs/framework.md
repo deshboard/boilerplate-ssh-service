@@ -24,15 +24,27 @@ import (
 	"github.com/uber-go/tally"
 )
 
-// newMetricScope returns a new tally.Scope used as a root scope.
-func newMetricScope(config *configuration) (tally.Scope, io.Closer) {
+// newMetrics returns a new tally.Scope used as a root scope.
+func newMetrics(config *configuration) interface {
+	tally.Scope
+	io.Closer
+} {
 	options := tally.ScopeOptions{
         CachedReporter: promreporter.NewReporter(promreporter.Options{}),
     }
 
-	return tally.NewRootScope(options, MetricReportInterval)
-}
+	scope, closer := tally.NewRootScope(options, MetricReportInterval)
 
+	return struct {
+		tally.Scope
+		io.Closer
+        promreporter.Reporter
+	}{
+		Scope:  scope,
+		Closer: closer,
+        Reporter: options.CachedReporter,
+	}
+}
 ```
 
 In this case the health server implementation detects that this is a pull-based reporter and automatically exposes it under the `/metrics` endpoint.
