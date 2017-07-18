@@ -13,7 +13,7 @@ func newMetrics(config *configuration) interface {
 } {
 	options := tally.ScopeOptions{}
 
-	scope, closer := tally.NewRootScope(options, MetricReportInterval)
+	scope, closer := tally.NewRootScope(options, MetricsReportInterval)
 
 	return struct {
 		tally.Scope
