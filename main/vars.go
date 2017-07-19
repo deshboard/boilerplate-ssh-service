@@ -19,5 +19,5 @@ const FriendlyServiceName = "Boilerplate service"
 // Falls back to the ServiceName.
 const LogTag string = ServiceName
 
-// MetricsReportInterval is the reporing interval for tally.
+// MetricsReportInterval is the reporting interval for tally.
 const MetricsReportInterval time.Duration = time.Second
