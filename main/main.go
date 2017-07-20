@@ -41,8 +41,6 @@ func main() {
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(errorHandler)
 
-	healthCollector := healthz.Collector{}
-	tracer := newTracer(config)
 	metrics := newMetrics(config)
 	defer ext.Close(metrics)
 
@@ -51,8 +49,8 @@ func main() {
 		config:          config,
 		logger:          logger,
 		errorHandler:    errorHandler,
-		healthCollector: healthCollector,
-		tracer:          tracer,
+		healthCollector: healthz.Collector{},
+		tracer:          newTracer(config),
 		metrics:         metrics,
 	}
 
