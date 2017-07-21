@@ -41,6 +41,7 @@ func main() {
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(errorHandler)
 
+	// Initiate metrics scope
 	metrics := newMetrics(config)
 	defer ext.Close(metrics)
 
