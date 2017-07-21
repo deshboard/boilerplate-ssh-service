@@ -43,7 +43,8 @@ func main() {
 
 	healthCollector := healthz.Collector{}
 	tracer := newTracer(config)
-	metricsReporter := newMetricsReporter(config)
+	metrics := newMetrics(config)
+	defer ext.Close(metrics)
 
 	// Application context
 	appCtx := &application{
@@ -52,7 +53,7 @@ func main() {
 		errorHandler:    errorHandler,
 		healthCollector: healthCollector,
 		tracer:          tracer,
-		metricsReporter: metricsReporter,
+		metrics:         metrics,
 	}
 
 	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
