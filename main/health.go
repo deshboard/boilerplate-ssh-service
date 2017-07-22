@@ -23,12 +23,14 @@ func newHealthServer(appCtx *application) (serverz.Server, *healthz.StatusChecke
 	healthHandler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
 	healthHandler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
-	// Check if a Prometheus collector is exposed
-	if scope, ok := appCtx.metrics.(interface {
-		// HTTPHandler provides a scrape handler.
-		HTTPHandler() http.Handler
-	}); ok {
-		healthHandler.Handle("/metrics", scope.HTTPHandler())
+	// Check if a Prometheus HTTP handler is exposed
+	if handler, ok := appCtx.metrics.(http.Handler); ok {
+		level.Debug(appCtx.logger).Log(
+			"msg", "Exposing Prometheus metrics",
+			"server", "health",
+		)
+
+		healthHandler.Handle("/metrics", handler)
 	}
 
 	return &named.Server{

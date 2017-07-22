@@ -19,9 +19,10 @@ package main
 
 import (
 	"io"
+	"net/http"
 
-    promreporter "github.com/uber-go/tally/prometheus"
 	"github.com/uber-go/tally"
+	promreporter "github.com/uber-go/tally/prometheus"
 )
 
 // newMetrics returns a new tally.Scope used as a root scope.
@@ -29,22 +30,25 @@ func newMetrics(config *configuration) interface {
 	tally.Scope
 	io.Closer
 } {
-	options := tally.ScopeOptions{
-        CachedReporter: promreporter.NewReporter(promreporter.Options{}),
-    }
+	reporter := promreporter.NewReporter(promreporter.Options{})
 
-	scope, closer := tally.NewRootScope(options, MetricReportInterval)
+	options := tally.ScopeOptions{
+		CachedReporter: reporter,
+	}
+
+	scope, closer := tally.NewRootScope(options, MetricsReportInterval)
 
 	return struct {
 		tally.Scope
 		io.Closer
-        promreporter.Reporter
+		http.Handler
 	}{
-		Scope:  scope,
-		Closer: closer,
-        Reporter: options.CachedReporter,
+		Scope:   scope,
+		Closer:  closer,
+		Handler: reporter.HTTPHandler(),
 	}
 }
+
 ```
 
 In this case the health server implementation detects that this is a pull-based reporter and automatically exposes it under the `/metrics` endpoint.
