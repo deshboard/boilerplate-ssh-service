@@ -23,6 +23,7 @@ func newHealthServer(appCtx *application) (serverz.Server, *healthz.StatusChecke
 	healthHandler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
 	healthHandler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
+	// Check if a Prometheus collector is exposed
 	if scope, ok := appCtx.metrics.(interface {
 		// HTTPHandler provides a scrape handler.
 		HTTPHandler() http.Handler
