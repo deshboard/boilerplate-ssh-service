@@ -48,7 +48,6 @@ func newMetrics(config *configuration) interface {
 		Handler: reporter.HTTPHandler(),
 	}
 }
-
 ```
 
 In this case the health server implementation detects that this is a pull-based reporter and automatically exposes it under the `/metrics` endpoint.
