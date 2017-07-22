@@ -1,8 +1,10 @@
 hash: efe0b6ef3868b556b53c02a8e84e495ae0f73dc6b11417cdd55306faa4e2aa62
-updated: 2017-07-12T13:41:38.521514399+02:00
+updated: 2017-07-23T00:15:59.588461898+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
+- name: github.com/facebookgo/clock
+  version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
 - name: github.com/gliderlabs/ssh
   version: bf3073636e5b2255b85a09640b2003b01ab4a070
 - name: github.com/go-kit/kit

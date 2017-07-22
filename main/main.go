@@ -41,18 +41,18 @@ func main() {
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(errorHandler)
 
-	healthCollector := healthz.Collector{}
-	tracer := newTracer(config)
-	metricsReporter := newMetricsReporter(config)
+	// Initiate metrics scope
+	metrics := newMetrics(config)
+	defer ext.Close(metrics)
 
 	// Application context
 	appCtx := &application{
 		config:          config,
 		logger:          logger,
 		errorHandler:    errorHandler,
-		healthCollector: healthCollector,
-		tracer:          tracer,
-		metricsReporter: metricsReporter,
+		healthCollector: healthz.Collector{},
+		tracer:          newTracer(config),
+		metrics:         metrics,
 	}
 
 	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
