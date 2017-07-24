@@ -23,7 +23,7 @@ func newHealthServer(appCtx *application) (serverz.Server, *healthz.StatusChecke
 	healthHandler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
 	healthHandler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
-	// Check if a Prometheus HTTP handler is exposed
+	// Check if a (Prometheus) HTTP handler is available
 	if handler, ok := appCtx.metrics.(http.Handler); ok {
 		level.Debug(appCtx.logger).Log(
 			"msg", "Exposing Prometheus metrics",
