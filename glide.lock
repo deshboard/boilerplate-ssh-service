@@ -1,5 +1,5 @@
-hash: 2ac9dded22ff61bdd79e14e9a09fb9288a752028118c6edbe474d73915356930
-updated: 2017-07-26T00:44:54.575940426+02:00
+hash: abb1b81342effba1d22db1b05add2238f9ca85ad521773ad85f6ae9de3c39603
+updated: 2017-07-26T01:30:42.436226077+02:00
 imports:
 - name: github.com/facebookgo/clock
   version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
@@ -32,6 +32,8 @@ imports:
   subpackages:
   - errors
   - ext
+- name: github.com/joho/godotenv
+  version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
@@ -54,5 +56,3 @@ testImports:
   subpackages:
   - colors
   - gherkin
-- name: github.com/joho/godotenv
-  version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
