@@ -4,11 +4,15 @@ import (
 	"testing"
 
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 var runners []func() int
 
 func TestMain(m *testing.M) {
+	_ = godotenv.Load("../.env.test", "../.env.dist")
+
 	result := 0
 
 	runners := append(runners, m.Run)
