@@ -3,6 +3,7 @@
 package app
 
 import (
+	"flag"
 	"os"
 	"time"
 
@@ -12,12 +13,23 @@ import (
 func init() {
 	runners = append(runners, func() int {
 		format := "progress"
-		for _, arg := range os.Args[1:] {
-			// go test transforms -v option
-			if arg == "-test.v=true" {
-				format = "pretty"
-				break
-			}
+		seed := int64(0)
+
+		var verbose, randomize bool
+		flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+
+		// go test transforms -v option
+		flags.BoolVar(&verbose, "test.v", false, "Test verbosity")
+		flags.BoolVar(&randomize, "randomize", false, "Randomize acceptance test order")
+		flags.Parse(os.Args[1:])
+
+		if verbose {
+			format = "pretty"
+		}
+
+		// Randomize scenario execution order
+		if randomize {
+			seed = time.Now().UTC().UnixNano()
 		}
 
 		return godog.RunWithOptions(
@@ -26,7 +38,7 @@ func init() {
 			godog.Options{
 				Format:    format,
 				Paths:     []string{"features"},
-				Randomize: time.Now().UTC().UnixNano(), // randomize scenario execution order
+				Randomize: seed,
 			},
 		)
 	})
