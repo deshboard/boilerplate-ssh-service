@@ -15,7 +15,6 @@ DOCKER_LATEST ?= false
 # Dev variables
 GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")
 GO_PACKAGES = $(shell go list ./... | grep -v /vendor/)
-GODOTENV = $(shell if which godotenv > /dev/null 2>&1; then echo "godotenv"; fi)
 
 .PHONY: setup dep clean run watch build build-docker docker check test watch-test cs csfix envcheck
 
@@ -33,14 +32,15 @@ dep: ## Install dependencies
 clean:: ## Clean the working area
 	rm -rf ${BUILD_DIR}/ vendor/ .env .env.test
 
-run: build ## Build and execute a binary
-	${GODOTENV} ${BUILD_DIR}/${BINARY_NAME} ${ARGS}
+run: TAGS += dev
+run: build .env ## Build and execute a binary
+	${BUILD_DIR}/${BINARY_NAME} ${ARGS}
 
 watch: ## Watch for file changes and run the built binary
 	reflex -s -t 3s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
 
 build: ## Build a binary
-	CGO_ENABLED=0 go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME} ${PACKAGE}/main
+	CGO_ENABLED=0 go build -tags '${TAGS}' ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME} ${PACKAGE}/main
 
 build-docker:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME}-docker ${PACKAGE}/main
@@ -54,11 +54,7 @@ endif
 check:: test cs ## Run tests and linters
 
 test: .env.test ## Run unit tests
-ifdef GODOTENV
-	@${GODOTENV} -f .env.test go test ${ARGS} ${GO_PACKAGES}
-else
 	@go test ${ARGS} ${GO_PACKAGES}
-endif
 
 watch-test: ## Watch for file changes and run tests
 	reflex -t 2s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" test

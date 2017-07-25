@@ -1,5 +1,5 @@
-hash: efe0b6ef3868b556b53c02a8e84e495ae0f73dc6b11417cdd55306faa4e2aa62
-updated: 2017-07-23T00:15:59.588461898+02:00
+hash: 80dec1496a677cf96f73cd5b0160446cadefd1cc82d21cf7558c743de8d86150
+updated: 2017-07-26T01:40:52.875755905+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -36,6 +36,8 @@ imports:
   - ext
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/joho/godotenv
+  version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
