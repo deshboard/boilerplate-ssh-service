@@ -1,5 +1,5 @@
-hash: abb1b81342effba1d22db1b05add2238f9ca85ad521773ad85f6ae9de3c39603
-updated: 2017-07-26T01:30:42.436226077+02:00
+hash: a7598c5ef8461734ecb138c3e3ec97668612ab004e45991a0769b653bfa8d4d5
+updated: 2017-07-27T00:20:45.871590711+02:00
 imports:
 - name: github.com/facebookgo/clock
   version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
@@ -28,7 +28,7 @@ imports:
   - internal/ext
   - named
 - name: github.com/goph/stdlib
-  version: 5b726a57f399a0fcae1040c8d928330b8aac992d
+  version: 06da0be770f5309486af100793d48842f016fda8
   subpackages:
   - errors
   - ext
