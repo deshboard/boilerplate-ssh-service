@@ -1,5 +1,5 @@
-hash: 80dec1496a677cf96f73cd5b0160446cadefd1cc82d21cf7558c743de8d86150
-updated: 2017-07-26T01:40:52.875755905+02:00
+hash: f8780f6f53911d5b48379849f1c6920c74bd68269873c0985ff954e8ddbef360
+updated: 2017-07-27T00:26:08.493699571+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -30,7 +30,7 @@ imports:
   - internal/errors
   - named
 - name: github.com/goph/stdlib
-  version: 5b726a57f399a0fcae1040c8d928330b8aac992d
+  version: 06da0be770f5309486af100793d48842f016fda8
   subpackages:
   - errors
   - ext
