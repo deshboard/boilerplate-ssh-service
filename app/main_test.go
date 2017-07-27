@@ -10,9 +10,11 @@ import (
 
 var runners []func() int
 
-func TestMain(m *testing.M) {
+func init() {
 	_ = godotenv.Load("../.env.test", "../.env.dist")
+}
 
+func TestMain(m *testing.M) {
 	result := 0
 
 	runners := append(runners, m.Run)
