@@ -69,7 +69,7 @@ func main() {
 	)
 
 	server := newServer(appCtx)
-	serverQueue.Prepend(server, config.ServiceAddr)
+	serverQueue.Append(server, config.ServiceAddr)
 	defer server.Close()
 
 	healthServer := newHealthServer(appCtx)
