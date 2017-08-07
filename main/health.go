@@ -14,10 +14,7 @@ import (
 // newHealthServer creates a new health server and a status checker.
 //
 // The status checher can be used to manually mark the service unhealthy.
-func newHealthServer(appCtx *application) (serverz.Server, *healthz.StatusChecker) {
-	status := healthz.NewStatusChecker(healthz.Healthy)
-	appCtx.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
-
+func newHealthServer(appCtx *application) serverz.Server {
 	healthHandler := http.NewServeMux()
 
 	healthHandler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
@@ -39,5 +36,5 @@ func newHealthServer(appCtx *application) (serverz.Server, *healthz.StatusChecke
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "health: ", 0),
 		},
 		ServerName: "health",
-	}, status
+	}
 }
