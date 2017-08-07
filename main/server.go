@@ -16,13 +16,13 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
-	"github.com/goph/serverz"
-	"github.com/goph/serverz/named"
+	"github.com/goph/serverz/aio"
+	"github.com/goph/stdlib/net"
 	gossh "golang.org/x/crypto/ssh"
 )
 
 // newServer creates the main server instance for the service.
-func newServer(appCtx *application) serverz.Server {
+func newServer(appCtx *application) *aio.Server {
 	serviceChecker := healthz.NewTCPChecker(appCtx.config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
@@ -36,7 +36,7 @@ func newServer(appCtx *application) serverz.Server {
 		panic(err)
 	}
 
-	return &named.Server{
+	return &aio.Server{
 		Server: &ssh.Server{
 			HostSigners: []ssh.Signer{signer},
 			Handler: func(s ssh.Session) {
@@ -48,7 +48,8 @@ func newServer(appCtx *application) serverz.Server {
 			},
 			PublicKeyHandler: publicKeyHandler(appCtx.config, publicKeys, appCtx.logger),
 		},
-		ServerName: "ssh",
+		Name: "ssh",
+		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.ServiceAddr),
 	}
 }
 

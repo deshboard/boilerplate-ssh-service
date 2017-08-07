@@ -1,5 +1,5 @@
-hash: f8780f6f53911d5b48379849f1c6920c74bd68269873c0985ff954e8ddbef360
-updated: 2017-07-27T00:26:08.493699571+02:00
+hash: 4245678bee33358cb26703dcfe6409d0473743ee1a1b83dfa4e4a2a34d6b54ac
+updated: 2017-08-07T23:05:11.80635046+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -15,7 +15,7 @@ imports:
 - name: github.com/go-logfmt/logfmt
   version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
 - name: github.com/go-stack/stack
-  version: 7a2f19628aabfe68f0766b59e74d6315f8347d22
+  version: 817915b46b97fd7bb80e8ab6b69f01a53ac3eebf
 - name: github.com/goph/emperror
   version: 9a1f931558972dfd6867293a0d27e3556f8727a0
   subpackages:
@@ -25,15 +25,22 @@ imports:
 - name: github.com/goph/log
   version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
 - name: github.com/goph/serverz
-  version: 896eb4b27239569d94ff9a23527f960c06388c38
+  version: a02fe1dc5dd783c14af882be7d3446332abdfc21
   subpackages:
+  - aio
+  - internal
   - internal/errors
-  - named
+  - internal/ext
 - name: github.com/goph/stdlib
-  version: 06da0be770f5309486af100793d48842f016fda8
+  version: ebad8d8b5b9843c6104e35acfee6f7b2d73503b2
   subpackages:
   - errors
+  - expvar
   - ext
+  - net
+  - net/http
+  - net/http/pprof
+  - x/net/trace
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/joho/godotenv
@@ -47,13 +54,13 @@ imports:
   subpackages:
   - log
 - name: github.com/spf13/cobra
-  version: 8c6fa02d2225de0f9bdcb7ca912556f68d172d8c
+  version: b26b538f693051ac6518e65672de3144ce3fbedc
 - name: github.com/spf13/pflag
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/uber-go/tally
-  version: 88e9c75b0cfc84139ad1bae3b7f123786cfd0770
+  version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/crypto
-  version: 51714a8c4ac1764f07ab4127d7f739351ced4759
+  version: 76c7c60c071b310d16774257b879b9d476db77f3
   subpackages:
   - curve25519
   - ed25519
@@ -61,15 +68,16 @@ imports:
   - ssh
   - ssh/terminal
 - name: golang.org/x/net
-  version: 5f8847ae0d0e90b6a9dc8148e7ad616874625171
+  version: f5079bd7f6f74e23c4d65efa0f4ce14cbd6a3c0f
   subpackages:
   - context
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: fb4cac33e3196ff7f507ab9b2d2a44b0142f5b5a
+  version: d8f5ea21b9295e315e612b4bcf4bedea93454d4d
   subpackages:
   - unix
+  - windows
 testImports:
 - name: github.com/DATA-DOG/godog
   version: 70f777599da0f5de682b8848d356611c1738b695

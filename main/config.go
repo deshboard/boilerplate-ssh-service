@@ -14,7 +14,6 @@ type configuration struct {
 
 	ServiceAddr     string        `ignored:"true"`
 	HealthAddr      string        `ignored:"true"`
-	DebugAddr       string        `ignored:"true"`
 	ShutdownTimeout time.Duration `ignored:"true"`
 
 	HostPrivateKey         string `split_words:"true"`
@@ -38,6 +37,5 @@ func (c *configuration) flags(flags *flag.FlagSet) {
 	// Load flags into configuration
 	flags.StringVar(&c.ServiceAddr, "service", defaultAddr+":22", "Service address.")
 	flags.StringVar(&c.HealthAddr, "health", defaultAddr+":10000", "Health service address.")
-	flags.StringVar(&c.DebugAddr, "debug", defaultAddr+":10001", "Debug service address.")
 	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
 }
