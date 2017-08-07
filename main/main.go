@@ -68,12 +68,6 @@ func main() {
 		"environment", config.Environment,
 	)
 
-	if config.Debug {
-		debugServer := newDebugServer(logger)
-		serverQueue.Append(debugServer, config.DebugAddr)
-		defer debugServer.Close()
-	}
-
 	server := newServer(appCtx)
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer server.Close()

@@ -9,30 +9,42 @@ import (
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
 	"github.com/goph/serverz/named"
+	"github.com/goph/stdlib/expvar"
+	"github.com/goph/stdlib/net/http/pprof"
+	_trace "github.com/goph/stdlib/x/net/trace"
+	"golang.org/x/net/trace"
 )
 
 // newHealthServer creates a new health server and a status checker.
 //
 // The status checher can be used to manually mark the service unhealthy.
 func newHealthServer(appCtx *application) serverz.Server {
-	healthHandler := http.NewServeMux()
+	handler := http.NewServeMux()
 
-	healthHandler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
-	healthHandler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
+	handler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
+	handler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
 	// Check if a (Prometheus) HTTP handler is available
-	if handler, ok := appCtx.metrics.(http.Handler); ok {
+	if h, ok := appCtx.metrics.(http.Handler); ok {
 		level.Debug(appCtx.logger).Log(
 			"msg", "Exposing Prometheus metrics",
 			"server", "health",
 		)
 
-		healthHandler.Handle("/metrics", handler)
+		handler.Handle("/metrics", h)
+	}
+
+	if appCtx.config.Debug {
+		trace.AuthRequest = _trace.NoAuth
+
+		expvar.RegisterRoutes(handler)
+		pprof.RegisterRoutes(handler)
+		_trace.RegisterRoutes(handler)
 	}
 
 	return &named.Server{
 		Server: &http.Server{
-			Handler:  healthHandler,
+			Handler:  handler,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "health: ", 0),
 		},
 		ServerName: "health",
