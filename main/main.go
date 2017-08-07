@@ -55,6 +55,9 @@ func main() {
 		metrics:         metrics,
 	}
 
+	status := healthz.NewStatusChecker(healthz.Healthy)
+	appCtx.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
+
 	serverQueue := serverz.NewQueue(&serverz.Manager{Logger: logger})
 
 	level.Info(logger).Log(
@@ -65,17 +68,11 @@ func main() {
 		"environment", config.Environment,
 	)
 
-	if config.Debug {
-		debugServer := newDebugServer(logger)
-		serverQueue.Append(debugServer, config.DebugAddr)
-		defer debugServer.Close()
-	}
-
 	server := newServer(appCtx)
 	serverQueue.Prepend(server, config.ServiceAddr)
 	defer server.Close()
 
-	healthServer, status := newHealthServer(appCtx)
+	healthServer := newHealthServer(appCtx)
 	serverQueue.Prepend(healthServer, config.HealthAddr)
 	defer healthServer.Close()
 
