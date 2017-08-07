@@ -7,9 +7,9 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
-	"github.com/goph/serverz"
-	"github.com/goph/serverz/named"
+	"github.com/goph/serverz/aio"
 	"github.com/goph/stdlib/expvar"
+	"github.com/goph/stdlib/net"
 	"github.com/goph/stdlib/net/http/pprof"
 	_trace "github.com/goph/stdlib/x/net/trace"
 	"golang.org/x/net/trace"
@@ -18,7 +18,7 @@ import (
 // newHealthServer creates a new health server and a status checker.
 //
 // The status checher can be used to manually mark the service unhealthy.
-func newHealthServer(appCtx *application) serverz.Server {
+func newHealthServer(appCtx *application) *aio.Server {
 	handler := http.NewServeMux()
 
 	handler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
@@ -42,11 +42,12 @@ func newHealthServer(appCtx *application) serverz.Server {
 		_trace.RegisterRoutes(handler)
 	}
 
-	return &named.Server{
+	return &aio.Server{
 		Server: &http.Server{
 			Handler:  handler,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "health: ", 0),
 		},
-		ServerName: "health",
+		Name: "health",
+		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.HealthAddr),
 	}
 }

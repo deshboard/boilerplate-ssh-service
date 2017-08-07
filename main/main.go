@@ -69,11 +69,11 @@ func main() {
 	)
 
 	server := newServer(appCtx)
-	serverQueue.Append(server, config.ServiceAddr)
+	serverQueue.Append(server)
 	defer server.Close()
 
 	healthServer := newHealthServer(appCtx)
-	serverQueue.Prepend(healthServer, config.HealthAddr)
+	serverQueue.Prepend(healthServer)
 	defer healthServer.Close()
 
 	errChan := serverQueue.Start()

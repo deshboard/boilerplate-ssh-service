@@ -1,5 +1,5 @@
-hash: a1f0c8dc18a3f244cb8e1efd229b070ef26db6a06b7745fe2364f555c8f68196
-updated: 2017-08-07T10:51:45.744458627+02:00
+hash: 1a302251aa3de5a6b9f6ffb627ec4a769750968a3df15de6a8cff0a1394b0572
+updated: 2017-08-07T21:34:05.449797502+02:00
 imports:
 - name: github.com/facebookgo/clock
   version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
@@ -21,9 +21,10 @@ imports:
 - name: github.com/goph/log
   version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
 - name: github.com/goph/serverz
-  version: 896eb4b27239569d94ff9a23527f960c06388c38
+  version: a02fe1dc5dd783c14af882be7d3446332abdfc21
   subpackages:
   - aio
+  - internal
   - internal/errors
   - internal/ext
   - named
@@ -31,7 +32,11 @@ imports:
   version: ebad8d8b5b9843c6104e35acfee6f7b2d73503b2
   subpackages:
   - errors
+  - expvar
   - ext
+  - net/http
+  - net/http/pprof
+  - x/net/trace
 - name: github.com/joho/godotenv
   version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
 - name: github.com/kelseyhightower/envconfig
