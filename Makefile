@@ -32,7 +32,7 @@ dep: ## Install dependencies
 clean:: ## Clean the working area
 	rm -rf ${BUILD_DIR}/ vendor/ .env .env.test
 
-run: TAGS += " dev"
+run: TAGS += dev
 run: build .env ## Build and execute a binary
 	${BUILD_DIR}/${BINARY_NAME} ${ARGS}
 
