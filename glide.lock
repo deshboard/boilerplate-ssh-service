@@ -1,5 +1,5 @@
-hash: a7598c5ef8461734ecb138c3e3ec97668612ab004e45991a0769b653bfa8d4d5
-updated: 2017-07-27T00:20:45.871590711+02:00
+hash: a1f0c8dc18a3f244cb8e1efd229b070ef26db6a06b7745fe2364f555c8f68196
+updated: 2017-08-07T10:51:45.744458627+02:00
 imports:
 - name: github.com/facebookgo/clock
   version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
@@ -11,7 +11,7 @@ imports:
 - name: github.com/go-logfmt/logfmt
   version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
 - name: github.com/go-stack/stack
-  version: 7a2f19628aabfe68f0766b59e74d6315f8347d22
+  version: 817915b46b97fd7bb80e8ab6b69f01a53ac3eebf
 - name: github.com/goph/emperror
   version: 9a1f931558972dfd6867293a0d27e3556f8727a0
   subpackages:
@@ -28,7 +28,7 @@ imports:
   - internal/ext
   - named
 - name: github.com/goph/stdlib
-  version: 06da0be770f5309486af100793d48842f016fda8
+  version: ebad8d8b5b9843c6104e35acfee6f7b2d73503b2
   subpackages:
   - errors
   - ext
@@ -43,9 +43,9 @@ imports:
   subpackages:
   - log
 - name: github.com/uber-go/tally
-  version: 88e9c75b0cfc84139ad1bae3b7f123786cfd0770
+  version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/net
-  version: 5f8847ae0d0e90b6a9dc8148e7ad616874625171
+  version: f5079bd7f6f74e23c4d65efa0f4ce14cbd6a3c0f
   subpackages:
   - context
   - internal/timeseries
