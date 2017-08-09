@@ -54,7 +54,7 @@ imports:
 - name: github.com/spf13/cobra
   version: b26b538f693051ac6518e65672de3144ce3fbedc
 - name: github.com/spf13/pflag
-  version: 9ff6c6923cfffbcd502984b8e0c80539a94968b7
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/uber-go/tally
   version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/crypto
