@@ -1,5 +1,5 @@
 hash: 4245678bee33358cb26703dcfe6409d0473743ee1a1b83dfa4e4a2a34d6b54ac
-updated: 2017-08-07T23:05:11.80635046+02:00
+updated: 2017-08-09T22:46:46.755842999+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -22,8 +22,6 @@ imports:
   - internal
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
-- name: github.com/goph/log
-  version: a2cdc6838c8fc6808cb719ce2eefbfb45315da53
 - name: github.com/goph/serverz
   version: a02fe1dc5dd783c14af882be7d3446332abdfc21
   subpackages:
@@ -56,11 +54,11 @@ imports:
 - name: github.com/spf13/cobra
   version: b26b538f693051ac6518e65672de3144ce3fbedc
 - name: github.com/spf13/pflag
-  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
+  version: 9ff6c6923cfffbcd502984b8e0c80539a94968b7
 - name: github.com/uber-go/tally
   version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/crypto
-  version: 76c7c60c071b310d16774257b879b9d476db77f3
+  version: b176d7def5d71bdd214203491f89843ed217f420
   subpackages:
   - curve25519
   - ed25519
@@ -68,13 +66,13 @@ imports:
   - ssh
   - ssh/terminal
 - name: golang.org/x/net
-  version: f5079bd7f6f74e23c4d65efa0f4ce14cbd6a3c0f
+  version: e90d6d0afc4c315a0d87a568ae68577cc15149a0
   subpackages:
   - context
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: d8f5ea21b9295e315e612b4bcf4bedea93454d4d
+  version: e42485b6e20ae7d2304ec72e535b103ed350cc02
   subpackages:
   - unix
   - windows
