@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
-	"github.com/goph/log"
 )
 
 // newErrorHandler creates a new Emperror error handler.
