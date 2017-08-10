@@ -37,7 +37,7 @@ func init() {
 			FeatureContext,
 			godog.Options{
 				Format:    format,
-				Paths:     []string{"features"},
+				Paths:     []string{"../features"},
 				Randomize: seed,
 			},
 		)
