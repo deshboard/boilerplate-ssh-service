@@ -1,14 +1,17 @@
 // +build acceptance
 
-package app
+package app_test
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/DATA-DOG/godog"
 )
+
+var FeatureContext func(s *godog.Suite)
 
 func init() {
 	runners = append(runners, func() int {
@@ -32,12 +35,19 @@ func init() {
 			seed = time.Now().UTC().UnixNano()
 		}
 
+		featureContext := FeatureContext
+		if featureContext == nil {
+			featureContext = func(s *godog.Suite) {
+				fmt.Println("No feature context")
+			}
+		}
+
 		return godog.RunWithOptions(
 			"godog",
-			FeatureContext,
+			featureContext,
 			godog.Options{
 				Format:    format,
-				Paths:     []string{"features"},
+				Paths:     []string{"../features"},
 				Randomize: seed,
 			},
 		)

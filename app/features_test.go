@@ -1,9 +1,11 @@
 // +build acceptance
 
-package app
+package app_test
 
 import "github.com/DATA-DOG/godog"
 
-func FeatureContext(s *godog.Suite) {
-	// Add steps here
+func init() {
+	FeatureContext = func(s *godog.Suite) {
+		// Add steps here
+	}
 }

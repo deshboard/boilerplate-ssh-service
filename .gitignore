@@ -1,5 +1,4 @@
 /build/
-/custom.mk
 /.docker/
 /docker-compose.override.yml
 /.env
