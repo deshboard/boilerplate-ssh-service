@@ -1,6 +1,6 @@
 // +build acceptance
 
-package app
+package app_test
 
 import (
 	"flag"
