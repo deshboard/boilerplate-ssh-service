@@ -1,6 +1,6 @@
 # A Self-Documenting Makefile: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
-include etc/variables.mk
+include .make/variables.mk
 
 # Build variables
 VERSION ?= $(shell git rev-parse --abbrev-ref HEAD)
@@ -85,5 +85,5 @@ help:
 var-%: ; @echo $($*)
 varexport-%: ; @echo $*=$($*)
 
-include etc/service.mk
--include custom.mk
+include .make/service.mk
+-include .make/custom.mk
