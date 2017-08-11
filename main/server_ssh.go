@@ -21,8 +21,8 @@ import (
 	gossh "golang.org/x/crypto/ssh"
 )
 
-// newServer creates the main server instance for the service.
-func newServer(appCtx *application) *aio.Server {
+// newSSHServer creates the main server instance for the service.
+func newSSHServer(appCtx *application) *aio.Server {
 	serviceChecker := healthz.NewTCPChecker(appCtx.config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 

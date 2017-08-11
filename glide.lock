@@ -1,5 +1,5 @@
-hash: 4245678bee33358cb26703dcfe6409d0473743ee1a1b83dfa4e4a2a34d6b54ac
-updated: 2017-08-09T22:46:46.755842999+02:00
+hash: 83f0f2df99a64753d0914b01f8dcc35884bcde5aa7013e0e8e6d41e750d3bb22
+updated: 2017-08-11T20:04:10.552757354+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -23,7 +23,7 @@ imports:
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
-  version: a02fe1dc5dd783c14af882be7d3446332abdfc21
+  version: 0db668bdb36032ac5e0154fba5b912fed99c2835
   subpackages:
   - aio
   - internal
@@ -66,7 +66,7 @@ imports:
   - ssh
   - ssh/terminal
 - name: golang.org/x/net
-  version: e90d6d0afc4c315a0d87a568ae68577cc15149a0
+  version: 1c05540f6879653db88113bc4a2b70aec4bd491f
   subpackages:
   - context
   - internal/timeseries
