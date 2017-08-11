@@ -12,8 +12,8 @@ import (
 	"github.com/goph/stdlib/net"
 )
 
-// newServer creates the main server instance for the service.
-func newServer(appCtx *application) *aio.Server {
+// newHTTPServer creates the main server instance for the service.
+func newHTTPServer(appCtx *application) *aio.Server {
 	serviceChecker := healthz.NewTCPChecker(appCtx.config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
