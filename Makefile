@@ -69,6 +69,7 @@ envcheck:: ## Check environment for all the necessary requirements
 	$(call executable_check,Go,go)
 	$(call executable_check,Glide,glide)
 	$(call executable_check,Docker,docker)
+	$(call executable_check,Docker Compose,docker-compose)
 	$(call executable_check,Reflex,reflex)
 
 define executable_check
