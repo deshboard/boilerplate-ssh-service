@@ -60,6 +60,6 @@ But of course from time to time you have to run those as well. To separate diffe
 In order to run those tests locally you need to execute the following commands:
 
 ``` bash
-$ make test ARGS="-tags 'integration'"
-$ make test ARGS="-tags 'acceptance'"
+$ make test TAGS="integration"
+$ make test TAGS="acceptance"
 ```

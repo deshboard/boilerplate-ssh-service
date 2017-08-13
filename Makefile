@@ -69,8 +69,8 @@ envcheck:: ## Check environment for all the necessary requirements
 	$(call executable_check,Go,go)
 	$(call executable_check,Glide,glide)
 	$(call executable_check,Docker,docker)
+	$(call executable_check,Docker Compose,docker-compose)
 	$(call executable_check,Reflex,reflex)
-	$(call executable_check,Godotenv,godotenv)
 
 define executable_check
     @printf "\033[36m%-30s\033[0m %s\n" "$(1)" `if which $(2) > /dev/null 2>&1; then echo "\033[0;32m✓\033[0m"; else echo "\033[0;31m✗\033[0m"; fi`
