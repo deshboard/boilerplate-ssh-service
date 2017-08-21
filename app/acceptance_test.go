@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/DATA-DOG/godog"
@@ -18,20 +19,13 @@ func init() {
 		format := "progress"
 		seed := int64(0)
 
-		var verbose, randomize bool
-		flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-
 		// go test transforms -v option
-		flags.BoolVar(&verbose, "test.v", false, "Test verbosity")
-		flags.BoolVar(&randomize, "randomize", false, "Randomize acceptance test order")
-		flags.Parse(os.Args[1:])
-
-		if verbose {
+		if verbose := flag.Lookup("test.v"); verbose != nil {
 			format = "pretty"
 		}
 
 		// Randomize scenario execution order
-		if randomize {
+		if randomize, _ := strconv.ParseBool(os.Getenv("TEST_RANDOMIZE")); randomize {
 			seed = time.Now().UTC().UnixNano()
 		}
 
