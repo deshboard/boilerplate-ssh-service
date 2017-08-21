@@ -26,7 +26,7 @@ before_script:
     - export $(make varexport-DOCKER_IMAGE)
 
 script:
-    - make TAGS="acceptance integration" ARGS="-v -randomize" check
+    - TEST_RANDOMIZE=true make TAGS="acceptance integration" ARGS="-v" check
     - if [[ $TRAVIS_TAG = "$VERSION" ]]; then export DOCKER_LATEST=true; fi
     - make docker
 
