@@ -3,7 +3,7 @@
 
 ## Overview
 
-This project does not use any third-party framework (except ones required by the application logic), but relies heavily on the standard library and separate third-party components. The integration layer for these components and the main execution logic can be found in the [main/](../main/) directory.
+This project does not use any third-party framework (except ones required by the application logic), but relies heavily on the standard library and separate third-party components. The integration layer for these components and the main execution logic can be found in the [cmd/](../cmd/) directory.
 
 
 ## Components
@@ -12,7 +12,7 @@ This project does not use any third-party framework (except ones required by the
 
 In order to effectively use metrics, you need to choose a metrics reporting mechanism. Common mechanisms are push-based (eg. StatsD) and pull-based (eg. Prometheus). In order to support both, this project comes with [Tally](https://github.com/uber-go/tally) installed, which is a metric reporting abstraction.
 
-All you need to do is chosing a reporter implementation in [metrics.go](../main/metrics.go):
+All you need to do is chosing a reporter implementation in [metrics.go](../cmd/metrics.go):
 
 ``` go
 package main
