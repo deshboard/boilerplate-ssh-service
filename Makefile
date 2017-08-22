@@ -14,7 +14,7 @@ DOCKER_LATEST ?= false
 
 # Dev variables
 GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")
-GO_PACKAGES = $(shell go list ./... | grep -v /vendor/)
+GO_PACKAGES = $(shell go list ./app/...)
 
 .PHONY: setup dep clean run watch build build-docker docker check test watch-test cs csfix envcheck
 
@@ -40,10 +40,10 @@ watch: ## Watch for file changes and run the built binary
 	reflex -s -t 3s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
 
 build: ## Build a binary
-	CGO_ENABLED=0 go build -tags '${TAGS}' ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME} ${PACKAGE}/main
+	CGO_ENABLED=0 go build -tags '${TAGS}' ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME} ${PACKAGE}/cmd
 
 build-docker:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME}-docker ${PACKAGE}/main
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME}-docker ${PACKAGE}/cmd
 
 docker: build-docker ## Build a Docker image
 	docker build --build-arg BUILD_DIR=${BUILD_DIR} --build-arg BINARY_NAME=${BINARY_NAME}-docker -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
