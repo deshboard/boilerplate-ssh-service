@@ -1,5 +1,5 @@
-hash: 83f0f2df99a64753d0914b01f8dcc35884bcde5aa7013e0e8e6d41e750d3bb22
-updated: 2017-08-11T20:04:10.552757354+02:00
+hash: 7546a6fef81ca05b667352107ee4f28c7131286a1a814d50a7f5aedf5cc4d275
+updated: 2017-08-23T05:44:26.501286031+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -17,9 +17,9 @@ imports:
 - name: github.com/go-stack/stack
   version: 817915b46b97fd7bb80e8ab6b69f01a53ac3eebf
 - name: github.com/goph/emperror
-  version: 9a1f931558972dfd6867293a0d27e3556f8727a0
+  version: ffb3cac8d464cd350271fc706011883f25077412
   subpackages:
-  - internal
+  - internal/errors
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
@@ -30,7 +30,7 @@ imports:
   - internal/errors
   - internal/ext
 - name: github.com/goph/stdlib
-  version: ebad8d8b5b9843c6104e35acfee6f7b2d73503b2
+  version: 7ade954fe887bc3afdc34edb2e8d6a43261499a7
   subpackages:
   - errors
   - expvar
@@ -51,14 +51,16 @@ imports:
   version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
   subpackages:
   - log
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/spf13/cobra
-  version: b26b538f693051ac6518e65672de3144ce3fbedc
+  version: 4a7b7e65864c064d48dce82efbbfed2bdc0bf2aa
 - name: github.com/spf13/pflag
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/uber-go/tally
   version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/crypto
-  version: b176d7def5d71bdd214203491f89843ed217f420
+  version: eb71ad9bd329b5ac0fd0148dd99bd62e8be8e035
   subpackages:
   - curve25519
   - ed25519
@@ -72,7 +74,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: e42485b6e20ae7d2304ec72e535b103ed350cc02
+  version: 07c182904dbd53199946ba614a412c61d3c548f5
   subpackages:
   - unix
   - windows
