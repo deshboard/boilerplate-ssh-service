@@ -1,5 +1,5 @@
-hash: eed0620f0d99df9b69d9c4969e7d72a7034787fc669a1fecd80dd4c0f8c6fc28
-updated: 2017-08-11T17:00:48.804717441+02:00
+hash: ba82210713363b97a12462fb6bfb4941d41d506400ec7b5cc395e11ceb7c6e29
+updated: 2017-08-23T05:39:04.153887995+02:00
 imports:
 - name: github.com/facebookgo/clock
   version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
@@ -13,9 +13,9 @@ imports:
 - name: github.com/go-stack/stack
   version: 817915b46b97fd7bb80e8ab6b69f01a53ac3eebf
 - name: github.com/goph/emperror
-  version: 9a1f931558972dfd6867293a0d27e3556f8727a0
+  version: ffb3cac8d464cd350271fc706011883f25077412
   subpackages:
-  - internal
+  - internal/errors
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
@@ -26,7 +26,7 @@ imports:
   - internal/errors
   - internal/ext
 - name: github.com/goph/stdlib
-  version: ebad8d8b5b9843c6104e35acfee6f7b2d73503b2
+  version: 7ade954fe887bc3afdc34edb2e8d6a43261499a7
   subpackages:
   - errors
   - expvar
@@ -45,6 +45,8 @@ imports:
   version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
   subpackages:
   - log
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/uber-go/tally
   version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/net
