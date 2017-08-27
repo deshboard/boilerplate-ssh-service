@@ -1,5 +1,5 @@
-hash: 7546a6fef81ca05b667352107ee4f28c7131286a1a814d50a7f5aedf5cc4d275
-updated: 2017-08-23T05:44:26.501286031+02:00
+hash: 65cf8853d3dfd9fe4f58966b5eb5b2c2a970e12782ccca9cfa6093644d648b51
+updated: 2017-08-27T23:25:32.73785195+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -30,7 +30,7 @@ imports:
   - internal/errors
   - internal/ext
 - name: github.com/goph/stdlib
-  version: 7ade954fe887bc3afdc34edb2e8d6a43261499a7
+  version: e16d3532f6a9c8983885e070f36bd6e713bd093c
   subpackages:
   - errors
   - expvar
@@ -54,13 +54,13 @@ imports:
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/spf13/cobra
-  version: 4a7b7e65864c064d48dce82efbbfed2bdc0bf2aa
+  version: 2df9a531813370438a4d79bfc33e21f58063ed87
 - name: github.com/spf13/pflag
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/uber-go/tally
   version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/crypto
-  version: eb71ad9bd329b5ac0fd0148dd99bd62e8be8e035
+  version: 81e90905daefcd6fd217b62423c0908922eadb30
   subpackages:
   - curve25519
   - ed25519
@@ -74,7 +74,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 07c182904dbd53199946ba614a412c61d3c548f5
+  version: 2d6f6f883a06fc0d5f4b14a81e4c28705ea64c15
   subpackages:
   - unix
   - windows
