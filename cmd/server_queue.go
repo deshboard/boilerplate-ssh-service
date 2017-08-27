@@ -7,11 +7,8 @@ func newServerQueue(appCtx *application) *serverz.Queue {
 	queue := serverz.NewQueue()
 	queue.Manager.Logger = appCtx.logger
 
-	server := newHTTPServer(appCtx)
-	queue.Append(server)
-
-	healthServer := newHealthServer(appCtx)
-	queue.Prepend(healthServer)
+	debugServer := newDebugServer(appCtx)
+	queue.Prepend(debugServer)
 
 	return queue
 }

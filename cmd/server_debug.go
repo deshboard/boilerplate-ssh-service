@@ -15,12 +15,11 @@ import (
 	"golang.org/x/net/trace"
 )
 
-// newHealthServer creates a new health server and a status checker.
-//
-// The status checher can be used to manually mark the service unhealthy.
-func newHealthServer(appCtx *application) *aio.Server {
+// newDebugServer creates a new debug and health check server.
+func newDebugServer(appCtx *application) *aio.Server {
 	handler := http.NewServeMux()
 
+	// Add health checks
 	handler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
 	handler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
@@ -47,7 +46,7 @@ func newHealthServer(appCtx *application) *aio.Server {
 			Handler:  handler,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "health: ", 0),
 		},
-		Name: "health",
-		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.HealthAddr),
+		Name: "debug",
+		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.DebugAddr),
 	}
 }
