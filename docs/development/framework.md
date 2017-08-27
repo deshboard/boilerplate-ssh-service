@@ -18,9 +18,9 @@ All you need to do is chosing a reporter implementation in [metrics.go](../cmd/m
 package main
 
 import (
-	"io"
 	"net/http"
 
+	"github.com/goph/stdlib/ext"
 	"github.com/uber-go/tally"
 	promreporter "github.com/uber-go/tally/prometheus"
 )
@@ -28,7 +28,7 @@ import (
 // newMetrics returns a new tally.Scope used as a root scope.
 func newMetrics(config *configuration) interface {
 	tally.Scope
-	io.Closer
+	ext.Closer
 } {
 	reporter := promreporter.NewReporter(promreporter.Options{})
 
@@ -40,7 +40,7 @@ func newMetrics(config *configuration) interface {
 
 	return struct {
 		tally.Scope
-		io.Closer
+		ext.Closer
 		http.Handler
 	}{
 		Scope:   scope,

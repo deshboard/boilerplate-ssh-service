@@ -23,7 +23,7 @@ import (
 
 // newSSHServer creates the main server instance for the service.
 func newSSHServer(appCtx *application) *aio.Server {
-	serviceChecker := healthz.NewTCPChecker(appCtx.config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
+	serviceChecker := healthz.NewTCPChecker(appCtx.config.SSHAddr, healthz.WithTCPTimeout(2*time.Second))
 	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
 	signer, err := createSigner(appCtx.config)
@@ -49,7 +49,7 @@ func newSSHServer(appCtx *application) *aio.Server {
 			PublicKeyHandler: publicKeyHandler(appCtx.config, publicKeys, appCtx.logger),
 		},
 		Name: "ssh",
-		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.ServiceAddr),
+		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.SSHAddr),
 	}
 }
 

@@ -10,8 +10,8 @@ func newServerQueue(appCtx *application) *serverz.Queue {
 	server := newSSHServer(appCtx)
 	queue.Append(server)
 
-	healthServer := newHealthServer(appCtx)
-	queue.Prepend(healthServer)
+	debugServer := newDebugServer(appCtx)
+	queue.Prepend(debugServer)
 
 	return queue
 }
