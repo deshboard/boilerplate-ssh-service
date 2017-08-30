@@ -1,8 +1,8 @@
 package app
 
 import (
+	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
-	"github.com/goph/stdlib/log"
 )
 
 // ServiceOption sets options in the Service.
