@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/go-kit/kit/log"
+	"github.com/goph/emperror"
 	"github.com/goph/healthz"
-	"github.com/goph/stdlib/errors"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/uber-go/tally"
 )
@@ -16,7 +16,7 @@ import (
 type application struct {
 	config          *configuration
 	logger          log.Logger
-	errorHandler    errors.Handler
+	errorHandler    emperror.Handler
 	healthCollector healthz.Collector
 	tracer          opentracing.Tracer
 	metrics         tally.Scope
