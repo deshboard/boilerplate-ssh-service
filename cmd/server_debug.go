@@ -7,16 +7,15 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
-	"github.com/goph/serverz/aio"
+	"github.com/goph/serverz"
 	"github.com/goph/stdlib/expvar"
-	"github.com/goph/stdlib/net"
 	"github.com/goph/stdlib/net/http/pprof"
 	_trace "github.com/goph/stdlib/x/net/trace"
 	"golang.org/x/net/trace"
 )
 
 // newDebugServer creates a new debug and health check server.
-func newDebugServer(appCtx *application) *aio.Server {
+func newDebugServer(appCtx *application) serverz.Server {
 	handler := http.NewServeMux()
 
 	// Add health checks
@@ -41,12 +40,13 @@ func newDebugServer(appCtx *application) *aio.Server {
 		_trace.RegisterRoutes(handler)
 	}
 
-	return &aio.Server{
+	return &serverz.AppServer{
 		Server: &http.Server{
 			Handler:  handler,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "health: ", 0),
 		},
-		Name: "debug",
-		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.DebugAddr),
+		Name:   "debug",
+		Addr:   serverz.NewAddr("tcp", appCtx.config.DebugAddr),
+		Logger: appCtx.logger,
 	}
 }
