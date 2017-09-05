@@ -4,15 +4,9 @@ import (
 	"testing"
 
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 var runners []func() int
-
-func init() {
-	_ = godotenv.Load("../.env.test", "../.env.dist")
-}
 
 func TestMain(m *testing.M) {
 	result := 0
