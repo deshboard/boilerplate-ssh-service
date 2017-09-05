@@ -1,13 +1,12 @@
-hash: b918f7b70aaf4c11a9526cd057e6c1c90d830d75b5a451cdb886f96eb6ce9b49
-updated: 2017-09-03T18:43:15.039130876+02:00
+hash: 2ba01c800a8e4028f93742ca67c742cc07822490a28eea6f21bc56cbe757cc73
+updated: 2017-09-05T11:34:34.245747661+02:00
 imports:
-- name: github.com/facebookgo/clock
-  version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
   subpackages:
   - log
   - log/level
+  - metrics
 - name: github.com/go-logfmt/logfmt
   version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
 - name: github.com/go-stack/stack
@@ -42,8 +41,6 @@ imports:
   - log
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
-- name: github.com/uber-go/tally
-  version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/net
   version: 1c05540f6879653db88113bc4a2b70aec4bd491f
   subpackages:

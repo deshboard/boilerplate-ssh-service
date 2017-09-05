@@ -40,10 +40,6 @@ func main() {
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(errorHandler)
 
-	// Initiate metrics scope
-	metrics := newMetrics(config)
-	defer ext.Close(metrics)
-
 	// Application context
 	appCtx := &application{
 		config:          config,
@@ -51,7 +47,6 @@ func main() {
 		errorHandler:    errorHandler,
 		healthCollector: healthz.Collector{},
 		tracer:          newTracer(config),
-		metrics:         metrics,
 	}
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
