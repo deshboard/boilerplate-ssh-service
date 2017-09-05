@@ -4,7 +4,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	"github.com/goph/healthz"
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 	"github.com/uber-go/tally"
 )
 
