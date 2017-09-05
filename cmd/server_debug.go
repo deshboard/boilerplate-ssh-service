@@ -40,6 +40,9 @@ func newDebugServer(appCtx *application) serverz.Server {
 		_trace.RegisterRoutes(handler)
 	}
 
+	// Register application specific debug routes (like metrics, etc)
+	registerDebugRoutes(appCtx, handler)
+
 	return &serverz.AppServer{
 		Server: &http.Server{
 			Handler:  handler,
