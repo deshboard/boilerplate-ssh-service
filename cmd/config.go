@@ -35,7 +35,7 @@ func (c *configuration) flags(flags *flag.FlagSet) {
 	}
 
 	// Load flags into configuration
-	flags.StringVar(&c.SSHAddr, "ssh.addr", defaultAddr+":22", "SSH service address.")
+	flags.StringVar(&c.SSHAddr, "ssh.addr", defaultAddr+":2222", "SSH service address.")
 	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address.")
 	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
 }
