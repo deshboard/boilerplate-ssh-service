@@ -4,8 +4,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	"github.com/goph/healthz"
-	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/uber-go/tally"
+	"github.com/opentracing/opentracing-go"
 )
 
 // application collects all dependencies and exposes them in a single service locator.
@@ -19,5 +18,4 @@ type application struct {
 	errorHandler    emperror.Handler
 	healthCollector healthz.Collector
 	tracer          opentracing.Tracer
-	metrics         tally.Scope
 }

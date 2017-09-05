@@ -1,10 +1,8 @@
-hash: b0f072ebed989b353eed2f1798f75dcd1ec4b70812cd8ea0a8d892d351c17ba7
-updated: 2017-09-03T19:07:01.749700059+02:00
+hash: d4f17176ecd292b69a40150c172b04cbf1fda904df3a777bf7560b1a492e4273
+updated: 2017-09-05T11:54:16.477769402+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
-- name: github.com/facebookgo/clock
-  version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
 - name: github.com/gliderlabs/ssh
   version: bf3073636e5b2255b85a09640b2003b01ab4a070
 - name: github.com/go-kit/kit
@@ -12,6 +10,7 @@ imports:
   subpackages:
   - log
   - log/level
+  - metrics
 - name: github.com/go-logfmt/logfmt
   version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
 - name: github.com/go-stack/stack
@@ -52,8 +51,6 @@ imports:
   version: 3c0b56b677e04926dfa835a1b3f11cd4f62f076e
 - name: github.com/spf13/pflag
   version: 7aff26db30c1be810f9de5038ec5ef96ac41fd7c
-- name: github.com/uber-go/tally
-  version: 2605c407d7d219644d03a3680ad7df4779017782
 - name: golang.org/x/crypto
   version: 81e90905daefcd6fd217b62423c0908922eadb30
   subpackages:

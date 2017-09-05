@@ -22,16 +22,6 @@ func newDebugServer(appCtx *application) serverz.Server {
 	handler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
 	handler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
-	// Check if a (Prometheus) HTTP handler is available
-	if h, ok := appCtx.metrics.(http.Handler); ok {
-		level.Debug(appCtx.logger).Log(
-			"msg", "Exposing Prometheus metrics",
-			"server", "health",
-		)
-
-		handler.Handle("/metrics", h)
-	}
-
 	if appCtx.config.Debug {
 		trace.AuthRequest = _trace.NoAuth
 
@@ -39,6 +29,9 @@ func newDebugServer(appCtx *application) serverz.Server {
 		pprof.RegisterRoutes(handler)
 		_trace.RegisterRoutes(handler)
 	}
+
+	// Register application specific debug routes (like metrics, etc)
+	registerDebugRoutes(appCtx, handler)
 
 	return &serverz.AppServer{
 		Server: &http.Server{

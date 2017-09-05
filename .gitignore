@@ -4,3 +4,9 @@
 /.env
 /.env.test
 /vendor/
+
+# IDE
+/.vscode/
+!.vscode/tasks.json
+/.idea/
+!.idea/runConfigurations/
