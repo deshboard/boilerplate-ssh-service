@@ -22,6 +22,7 @@ func newDebugServer(appCtx *application) serverz.Server {
 	handler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
 	if appCtx.config.Debug {
+		// This is probably okay, as this service should not be exposed to public in the first place.
 		trace.SetAuth(trace.NoAuth)
 
 		expvar.RegisterRoutes(handler)
