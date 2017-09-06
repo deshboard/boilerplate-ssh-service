@@ -39,4 +39,4 @@ deploy:
     script: docker push $DOCKER_IMAGE
     on:
         all_branches: true
-        condition: $TRAVIS_GO_VERSION =~ ^1\.8(\.[0-9]+)?$
+        condition: $TRAVIS_GO_VERSION =~ ^1\.9(\.[0-9]+)?$

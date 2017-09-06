@@ -10,8 +10,7 @@ import (
 	"github.com/goph/serverz"
 	"github.com/goph/stdlib/expvar"
 	"github.com/goph/stdlib/net/http/pprof"
-	_trace "github.com/goph/stdlib/x/net/trace"
-	"golang.org/x/net/trace"
+	"github.com/goph/stdlib/x/net/trace"
 )
 
 // newDebugServer creates a new debug and health check server.
@@ -23,11 +22,12 @@ func newDebugServer(appCtx *application) serverz.Server {
 	handler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
 
 	if appCtx.config.Debug {
-		trace.AuthRequest = _trace.NoAuth
+		// This is probably okay, as this service should not be exposed to public in the first place.
+		trace.SetAuth(trace.NoAuth)
 
 		expvar.RegisterRoutes(handler)
 		pprof.RegisterRoutes(handler)
-		_trace.RegisterRoutes(handler)
+		trace.RegisterRoutes(handler)
 	}
 
 	// Register application specific debug routes (like metrics, etc)
