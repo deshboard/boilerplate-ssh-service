@@ -55,8 +55,8 @@ func main() {
 	level.Info(logger).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
 		"version", Version,
-		"commitHash", CommitHash,
-		"buildDate", BuildDate,
+		"commit_hash", CommitHash,
+		"build_date", BuildDate,
 		"environment", config.Environment,
 	)
 
