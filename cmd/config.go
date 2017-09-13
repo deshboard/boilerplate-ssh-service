@@ -12,10 +12,10 @@ type configuration struct {
 	Debug       bool   `split_words:"true"`
 	LogFormat   string `split_words:"true" default:"json"`
 
-	SSHAddr         string        `ignored:"true"`
 	DebugAddr       string        `ignored:"true"`
 	ShutdownTimeout time.Duration `ignored:"true"`
 
+	SSHAddr                string `ignored:"true"`
 	HostPrivateKey         string `split_words:"true"`
 	HostPrivateKeyFile     string `split_words:"true"`
 	RootLoginAllowed       bool   `split_words:"true"`
@@ -35,7 +35,8 @@ func (c *configuration) flags(flags *flag.FlagSet) {
 	}
 
 	// Load flags into configuration
-	flags.StringVar(&c.SSHAddr, "ssh.addr", defaultAddr+":2222", "SSH service address.")
-	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address.")
-	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
+	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address")
+	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Timeout for graceful shutdown")
+
+	flags.StringVar(&c.SSHAddr, "ssh.addr", defaultAddr+":2222", "SSH service address")
 }
