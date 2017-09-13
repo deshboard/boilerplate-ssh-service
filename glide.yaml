@@ -16,7 +16,7 @@ import:
 - package: github.com/goph/healthz
   version: ~0.9.0
 - package: github.com/goph/serverz
-  version: ~0.12.0
+  version: ~0.13.0
 - package: github.com/opentracing/opentracing-go
   version: ^1.0.1
 testImport:
