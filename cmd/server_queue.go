@@ -9,7 +9,7 @@ func newServerQueue(a *application) *serverz.Queue {
 	debugServer := newDebugServer(a)
 	queue.Prepend(debugServer, nil)
 
-	server := newSSHServer(appCtx)
+	server := newSSHServer(a)
 	queue.Append(server, nil)
 
 	return queue
