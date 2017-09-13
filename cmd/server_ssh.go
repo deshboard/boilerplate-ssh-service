@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/deshboard/boilerplate-ssh-service/app"
+	. "github.com/deshboard/boilerplate-ssh-service/app"
 	"github.com/gliderlabs/ssh"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -21,16 +21,16 @@ import (
 )
 
 // newSSHServer creates the main server instance for the service.
-func newSSHServer(appCtx *application) serverz.Server {
-	serviceChecker := healthz.NewTCPChecker(appCtx.config.SSHAddr, healthz.WithTCPTimeout(2*time.Second))
-	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
+func newSSHServer(app *application) serverz.Server {
+	serviceChecker := healthz.NewTCPChecker(app.config.SSHAddr, healthz.WithTCPTimeout(2*time.Second))
+	app.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
-	signer, err := createSigner(appCtx.config)
+	signer, err := createSigner(app.config)
 	if err != nil {
 		panic(err)
 	}
 
-	publicKeys, err := loadRootAuthorizedKeys(appCtx.config)
+	publicKeys, err := loadRootAuthorizedKeys(app.config)
 	if err != nil {
 		panic(err)
 	}
@@ -41,15 +41,15 @@ func newSSHServer(appCtx *application) serverz.Server {
 			Handler: func(s ssh.Session) {
 				io.WriteString(s, fmt.Sprintf("Hello, %s!\n", s.User()))
 
-				app := app.NewApplication(s)
+				a := NewApplication(s)
 
-				app.Run()
+				a.Run()
 			},
-			PublicKeyHandler: publicKeyHandler(appCtx.config, publicKeys, appCtx.logger),
+			PublicKeyHandler: publicKeyHandler(app.config, publicKeys, app.logger),
 		},
 		Name:   "ssh",
-		Addr:   serverz.NewAddr("tcp", appCtx.config.SSHAddr),
-		Logger: appCtx.logger,
+		Addr:   serverz.NewAddr("tcp", app.config.SSHAddr),
+		Logger: app.logger,
 	}
 }
 

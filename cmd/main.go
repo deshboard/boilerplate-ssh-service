@@ -41,7 +41,7 @@ func main() {
 	defer emperror.HandleRecover(errorHandler)
 
 	// Application context
-	a := &application{
+	app := &application{
 		config:          config,
 		logger:          logger,
 		errorHandler:    errorHandler,
@@ -50,7 +50,7 @@ func main() {
 	}
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	a.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
+	app.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
 	level.Info(logger).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
@@ -60,7 +60,7 @@ func main() {
 		"environment", config.Environment,
 	)
 
-	serverQueue := newServerQueue(a)
+	serverQueue := newServerQueue(app)
 	defer serverQueue.Close()
 
 	errChan := serverQueue.Start()
