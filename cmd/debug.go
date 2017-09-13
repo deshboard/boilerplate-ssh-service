@@ -5,6 +5,6 @@ import (
 )
 
 // registerDebugRoutes allows to register custom routes in the debug server.
-func registerDebugRoutes(appCtx *application, h http.HandlerAcceptor) {
+func registerDebugRoutes(a *application, h http.HandlerAcceptor) {
 
 }

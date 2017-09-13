@@ -41,7 +41,7 @@ func main() {
 	defer emperror.HandleRecover(errorHandler)
 
 	// Application context
-	appCtx := &application{
+	a := &application{
 		config:          config,
 		logger:          logger,
 		errorHandler:    errorHandler,
@@ -50,17 +50,17 @@ func main() {
 	}
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	appCtx.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
+	a.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
 	level.Info(logger).Log(
-		"msg", fmt.Sprintf("Starting %s", FriendlyServiceName),
+		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
 		"version", Version,
-		"commitHash", CommitHash,
-		"buildDate", BuildDate,
+		"commit_hash", CommitHash,
+		"build_date", BuildDate,
 		"environment", config.Environment,
 	)
 
-	serverQueue := newServerQueue(appCtx)
+	serverQueue := newServerQueue(a)
 	defer serverQueue.Close()
 
 	errChan := serverQueue.Start()
@@ -71,14 +71,14 @@ func main() {
 	select {
 	case err := <-errChan:
 		status.SetStatus(healthz.Unhealthy)
-		level.Debug(logger).Log("msg", "Error received from error channel")
+		level.Debug(logger).Log("msg", "error received from error channel")
 		emperror.HandleIfErr(errorHandler, err)
 	case s := <-signalChan:
-		level.Info(logger).Log("msg", fmt.Sprintf("Captured %v", s))
+		level.Info(logger).Log("msg", fmt.Sprintf("captured %v", s))
 		status.SetStatus(healthz.Unhealthy)
 
 		level.Debug(logger).Log(
-			"msg", "Shutting down with timeout",
+			"msg", "shutting down with timeout",
 			"timeout", config.ShutdownTimeout,
 		)
 

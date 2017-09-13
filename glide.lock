@@ -1,5 +1,5 @@
-hash: 9956c2a5417f95a3a14f75aa1273ba7e8f63bd8d56f8b33964d09deab789a00c
-updated: 2017-09-06T13:37:07.6462961+02:00
+hash: 347df6e39bf1a27c30f3d7ba04c6a850cfb684e74b0600ff912961fffee60a2a
+updated: 2017-09-13T18:02:46.272601307+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -22,7 +22,7 @@ imports:
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
-  version: a7e07fc73d8dddc4892648b8f990b518233bcbad
+  version: e55582cb1f4eaef30fc1454deeb8474f19bc47cd
   subpackages:
   - internal
 - name: github.com/goph/stdlib
@@ -52,7 +52,7 @@ imports:
 - name: github.com/spf13/pflag
   version: 7aff26db30c1be810f9de5038ec5ef96ac41fd7c
 - name: golang.org/x/crypto
-  version: 81e90905daefcd6fd217b62423c0908922eadb30
+  version: faadfbdc035307d901e69eea569f5dda451a3ee3
   subpackages:
   - curve25519
   - ed25519
@@ -66,7 +66,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 9aade4d3a3b7e6d876cd3823ad20ec45fc035402
+  version: 062cd7e4e68206d8bab9b18396626e855c992658
   subpackages:
   - unix
   - windows

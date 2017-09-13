@@ -14,14 +14,14 @@ import (
 )
 
 // newDebugServer creates a new debug and health check server.
-func newDebugServer(appCtx *application) serverz.Server {
+func newDebugServer(a *application) serverz.Server {
 	handler := http.NewServeMux()
 
 	// Add health checks
-	handler.Handle("/healthz", appCtx.healthCollector.Handler(healthz.LivenessCheck))
-	handler.Handle("/readiness", appCtx.healthCollector.Handler(healthz.ReadinessCheck))
+	handler.Handle("/healthz", a.healthCollector.Handler(healthz.LivenessCheck))
+	handler.Handle("/readiness", a.healthCollector.Handler(healthz.ReadinessCheck))
 
-	if appCtx.config.Debug {
+	if a.config.Debug {
 		// This is probably okay, as this service should not be exposed to public in the first place.
 		trace.SetAuth(trace.NoAuth)
 
@@ -31,15 +31,15 @@ func newDebugServer(appCtx *application) serverz.Server {
 	}
 
 	// Register application specific debug routes (like metrics, etc)
-	registerDebugRoutes(appCtx, handler)
+	registerDebugRoutes(a, handler)
 
 	return &serverz.AppServer{
 		Server: &http.Server{
 			Handler:  handler,
-			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "health: ", 0),
+			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(a.logger)), "health: ", 0),
 		},
 		Name:   "debug",
-		Addr:   serverz.NewAddr("tcp", appCtx.config.DebugAddr),
-		Logger: appCtx.logger,
+		Addr:   serverz.NewAddr("tcp", a.config.DebugAddr),
+		Logger: a.logger,
 	}
 }
