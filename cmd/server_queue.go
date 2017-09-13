@@ -3,10 +3,10 @@ package main
 import "github.com/goph/serverz"
 
 // newServerQueue returns a new server queue with all the registered servers.
-func newServerQueue(appCtx *application) *serverz.Queue {
+func newServerQueue(a *application) *serverz.Queue {
 	queue := serverz.NewQueue()
 
-	debugServer := newDebugServer(appCtx)
+	debugServer := newDebugServer(a)
 	queue.Prepend(debugServer, nil)
 
 	return queue
