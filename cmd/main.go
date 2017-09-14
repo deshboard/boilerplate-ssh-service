@@ -40,17 +40,24 @@ func main() {
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(errorHandler)
 
+	// Create a new health collector
+	healthCollector := healthz.Collector{}
+
+	// Create a new application tracer
+	tracer := newTracer(config)
+	defer ext.Close(errorHandler)
+
 	// Application context
 	app := &application{
 		config:          config,
 		logger:          logger,
 		errorHandler:    errorHandler,
-		healthCollector: healthz.Collector{},
-		tracer:          newTracer(config),
+		healthCollector: healthCollector,
+		tracer:          tracer,
 	}
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	app.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
+	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
 	level.Info(logger).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
