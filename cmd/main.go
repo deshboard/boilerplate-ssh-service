@@ -45,7 +45,7 @@ func main() {
 
 	// Create a new application tracer
 	tracer := newTracer(config)
-	defer ext.Close(errorHandler)
+	defer ext.Close(tracer)
 
 	// Application context
 	app := &application{
