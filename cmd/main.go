@@ -44,7 +44,7 @@ func main() {
 	healthCollector := healthz.Collector{}
 
 	// Create a new application tracer
-	tracer := newTracer(config)
+	tracer := newTracer(config, logger)
 	defer ext.Close(tracer)
 
 	// Application context
