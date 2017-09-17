@@ -1,9 +1,14 @@
 package main
 
 import (
+	"flag"
+	"os"
+
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	"github.com/goph/healthz"
+	"github.com/goph/stdlib/ext"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/opentracing/opentracing-go"
 )
 
@@ -18,4 +23,48 @@ type application struct {
 	errorHandler    emperror.Handler
 	healthCollector healthz.Collector
 	tracer          opentracing.Tracer
+	closers         ext.Closers
+}
+
+// provider is a mutator for an application registering it's dependencies.
+type provider func(app *application) error
+
+// newApplication initializes a new application using the passed providers.
+func newApplication(providers ...provider) (*application, error) {
+	app := new(application)
+
+	for _, p := range providers {
+		err := p(app)
+		if err != nil {
+			// Returning app, so that already initialized resources can still be closed.
+			return app, err
+		}
+	}
+
+	return app, nil
+}
+
+// Close implements the common closer interface and closes the underlying resources.
+func (a *application) Close() error {
+	return a.closers.Close()
+}
+
+// configProvider registers configuration in the application.
+func configProvider(app *application) error {
+	config := new(configuration)
+
+	// Load configuration from environment
+	err := envconfig.Process("", config)
+	if err != nil {
+		return err
+	}
+
+	// Load configuration from flags
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	config.flags(flags)
+	flags.Parse(os.Args[1:])
+
+	app.config = config
+
+	return nil
 }

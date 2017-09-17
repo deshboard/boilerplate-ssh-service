@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"os"
 	"os/signal"
@@ -12,29 +11,25 @@ import (
 	"github.com/goph/emperror"
 	"github.com/goph/healthz"
 	"github.com/goph/stdlib/ext"
-	"github.com/kelseyhightower/envconfig"
 )
 
 func main() {
-	config := &configuration{}
+	app, err := newApplication(
+		configProvider,
+	)
+	// Close resources even when there is an error
+	defer app.Close()
 
-	// Load configuration from environment
-	err := envconfig.Process("", config)
 	if err != nil {
 		panic(err)
 	}
 
-	// Load configuration from flags
-	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	config.flags(flags)
-	flags.Parse(os.Args[1:])
-
 	// Create a new logger
-	logger := newLogger(config)
+	logger := newLogger(app.config)
 	defer ext.Close(logger)
 
 	// Create a new error handler
-	errorHandler := newErrorHandler(config, logger)
+	errorHandler := newErrorHandler(app.config, logger)
 	defer ext.Close(errorHandler)
 
 	// Register error handler to recover from panics
@@ -44,17 +39,14 @@ func main() {
 	healthCollector := healthz.Collector{}
 
 	// Create a new application tracer
-	tracer := newTracer(config, logger)
+	tracer := newTracer(app.config, logger)
 	defer ext.Close(tracer)
 
 	// Application context
-	app := &application{
-		config:          config,
-		logger:          logger,
-		errorHandler:    errorHandler,
-		healthCollector: healthCollector,
-		tracer:          tracer,
-	}
+	app.logger = logger
+	app.errorHandler = errorHandler
+	app.healthCollector = healthCollector
+	app.tracer = tracer
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
@@ -64,7 +56,7 @@ func main() {
 		"version", Version,
 		"commit_hash", CommitHash,
 		"build_date", BuildDate,
-		"environment", config.Environment,
+		"environment", app.config.Environment,
 	)
 
 	serverQueue := newServerQueue(app)
@@ -86,10 +78,10 @@ func main() {
 
 		level.Debug(logger).Log(
 			"msg", "shutting down with timeout",
-			"timeout", config.ShutdownTimeout,
+			"timeout", app.config.ShutdownTimeout,
 		)
 
-		ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), app.config.ShutdownTimeout)
 
 		err := serverQueue.Shutdown(ctx)
 		if err != nil {
