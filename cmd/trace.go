@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/go-kit/kit/log"
 	"github.com/opentracing/opentracing-go"
 )
 
-// newTracer creates a new Opentracing Tracer.
-func newTracer(config *configuration, logger log.Logger) opentracing.Tracer {
-	return opentracing.GlobalTracer()
+// tracerProvider creates a new Opentracing Tracer and registers it in the application.
+func tracerProvider(app *application) error {
+	app.tracer = opentracing.GlobalTracer()
+
+	return nil
 }

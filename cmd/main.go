@@ -10,7 +10,6 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
 	"github.com/goph/healthz"
-	"github.com/goph/stdlib/ext"
 )
 
 func main() {
@@ -19,6 +18,7 @@ func main() {
 		loggerProvider,
 		errorHandlerProvider,
 		healthProvider,
+		tracerProvider,
 	)
 	// Close resources even when there is an error
 	defer app.Close()
@@ -37,13 +37,6 @@ func main() {
 
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(app.errorHandler)
-
-	// Create a new application tracer
-	tracer := newTracer(app.config, app.logger)
-	defer ext.Close(tracer)
-
-	// Application context
-	app.tracer = tracer
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	app.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
