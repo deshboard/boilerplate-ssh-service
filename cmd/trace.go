@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/opentracing/opentracing-go"
-)
+import "github.com/opentracing/opentracing-go"
 
 // tracerProvider creates a new Opentracing Tracer and registers it in the application.
 func tracerProvider(app *application) error {
