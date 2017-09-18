@@ -68,3 +68,10 @@ func configProvider(app *application) error {
 
 	return nil
 }
+
+// healthProvider registers the health collector in the application.
+func healthProvider(app *application) error {
+	app.healthCollector = healthz.Collector{}
+
+	return nil
+}

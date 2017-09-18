@@ -18,6 +18,7 @@ func main() {
 		configProvider,
 		loggerProvider,
 		errorHandlerProvider,
+		healthProvider,
 	)
 	// Close resources even when there is an error
 	defer app.Close()
@@ -37,19 +38,15 @@ func main() {
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(app.errorHandler)
 
-	// Create a new health collector
-	healthCollector := healthz.Collector{}
-
 	// Create a new application tracer
 	tracer := newTracer(app.config, app.logger)
 	defer ext.Close(tracer)
 
 	// Application context
-	app.healthCollector = healthCollector
 	app.tracer = tracer
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
+	app.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
 	level.Info(app.logger).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
