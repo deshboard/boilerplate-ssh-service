@@ -23,6 +23,14 @@ func main() {
 	defer app.Close()
 
 	if err != nil {
+		// Handle the error and exit if we have an error handler
+		if app.errorHandler != nil {
+			app.errorHandler.Handle(err)
+
+			os.Exit(1)
+		}
+
+		// Otherwise panic
 		panic(err)
 	}
 
