@@ -17,6 +17,7 @@ func main() {
 	app, err := newApplication(
 		configProvider,
 		loggerProvider,
+		errorHandlerProvider,
 	)
 	// Close resources even when there is an error
 	defer app.Close()
@@ -25,12 +26,8 @@ func main() {
 		panic(err)
 	}
 
-	// Create a new error handler
-	errorHandler := newErrorHandler(app.config, app.logger)
-	defer ext.Close(errorHandler)
-
 	// Register error handler to recover from panics
-	defer emperror.HandleRecover(errorHandler)
+	defer emperror.HandleRecover(app.errorHandler)
 
 	// Create a new health collector
 	healthCollector := healthz.Collector{}
@@ -40,7 +37,6 @@ func main() {
 	defer ext.Close(tracer)
 
 	// Application context
-	app.errorHandler = errorHandler
 	app.healthCollector = healthCollector
 	app.tracer = tracer
 
@@ -67,7 +63,7 @@ func main() {
 	case err := <-errChan:
 		status.SetStatus(healthz.Unhealthy)
 		level.Debug(app.logger).Log("msg", "error received from error channel")
-		emperror.HandleIfErr(errorHandler, err)
+		emperror.HandleIfErr(app.errorHandler, err)
 	case s := <-signalChan:
 		level.Info(app.logger).Log("msg", fmt.Sprintf("captured %v", s))
 		status.SetStatus(healthz.Unhealthy)
@@ -81,7 +77,7 @@ func main() {
 
 		err := serverQueue.Shutdown(ctx)
 		if err != nil {
-			errorHandler.Handle(err)
+			app.errorHandler.Handle(err)
 		}
 
 		// Cancel context if shutdown completed earlier
