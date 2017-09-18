@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"github.com/goph/emperror"
 )
 
 // loggerProvider creates a new logger instance and registers it in the application.
@@ -21,7 +22,7 @@ func loggerProvider(app *application) error {
 		logger = log.NewJSONLogger(w)
 
 	default:
-		return fmt.Errorf("unsupported log format: %s", app.config.LogFormat)
+		return emperror.NewWithStackTrace(fmt.Sprintf("unsupported log format: %s", app.config.LogFormat))
 	}
 
 	// Add default context
