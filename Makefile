@@ -16,10 +16,10 @@ DOCKER_LATEST ?= false
 GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")
 GO_PACKAGES = $(shell go list ./app/...)
 
-.PHONY: setup dep clean run watch build build-docker docker check test watch-test cs csfix envcheck
-
+.PHONY: setup
 setup:: dep .env .env.test ## Setup the project for development
 
+.PHONY: dep
 dep: ## Install dependencies
 	@glide install
 
@@ -29,42 +29,54 @@ dep: ## Install dependencies
 .env.test: ## Create local env file for running tests
 	cp .env.dist .env.test
 
+.PHONY: clean
 clean:: ## Clean the working area
 	rm -rf ${BUILD_DIR}/ vendor/ .env .env.test
 
+.PHONY: run
 run: TAGS += dev
 run: build .env ## Build and execute a binary
 	${BUILD_DIR}/${BINARY_NAME} ${ARGS}
 
+.PHONY: watch
 watch: ## Watch for file changes and run the built binary
 	reflex -s -t 3s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
 
+.PHONY: build
 build: ## Build a binary
 	CGO_ENABLED=0 go build -tags '${TAGS}' ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME} ${PACKAGE}/cmd
 
+.PHONY: build-docker
 build-docker:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME}-docker ${PACKAGE}/cmd
 
+.PHONY: docker
 docker: build-docker ## Build a Docker image
 	docker build --build-arg BUILD_DIR=${BUILD_DIR} --build-arg BINARY_NAME=${BINARY_NAME}-docker -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
 ifeq (${DOCKER_LATEST}, true)
 	docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
 endif
 
+.PHONY: check
 check:: test cs ## Run tests and linters
 
+.PHONY: test
 test: .env.test ## Run unit tests
 	@go test -tags '${TAGS}' ${ARGS} ${GO_PACKAGES}
 
+.PHONY: watch-test
 watch-test: ## Watch for file changes and run tests
 	reflex -t 2s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" test
 
+.PHONY: cs
 cs: ## Check that all source files follow the Go coding style
 	@gofmt -l ${GO_SOURCE_FILES} | read something && echo "Code differs from gofmt's style" 1>&2 && exit 1 || true
 
+.PHONY: csfix
 csfix: ## Fix Go coding style violations
 	@gofmt -l -w -s ${GO_SOURCE_FILES}
 
+.PHONY: envcheck
 envcheck:: ## Check environment for all the necessary requirements
 	$(call executable_check,Go,go)
 	$(call executable_check,Glide,glide)
