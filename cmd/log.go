@@ -6,14 +6,15 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"github.com/goph/emperror"
 )
 
-// newLogger creates a new logger instance.
-func newLogger(config *configuration) log.Logger {
+// loggerProvider creates a new logger instance and registers it in the application.
+func loggerProvider(app *application) error {
 	var logger log.Logger
 	w := log.NewSyncWriter(os.Stdout)
 
-	switch config.LogFormat {
+	switch app.config.LogFormat {
 	case "logfmt":
 		logger = log.NewLogfmtLogger(w)
 
@@ -21,7 +22,7 @@ func newLogger(config *configuration) log.Logger {
 		logger = log.NewJSONLogger(w)
 
 	default:
-		panic(fmt.Errorf("unsupported log format: %s", config.LogFormat))
+		return emperror.NewWithStackTrace(fmt.Sprintf("unsupported log format: %s", app.config.LogFormat))
 	}
 
 	// Add default context
@@ -31,9 +32,11 @@ func newLogger(config *configuration) log.Logger {
 	logger = level.NewInjector(logger, level.InfoValue())
 
 	// Only log debug level messages if debug mode is turned on
-	if config.Debug == false {
+	if app.config.Debug == false {
 		logger = level.NewFilter(logger, level.AllowInfo())
 	}
 
-	return logger
+	app.logger = logger
+
+	return nil
 }
