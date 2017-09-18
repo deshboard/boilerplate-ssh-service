@@ -16,6 +16,7 @@ import (
 func main() {
 	app, err := newApplication(
 		configProvider,
+		loggerProvider,
 	)
 	// Close resources even when there is an error
 	defer app.Close()
@@ -24,12 +25,8 @@ func main() {
 		panic(err)
 	}
 
-	// Create a new logger
-	logger := newLogger(app.config)
-	defer ext.Close(logger)
-
 	// Create a new error handler
-	errorHandler := newErrorHandler(app.config, logger)
+	errorHandler := newErrorHandler(app.config, app.logger)
 	defer ext.Close(errorHandler)
 
 	// Register error handler to recover from panics
@@ -39,11 +36,10 @@ func main() {
 	healthCollector := healthz.Collector{}
 
 	// Create a new application tracer
-	tracer := newTracer(app.config, logger)
+	tracer := newTracer(app.config, app.logger)
 	defer ext.Close(tracer)
 
 	// Application context
-	app.logger = logger
 	app.errorHandler = errorHandler
 	app.healthCollector = healthCollector
 	app.tracer = tracer
@@ -51,7 +47,7 @@ func main() {
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
-	level.Info(logger).Log(
+	level.Info(app.logger).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
 		"version", Version,
 		"commit_hash", CommitHash,
@@ -70,13 +66,13 @@ func main() {
 	select {
 	case err := <-errChan:
 		status.SetStatus(healthz.Unhealthy)
-		level.Debug(logger).Log("msg", "error received from error channel")
+		level.Debug(app.logger).Log("msg", "error received from error channel")
 		emperror.HandleIfErr(errorHandler, err)
 	case s := <-signalChan:
-		level.Info(logger).Log("msg", fmt.Sprintf("captured %v", s))
+		level.Info(app.logger).Log("msg", fmt.Sprintf("captured %v", s))
 		status.SetStatus(healthz.Unhealthy)
 
-		level.Debug(logger).Log(
+		level.Debug(app.logger).Log(
 			"msg", "shutting down with timeout",
 			"timeout", app.config.ShutdownTimeout,
 		)
