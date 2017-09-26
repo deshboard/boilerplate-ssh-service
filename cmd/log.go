@@ -26,7 +26,11 @@ func loggerProvider(app *application) error {
 	}
 
 	// Add default context
-	logger = log.With(logger, "service", ServiceName)
+	logger = log.With(
+		logger,
+		"service", ServiceName,
+		"tag", LogTag,
+	)
 
 	// Default to Info level
 	logger = level.NewInjector(logger, level.InfoValue())
