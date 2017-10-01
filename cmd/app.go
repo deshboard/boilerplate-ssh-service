@@ -2,11 +2,10 @@ package main
 
 import (
 	"flag"
-	"io"
 	"os"
 
-	"github.com/go-kit/kit/log"
-	"github.com/goph/emperror"
+	"github.com/goph/fw"
+	"github.com/goph/fw/log"
 	"github.com/goph/healthz"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/opentracing/opentracing-go"
@@ -18,12 +17,10 @@ import (
 // certain parts of the application. DI would be a more appropriate solution, but even there
 // bootstrapping requires a single resolution of all dependencies.
 type application struct {
+	*fw.Application
 	config          *configuration
-	logger          log.Logger
-	errorHandler    emperror.Handler
 	healthCollector healthz.Collector
 	tracer          opentracing.Tracer
-	closers         []io.Closer
 }
 
 // provider is a mutator for an application registering it's dependencies.
@@ -44,23 +41,6 @@ func newApplication(providers ...provider) (*application, error) {
 	return app, nil
 }
 
-// Close implements the common closer interface and closes the underlying resources.
-// The resources are closed in a reversed order (just like how subsequent defer Close() calls would work).
-// Errors are suppressed (again, like in case of defer calls).
-func (a *application) Close() error {
-	// TODO: log application closing and handle errors?
-	if len(a.closers) == 0 {
-		return nil
-	}
-
-	// Closing resources in a reversed order
-	for i := len(a.closers) - 1; i >= 0; i-- {
-		a.closers[i].Close()
-	}
-
-	return nil
-}
-
 // configProvider registers configuration in the application.
 func configProvider(app *application) error {
 	config := new(configuration)
@@ -77,6 +57,24 @@ func configProvider(app *application) error {
 	flags.Parse(os.Args[1:])
 
 	app.config = config
+
+	return nil
+}
+
+func applicationProvider(app *application) error {
+	a := fw.NewApplication(
+		fw.Logger(log.NewLogger(
+			log.FormatString(app.config.LogFormat),
+			log.Debug(app.config.Debug),
+			log.With(
+				"environment", app.config.Environment,
+				"service", ServiceName,
+				"tag", LogTag,
+			),
+		)),
+	)
+
+	app.Application = a
 
 	return nil
 }

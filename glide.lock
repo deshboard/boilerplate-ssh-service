@@ -1,6 +1,12 @@
-hash: 301e10a3c99a90b8acd9311669b5c01662de7c30c05a96abac3423c2e29955b7
-updated: 2017-09-13T17:38:51.41757537+02:00
+hash: f59032d26f738c0bdbed96b9e13e9fbab6ccbf10b20c202996cd4f75dbb9b71b
+updated: 2017-10-01T11:56:08.718107393+02:00
 imports:
+- name: github.com/apache/thrift
+  version: b2a4d4ae21c789b689dd162deb819665567f481c
+  subpackages:
+  - lib/go/thrift
+- name: github.com/codahale/hdrhistogram
+  version: f8ad88b59a584afeee9d334eff879b104439117b
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
   subpackages:
@@ -15,6 +21,11 @@ imports:
   version: 84194a32041fe2a0816fabf3fe54b0cc6156e8fc
   subpackages:
   - log
+- name: github.com/goph/fw
+  version: 2bc09f77bf61044378259469dc5f131a25911f0f
+  subpackages:
+  - error
+  - log
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
@@ -25,12 +36,11 @@ imports:
   version: 5703fbf5f4f844082ae11de7e6e28deb61dba669
   subpackages:
   - expvar
-  - ext
   - net/http
   - net/http/pprof
   - x/net/trace
 - name: github.com/joho/godotenv
-  version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
+  version: a79fa1e548e2c689c241d10173efd51e5d689d5b
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
@@ -38,9 +48,26 @@ imports:
 - name: github.com/opentracing/opentracing-go
   version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
   subpackages:
+  - ext
   - log
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/uber/jaeger-client-go
+  version: 3e3870040def0ebdaf65a003863fa64f5cb26139
+  subpackages:
+  - config
+  - internal/spanlog
+  - log
+  - rpcmetrics
+  - thrift-gen/agent
+  - thrift-gen/jaeger
+  - thrift-gen/sampling
+  - thrift-gen/zipkincore
+  - utils
+- name: github.com/uber/jaeger-lib
+  version: 3b2a9ad2a045881ab7a0f81d465be54c8292ee4f
+  subpackages:
+  - metrics
 - name: golang.org/x/net
   version: 1c05540f6879653db88113bc4a2b70aec4bd491f
   subpackages:

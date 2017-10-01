@@ -15,18 +15,16 @@ import (
 func main() {
 	app, err := newApplication(
 		configProvider,
-		loggerProvider,
-		errorHandlerProvider,
+		applicationProvider,
 		healthProvider,
-		tracerProvider,
 	)
 	// Close resources even when there is an error
 	defer app.Close()
 
 	if err != nil {
 		// Handle the error and exit if we have an error handler
-		if app.errorHandler != nil {
-			app.errorHandler.Handle(err)
+		if app.ErrorHandler() != nil {
+			app.ErrorHandler().Handle(err)
 
 			os.Exit(1)
 		}
@@ -36,17 +34,16 @@ func main() {
 	}
 
 	// Register error handler to recover from panics
-	defer emperror.HandleRecover(app.errorHandler)
+	defer emperror.HandleRecover(app.ErrorHandler())
 
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	app.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
 
-	level.Info(app.logger).Log(
+	level.Info(app.Logger()).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
 		"version", Version,
 		"commit_hash", CommitHash,
 		"build_date", BuildDate,
-		"environment", app.config.Environment,
 	)
 
 	serverQueue := newServerQueue(app)
@@ -60,13 +57,13 @@ func main() {
 	select {
 	case err := <-errChan:
 		status.SetStatus(healthz.Unhealthy)
-		level.Debug(app.logger).Log("msg", "error received from error channel")
-		emperror.HandleIfErr(app.errorHandler, err)
+		level.Debug(app.Logger()).Log("msg", "error received from error channel")
+		emperror.HandleIfErr(app.ErrorHandler(), err)
 	case s := <-signalChan:
-		level.Info(app.logger).Log("msg", fmt.Sprintf("captured %v", s))
+		level.Info(app.Logger()).Log("msg", fmt.Sprintf("captured %v", s))
 		status.SetStatus(healthz.Unhealthy)
 
-		level.Debug(app.logger).Log(
+		level.Debug(app.Logger()).Log(
 			"msg", "shutting down with timeout",
 			"timeout", app.config.ShutdownTimeout,
 		)
@@ -75,7 +72,7 @@ func main() {
 
 		err := serverQueue.Shutdown(ctx)
 		if err != nil {
-			app.errorHandler.Handle(err)
+			app.ErrorHandler().Handle(err)
 		}
 
 		// Cancel context if shutdown completed earlier
