@@ -13,24 +13,14 @@ import (
 )
 
 func main() {
-	app, err := newApplication(
-		configProvider,
-		applicationProvider,
-		healthProvider,
-	)
+	app, err := bootstrap()
 	// Close resources even when there is an error
 	defer app.Close()
 
 	if err != nil {
-		// Handle the error and exit if we have an error handler
-		if app.ErrorHandler() != nil {
-			app.ErrorHandler().Handle(err)
+		app.ErrorHandler().Handle(err)
 
-			os.Exit(1)
-		}
-
-		// Otherwise panic
-		panic(err)
+		os.Exit(1)
 	}
 
 	// Register error handler to recover from panics
@@ -71,9 +61,8 @@ func main() {
 		ctx, cancel := context.WithTimeout(context.Background(), app.config.ShutdownTimeout)
 
 		err := serverQueue.Shutdown(ctx)
-		if err != nil {
-			app.ErrorHandler().Handle(err)
-		}
+
+		emperror.HandleIfErr(app.ErrorHandler(), err)
 
 		// Cancel context if shutdown completed earlier
 		cancel()

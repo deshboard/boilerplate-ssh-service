@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/goph/fw"
-	"github.com/goph/fw/log"
 	"github.com/goph/healthz"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/opentracing/opentracing-go"
@@ -57,24 +56,6 @@ func configProvider(app *application) error {
 	flags.Parse(os.Args[1:])
 
 	app.config = config
-
-	return nil
-}
-
-func applicationProvider(app *application) error {
-	a := fw.NewApplication(
-		fw.Logger(log.NewLogger(
-			log.FormatString(app.config.LogFormat),
-			log.Debug(app.config.Debug),
-			log.With(
-				"environment", app.config.Environment,
-				"service", ServiceName,
-				"tag", LogTag,
-			),
-		)),
-	)
-
-	app.Application = a
 
 	return nil
 }
