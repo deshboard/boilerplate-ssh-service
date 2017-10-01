@@ -45,11 +45,11 @@ func newSSHServer(app *application) serverz.Server {
 
 				a.Run()
 			},
-			PublicKeyHandler: publicKeyHandler(app.config, publicKeys, app.logger),
+			PublicKeyHandler: publicKeyHandler(app.config, publicKeys, app.Logger()),
 		},
 		Name:   "ssh",
 		Addr:   serverz.NewAddr("tcp", app.config.SSHAddr),
-		Logger: app.logger,
+		Logger: app.Logger(),
 	}
 }
 

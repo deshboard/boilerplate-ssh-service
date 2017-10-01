@@ -60,9 +60,13 @@ endif
 .PHONY: check
 check:: test cs ## Run tests and linters
 
+PASS=$(shell printf "\033[32mPASS\033[0m")
+FAIL=$(shell printf "\033[31mFAIL\033[0m")
+COLORIZE=sed ''/PASS/s//${PASS}/'' | sed ''/FAIL/s//${FAIL}/''
+
 .PHONY: test
 test: .env.test ## Run unit tests
-	@go test -tags '${TAGS}' ${ARGS} ${GO_PACKAGES}
+	@go test -tags '${TAGS}' ${ARGS} ${GO_PACKAGES} | ${COLORIZE}
 
 .PHONY: watch-test
 watch-test: ## Watch for file changes and run tests

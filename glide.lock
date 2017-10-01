@@ -1,5 +1,5 @@
-hash: 347df6e39bf1a27c30f3d7ba04c6a850cfb684e74b0600ff912961fffee60a2a
-updated: 2017-09-13T18:02:46.272601307+02:00
+hash: 11227424f4e9bd1400f41fc1f1ed16b7f816b64b3c80c64709f958bcac994f8e
+updated: 2017-10-01T23:05:05.601521142+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -19,6 +19,11 @@ imports:
   version: 84194a32041fe2a0816fabf3fe54b0cc6156e8fc
   subpackages:
   - log
+- name: github.com/goph/fw
+  version: 2bc09f77bf61044378259469dc5f131a25911f0f
+  subpackages:
+  - error
+  - log
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
@@ -29,14 +34,13 @@ imports:
   version: 5703fbf5f4f844082ae11de7e6e28deb61dba669
   subpackages:
   - expvar
-  - ext
   - net/http
   - net/http/pprof
   - x/net/trace
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/joho/godotenv
-  version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
+  version: a79fa1e548e2c689c241d10173efd51e5d689d5b
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
@@ -48,11 +52,11 @@ imports:
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/spf13/cobra
-  version: b78744579491c1ceeaaa3b40205e56b0591b93a3
+  version: e5f66de850af3302fbe378c8acded2b0fa55472c
 - name: github.com/spf13/pflag
-  version: 7aff26db30c1be810f9de5038ec5ef96ac41fd7c
+  version: 5c2d607c75df0540c877524f9e82d3edb7748668
 - name: golang.org/x/crypto
-  version: faadfbdc035307d901e69eea569f5dda451a3ee3
+  version: 9419663f5a44be8b34ca85f08abc5fe1be11f8a3
   subpackages:
   - curve25519
   - ed25519
@@ -66,7 +70,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 062cd7e4e68206d8bab9b18396626e855c992658
+  version: 314a259e304ff91bd6985da2a7149bbf91237993
   subpackages:
   - unix
   - windows
