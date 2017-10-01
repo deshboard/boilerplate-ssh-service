@@ -36,10 +36,10 @@ func newDebugServer(app *application) serverz.Server {
 	return &serverz.AppServer{
 		Server: &http.Server{
 			Handler:  handler,
-			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(log.With(app.logger, "server", "debug"))), "", 0),
+			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(log.With(app.Logger(), "server", "debug"))), "", 0),
 		},
 		Name:   "debug",
 		Addr:   serverz.NewAddr("tcp", app.config.DebugAddr),
-		Logger: app.logger,
+		Logger: app.Logger(),
 	}
 }
