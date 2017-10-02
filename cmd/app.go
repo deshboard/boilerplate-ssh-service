@@ -7,7 +7,6 @@ import (
 	"github.com/goph/fw"
 	"github.com/goph/healthz"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/opentracing/opentracing-go"
 )
 
 // application collects all dependencies and exposes them in a single service locator.
@@ -19,7 +18,6 @@ type application struct {
 	*fw.Application
 	config          *configuration
 	healthCollector healthz.Collector
-	tracer          opentracing.Tracer
 }
 
 // provider is a mutator for an application registering it's dependencies.

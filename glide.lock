@@ -1,5 +1,5 @@
-hash: 11227424f4e9bd1400f41fc1f1ed16b7f816b64b3c80c64709f958bcac994f8e
-updated: 2017-10-01T23:05:05.601521142+02:00
+hash: b87f35fd27acce63d8c13fc27b488f2d47cf9fb2851e7e623fb34c1c986baefb
+updated: 2017-10-02T05:13:54.567244135+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -20,7 +20,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fw
-  version: 2bc09f77bf61044378259469dc5f131a25911f0f
+  version: a0e08b00d044188ea1e6e42eaff36432ca4b7633
   subpackages:
   - error
   - log
@@ -54,7 +54,7 @@ imports:
 - name: github.com/spf13/cobra
   version: e5f66de850af3302fbe378c8acded2b0fa55472c
 - name: github.com/spf13/pflag
-  version: 5c2d607c75df0540c877524f9e82d3edb7748668
+  version: be7121dd7a937a85e1e4b1ddda6a3edce3466110
 - name: golang.org/x/crypto
   version: 9419663f5a44be8b34ca85f08abc5fe1be11f8a3
   subpackages:
