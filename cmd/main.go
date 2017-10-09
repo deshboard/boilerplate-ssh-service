@@ -2,69 +2,101 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
+	"net"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/go-kit/kit/log/level"
-	"github.com/goph/emperror"
+	"github.com/goph/fw"
+	"github.com/goph/fw/log"
 	"github.com/goph/healthz"
+	"github.com/kelseyhightower/envconfig"
 )
 
 func main() {
-	app, err := bootstrap()
-	// Close resources even when there is an error
+	config := new(configuration)
+
+	// Load configuration from environment
+	err := envconfig.Process("", config)
+	if err != nil {
+		panic(err)
+	}
+
+	// Load configuration from flags
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	config.flags(flags)
+	flags.Parse(os.Args[1:])
+
+	app := fw.NewApplication(
+		fw.Entry("config", config),
+		fw.Logger(log.NewLogger(
+			log.FormatString(config.LogFormat),
+			log.Debug(config.Debug),
+			log.With(
+				"environment", config.Environment,
+				"service", ServiceName,
+				"tag", LogTag,
+			),
+		)),
+		fw.Entry("health_collector", healthz.Collector{}),
+		fw.LifecycleHook(fw.SignalHook),
+		fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
+			healthCollector := a.MustGet("health_collector").(healthz.Collector)
+
+			status := healthz.NewStatusChecker(healthz.Healthy)
+			healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
+
+			return fw.LifecycleHook(fw.Hook{
+				PreStart: func() error {
+					status.SetStatus(healthz.Healthy)
+
+					return nil
+				},
+				PreShutdown: func() error {
+					status.SetStatus(healthz.Unhealthy)
+
+					return nil
+				},
+			})
+		}),
+		fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
+			return fw.LifecycleHook(fw.Hook{
+				PreStart: func() error {
+					level.Info(a.Logger()).Log(
+						"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
+						"version", Version,
+						"commit_hash", CommitHash,
+						"build_date", BuildDate,
+					)
+
+					return nil
+				},
+			})
+		}),
+		fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
+			debugServer := newDebugServer(a)
+
+			return fw.LifecycleHook(fw.Hook{
+				OnStart: func(ctx context.Context, done chan<- interface{}) error {
+					lis, err := net.Listen("tcp", config.DebugAddr)
+					if err != nil {
+						return err
+					}
+
+					go func() {
+						done <- debugServer.Serve(lis)
+					}()
+
+					return nil
+				},
+				OnShutdown: func(ctx context.Context) error {
+					return debugServer.Shutdown(ctx)
+				},
+			})
+		}),
+	)
 	defer app.Close()
 
-	if err != nil {
-		app.ErrorHandler().Handle(err)
-
-		os.Exit(1)
-	}
-
-	// Register error handler to recover from panics
-	defer emperror.HandleRecover(app.ErrorHandler())
-
-	status := healthz.NewStatusChecker(healthz.Healthy)
-	app.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
-
-	level.Info(app.Logger()).Log(
-		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
-		"version", Version,
-		"commit_hash", CommitHash,
-		"build_date", BuildDate,
-	)
-
-	serverQueue := newServerQueue(app)
-	defer serverQueue.Close()
-
-	errChan := serverQueue.Start()
-
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
-
-	select {
-	case err := <-errChan:
-		status.SetStatus(healthz.Unhealthy)
-		level.Debug(app.Logger()).Log("msg", "error received from error channel")
-		emperror.HandleIfErr(app.ErrorHandler(), err)
-	case s := <-signalChan:
-		level.Info(app.Logger()).Log("msg", fmt.Sprintf("captured %v", s))
-		status.SetStatus(healthz.Unhealthy)
-
-		level.Debug(app.Logger()).Log(
-			"msg", "shutting down with timeout",
-			"timeout", app.config.ShutdownTimeout,
-		)
-
-		ctx, cancel := context.WithTimeout(context.Background(), app.config.ShutdownTimeout)
-
-		err := serverQueue.Shutdown(ctx)
-
-		emperror.HandleIfErr(app.ErrorHandler(), err)
-
-		// Cancel context if shutdown completed earlier
-		cancel()
-	}
+	app.Run()
 }
