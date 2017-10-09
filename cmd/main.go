@@ -1,18 +1,16 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
-	"net"
 	"os"
-
-	"net/http"
 
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/fw"
+	"github.com/goph/fw-ext/debug"
 	"github.com/goph/fw-ext/health"
 	"github.com/goph/fw/log"
+	"github.com/goph/serverz"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -58,32 +56,7 @@ func main() {
 				},
 			})
 		}),
-		fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
-			mux, ok := a.Get("debug_handler")
-			if _, ok2 := mux.(*http.ServeMux); !ok || !ok2 {
-				fw.Entry("debug_handler", http.NewServeMux())(a)
-			}
-
-			debugServer := newDebugServer(a)
-
-			return fw.LifecycleHook(fw.Hook{
-				OnStart: func(ctx context.Context, done chan<- interface{}) error {
-					lis, err := net.Listen("tcp", config.DebugAddr)
-					if err != nil {
-						return err
-					}
-
-					go func() {
-						done <- debugServer.Serve(lis)
-					}()
-
-					return nil
-				},
-				OnShutdown: func(ctx context.Context) error {
-					return debugServer.Shutdown(ctx)
-				},
-			})
-		}),
+		debug.DebugServer(serverz.NewAddr("tcp", config.DebugAddr)),
 	)
 	defer app.Close()
 
