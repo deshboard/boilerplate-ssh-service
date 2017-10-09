@@ -7,10 +7,12 @@ import (
 	"net"
 	"os"
 
+	"net/http"
+
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/fw"
+	"github.com/goph/fw-ext/health"
 	"github.com/goph/fw/log"
-	"github.com/goph/healthz"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -39,27 +41,9 @@ func main() {
 				"tag", LogTag,
 			),
 		)),
-		fw.Entry("health_collector", healthz.Collector{}),
 		fw.LifecycleHook(fw.SignalHook),
-		fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
-			healthCollector := a.MustGet("health_collector").(healthz.Collector)
-
-			status := healthz.NewStatusChecker(healthz.Healthy)
-			healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
-
-			return fw.LifecycleHook(fw.Hook{
-				PreStart: func() error {
-					status.SetStatus(healthz.Healthy)
-
-					return nil
-				},
-				PreShutdown: func() error {
-					status.SetStatus(healthz.Unhealthy)
-
-					return nil
-				},
-			})
-		}),
+		fw.OptionFunc(health.HealthCollector),
+		fw.OptionFunc(health.ApplicationStatus),
 		fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
 			return fw.LifecycleHook(fw.Hook{
 				PreStart: func() error {
@@ -75,6 +59,11 @@ func main() {
 			})
 		}),
 		fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
+			mux, ok := a.Get("debug_handler")
+			if _, ok2 := mux.(*http.ServeMux); !ok || !ok2 {
+				fw.Entry("debug_handler", http.NewServeMux())(a)
+			}
+
 			debugServer := newDebugServer(a)
 
 			return fw.LifecycleHook(fw.Hook{

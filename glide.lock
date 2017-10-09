@@ -1,5 +1,5 @@
-hash: 3d29326f6d633d9a5ef950d97db9e08b721a46145c5c9cb1e9f6787314dc655b
-updated: 2017-10-09T17:17:49.287181851+02:00
+hash: 0efcb1f204ee70911323386a60edb44a45cc7c72b51676482526c10f223816b6
+updated: 2017-10-09T17:54:25.180935518+02:00
 imports:
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
@@ -20,6 +20,10 @@ imports:
   subpackages:
   - error
   - log
+- name: github.com/goph/fw-ext
+  version: 230587f53e12dbc2c3dfcc0ce8f0583bbf561a2c
+  subpackages:
+  - health
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz

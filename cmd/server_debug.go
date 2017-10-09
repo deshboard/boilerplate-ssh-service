@@ -7,7 +7,6 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/fw"
-	"github.com/goph/healthz"
 	"github.com/goph/serverz"
 	"github.com/goph/stdlib/expvar"
 	"github.com/goph/stdlib/net/http/pprof"
@@ -16,14 +15,7 @@ import (
 
 // newDebugServer creates a new debug and health check server.
 func newDebugServer(app *fw.Application) serverz.Server {
-	handler := http.NewServeMux()
-
-	healthCollector := app.MustGet("health_collector").(healthz.Collector)
-
-	// Add health checks
-	handler.Handle("/healthz", healthCollector.Handler(healthz.LivenessCheck))
-	handler.Handle("/readiness", healthCollector.Handler(healthz.ReadinessCheck))
-
+	handler := app.MustGet("debug_handler").(*http.ServeMux)
 	config := app.MustGet("config").(*configuration)
 
 	if config.Debug {
@@ -34,9 +26,6 @@ func newDebugServer(app *fw.Application) serverz.Server {
 		pprof.RegisterRoutes(handler)
 		trace.RegisterRoutes(handler)
 	}
-
-	// Register application specific debug routes (like metrics, etc)
-	registerDebugRoutes(app, handler)
 
 	return &serverz.AppServer{
 		Server: &http.Server{
