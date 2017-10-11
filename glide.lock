@@ -1,5 +1,5 @@
-hash: 247fd5fa1d473cb2298c1051f8b9d1a1ac7c4b012eb25f02efea3896001b62ec
-updated: 2017-10-09T18:46:58.271808826+02:00
+hash: 0f88ba58a60e7c7ecda2d9a5ed4169e576128a794d56a93267d88bed001a6326
+updated: 2017-10-11T19:38:42.700865061+02:00
 imports:
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
@@ -15,16 +15,12 @@ imports:
   version: 84194a32041fe2a0816fabf3fe54b0cc6156e8fc
   subpackages:
   - log
-- name: github.com/goph/fw
-  version: baeef57e4f20996a845652808c72de30de1bf0de
-  subpackages:
-  - error
-  - log
-- name: github.com/goph/fw-ext
-  version: f5bb773afd512e911b16ab806ebd97ff111b8676
+- name: github.com/goph/fxt
+  version: bc6e2072438f5a744f1094b6e0623a295667e5fc
   subpackages:
   - debug
-  - health
+  - errors
+  - log
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
@@ -44,12 +40,20 @@ imports:
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
   version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
-- name: github.com/opentracing/opentracing-go
-  version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
-  subpackages:
-  - log
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: go.uber.org/atomic
+  version: 4e336646b2ef9fc6e47be8e21594178f98e5ebcf
+- name: go.uber.org/dig
+  version: f57771ac8fdc4c484fcd111a700659c6282e1509
+- name: go.uber.org/fx
+  version: a47f1657ce04f3d82db1ef230ffbb292b15af0ee
+  subpackages:
+  - internal/fxlog
+  - internal/fxreflect
+  - internal/lifecycle
+- name: go.uber.org/multierr
+  version: 3c4937480c32f4c13a875a1829af76c98ca3d40a
 - name: golang.org/x/net
   version: 1c05540f6879653db88113bc4a2b70aec4bd491f
   subpackages:

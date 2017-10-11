@@ -1,17 +1,21 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
 
+	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"github.com/goph/fw"
-	"github.com/goph/fw-ext/debug"
-	"github.com/goph/fw-ext/health"
-	"github.com/goph/fw/log"
-	"github.com/goph/serverz"
+	"github.com/goph/emperror"
+	"github.com/goph/fxt"
+	"github.com/goph/fxt/debug"
+	"github.com/goph/fxt/errors"
+	fxlog "github.com/goph/fxt/log"
+	"github.com/goph/healthz"
 	"github.com/kelseyhightower/envconfig"
+	"go.uber.org/fx"
 )
 
 func main() {
@@ -28,37 +32,72 @@ func main() {
 	config.flags(flags)
 	flags.Parse(os.Args[1:])
 
-	app := fw.NewApplication(
-		fw.Entry("config", config),
-		fw.Logger(log.NewLogger(
-			log.FormatString(config.LogFormat),
-			log.Debug(config.Debug),
-			log.With(
-				"environment", config.Environment,
-				"service", ServiceName,
-				"tag", LogTag,
-			),
-		)),
-		fw.LifecycleHook(fw.SignalHook),
-		fw.OptionFunc(health.HealthCollector),
-		fw.OptionFunc(health.ApplicationStatus),
-		fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
-			return fw.LifecycleHook(fw.Hook{
-				PreStart: func() error {
-					level.Info(a.Logger()).Log(
-						"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
-						"version", Version,
-						"commit_hash", CommitHash,
-						"build_date", BuildDate,
-					)
+	status := healthz.NewStatusChecker(healthz.Healthy)
+	var ext struct {
+		Closer       fxt.Closer
+		ErrChan      fxt.ErrChan
+		Logger       log.Logger
+		ErrorHandler emperror.Handler
+	}
 
-					return nil
-				},
-			})
+	app := fx.New(
+		fx.NopLogger,
+		fxt.Bootstrap,
+		fx.Provide(
+			NewLoggerConfig(config),
+			fxlog.NewLogger,
+			errors.NewHandler,
+		),
+		debug.Bootstrap,
+		fx.Provide(
+			NewDebugConfig(config),
+			debug.NewHealthCollector,
+		),
+		fx.Invoke(func(collector healthz.Collector) {
+			collector.RegisterChecker(healthz.ReadinessCheck, status)
 		}),
-		debug.DebugServer(serverz.NewAddr("tcp", config.DebugAddr)),
+		fx.Extract(&ext),
 	)
-	defer app.Close()
 
-	app.Run()
+	// Close resources even when there is an error
+	defer ext.Closer.Close()
+
+	// Register error handler to recover from panics
+	defer emperror.HandleRecover(ext.ErrorHandler)
+
+	err = app.Err()
+	if err != nil {
+		panic(err)
+	}
+
+	level.Info(ext.Logger).Log(
+		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
+		"version", Version,
+		"commit_hash", CommitHash,
+		"build_date", BuildDate,
+	)
+
+	err = app.Start(context.Background())
+	if err != nil {
+		// Try gracefully stopping already started resources
+		app.Stop(context.Background())
+
+		panic(err)
+	}
+
+	select {
+	case sig := <-app.Done():
+		status.SetStatus(healthz.Unhealthy)
+		level.Info(ext.Logger).Log("msg", fmt.Sprintf("captured %v", sig))
+	case err := <-ext.ErrChan:
+		status.SetStatus(healthz.Unhealthy)
+		level.Debug(ext.Logger).Log("msg", "error received from error channel")
+		emperror.HandleIfErr(ext.ErrorHandler, err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+	defer cancel()
+
+	err = app.Stop(ctx)
+	emperror.HandleIfErr(ext.ErrorHandler, err)
 }
