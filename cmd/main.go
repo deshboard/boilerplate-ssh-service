@@ -76,17 +76,16 @@ func main() {
 
 	select {
 	case sig := <-app.Done():
-		status.SetStatus(healthz.Unhealthy)
 		level.Info(ext.Logger).Log("msg", fmt.Sprintf("captured %v signal", sig))
 
 	case err := <-ext.DebugErr:
-		status.SetStatus(healthz.Unhealthy)
-
 		if err != nil {
 			err = emperror.WithStack(emperror.WithMessage(err, "debug server crashed"))
 			ext.ErrorHandler.Handle(err)
 		}
 	}
+
+	status.SetStatus(healthz.Unhealthy)
 
 	ctx, cancel := context.WithTimeout(context.Background(), ext.Config.ShutdownTimeout)
 	defer cancel()
