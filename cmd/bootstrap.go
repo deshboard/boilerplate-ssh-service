@@ -1,34 +1,56 @@
 package main
 
 import (
-	"github.com/goph/fw"
-	"github.com/goph/fw/log"
+	"flag"
+	"os"
+
+	"github.com/goph/fxt/debug"
+	"github.com/goph/fxt/log"
+	"github.com/goph/serverz"
+	"github.com/kelseyhightower/envconfig"
 )
 
-// bootstrap bootstraps the application.
-func bootstrap() (*application, error) {
-	return newApplication(
-		configProvider,
-		applicationProvider,
-		healthProvider,
-	)
+// NewConfig creates the application Config from flags and the environment.
+func NewConfig() (*Config, error) {
+	config := new(Config)
+
+	// Load Config from environment
+	err := envconfig.Process("", config)
+	if err != nil {
+		return nil, err
+	}
+
+	// Load Config from flags
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	config.flags(flags)
+	flags.Parse(os.Args[1:])
+
+	return config, nil
 }
 
-// applicationProvider provides an fw.Application instance.
-func applicationProvider(app *application) error {
-	a := fw.NewApplication(
-		fw.Logger(log.NewLogger(
-			log.FormatString(app.config.LogFormat),
-			log.Debug(app.config.Debug),
-			log.With(
-				"environment", app.config.Environment,
-				"service", ServiceName,
-				"tag", LogTag,
-			),
-		)),
-	)
+// NewLoggerConfig creates a logger config constructor.
+func NewLoggerConfig(config *Config) (*log.Config, error) {
+	c := log.NewConfig()
+	f, err := log.ParseFormat(config.LogFormat)
+	if err != nil {
+		return nil, err
+	}
 
-	app.Application = a
+	c.Format = f
+	c.Debug = config.Debug
+	c.Context = []interface{}{
+		"environment", config.Environment,
+		"service", ServiceName,
+		"tag", LogTag,
+	}
 
-	return nil
+	return c, nil
+}
+
+// NewDebugConfig creates a debug config constructor.
+func NewDebugConfig(config *Config) *debug.Config {
+	c := debug.NewConfig(serverz.NewAddr("tcp", config.DebugAddr))
+	c.Debug = config.Debug
+
+	return c
 }

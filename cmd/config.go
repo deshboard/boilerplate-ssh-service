@@ -5,8 +5,11 @@ import (
 	"time"
 )
 
-// configuration holds any kind of config that is necessary for running.
-type configuration struct {
+// defaultTimeout is used as a default for graceful shutdown timeout.
+var defaultTimeout = 15 * time.Second
+
+// Config holds any kind of configuration that comes from the outside world and is necessary for running.
+type Config struct {
 	// Recommended values are: production, development, staging, release/123, etc
 	Environment string `default:"production"`
 	Debug       bool   `split_words:"true"`
@@ -19,7 +22,7 @@ type configuration struct {
 // flags configures a flagset.
 //
 // Note: the current behaviour relies on the fact that at this point environment variables are already loaded.
-func (c *configuration) flags(flags *flag.FlagSet) {
+func (c *Config) flags(flags *flag.FlagSet) {
 	defaultAddr := ""
 
 	// Listen on loopback interface in development mode
@@ -27,7 +30,7 @@ func (c *configuration) flags(flags *flag.FlagSet) {
 		defaultAddr = "127.0.0.1"
 	}
 
-	// Load flags into configuration
+	// Load flags into Config
 	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address")
-	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Timeout for graceful shutdown")
+	flags.DurationVar(&c.ShutdownTimeout, "shutdown", defaultTimeout, "Timeout for graceful shutdown")
 }
