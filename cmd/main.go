@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
-	"os"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -14,26 +12,13 @@ import (
 	"github.com/goph/fxt/errors"
 	fxlog "github.com/goph/fxt/log"
 	"github.com/goph/healthz"
-	"github.com/kelseyhightower/envconfig"
 	"go.uber.org/fx"
 )
 
 func main() {
-	config := new(configuration)
-
-	// Load configuration from environment
-	err := envconfig.Process("", config)
-	if err != nil {
-		panic(err)
-	}
-
-	// Load configuration from flags
-	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	config.flags(flags)
-	flags.Parse(os.Args[1:])
-
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	var ext struct {
+		Config       *Config
 		Closer       fxt.Closer
 		Logger       log.Logger
 		ErrorHandler emperror.Handler
@@ -45,12 +30,15 @@ func main() {
 		fx.NopLogger,
 		fxt.Bootstrap,
 		fx.Provide(
-			NewLoggerConfig(config),
+			NewConfig,
+
+			// Log and error handling
+			NewLoggerConfig,
 			fxlog.NewLogger,
 			errors.NewHandler,
-		),
-		fx.Provide(
-			NewDebugConfig(config),
+
+			// Debug server
+			NewDebugConfig,
 			debug.NewServer,
 			debug.NewHealthCollector,
 		),
@@ -66,7 +54,7 @@ func main() {
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(ext.ErrorHandler)
 
-	err = app.Err()
+	err := app.Err()
 	if err != nil {
 		panic(err)
 	}
@@ -100,7 +88,7 @@ func main() {
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), ext.Config.ShutdownTimeout)
 	defer cancel()
 
 	err = app.Stop(ctx)
