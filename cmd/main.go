@@ -66,14 +66,19 @@ func main() {
 		"build_date", BuildDate,
 	)
 
-	err = app.Start(context.Background())
-	if err != nil {
-		// Try gracefully stopping already started resources
+	// Shutdown regardless there is an error or the application just normally quits
+	defer func() {
+		status.SetStatus(healthz.Unhealthy)
+
 		ctx, cancel := context.WithTimeout(context.Background(), ext.Config.ShutdownTimeout)
 		defer cancel()
 
-		app.Stop(ctx)
+		err = app.Stop(ctx)
+		emperror.HandleIfErr(ext.ErrorHandler, err)
+	}()
 
+	err = app.Start(context.Background())
+	if err != nil {
 		panic(err)
 	}
 
@@ -87,12 +92,4 @@ func main() {
 			ext.ErrorHandler.Handle(err)
 		}
 	}
-
-	status.SetStatus(healthz.Unhealthy)
-
-	ctx, cancel := context.WithTimeout(context.Background(), ext.Config.ShutdownTimeout)
-	defer cancel()
-
-	err = app.Stop(ctx)
-	emperror.HandleIfErr(ext.ErrorHandler, err)
 }
