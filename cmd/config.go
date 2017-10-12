@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+// defaultTimeout is used as a default for graceful shutdown timeout.
+var defaultTimeout = 15 * time.Second
+
 // Config holds any kind of configuration that comes from the outside world and is necessary for running.
 type Config struct {
 	// Recommended values are: production, development, staging, release/123, etc
@@ -29,5 +32,5 @@ func (c *Config) flags(flags *flag.FlagSet) {
 
 	// Load flags into Config
 	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address")
-	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Timeout for graceful shutdown")
+	flags.DurationVar(&c.ShutdownTimeout, "shutdown", defaultTimeout, "Timeout for graceful shutdown")
 }
