@@ -48,16 +48,16 @@ func main() {
 		fx.Extract(&ext),
 	)
 
+	err := app.Err()
+	if err != nil {
+		panic(err)
+	}
+
 	// Close resources even when there is an error
 	defer ext.Closer.Close()
 
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(ext.ErrorHandler)
-
-	err := app.Err()
-	if err != nil {
-		panic(err)
-	}
 
 	level.Info(ext.Logger).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
