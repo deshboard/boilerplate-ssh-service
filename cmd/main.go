@@ -69,7 +69,10 @@ func main() {
 	err = app.Start(context.Background())
 	if err != nil {
 		// Try gracefully stopping already started resources
-		app.Stop(context.Background())
+		ctx, cancel := context.WithTimeout(context.Background(), ext.Config.ShutdownTimeout)
+		defer cancel()
+
+		app.Stop(ctx)
 
 		panic(err)
 	}
