@@ -1,5 +1,5 @@
-hash: 6dec5e77fc6e2679472299d76f0c226efd6dc4ce4cf6147cc5b38ce8ca251775
-updated: 2017-10-12T00:31:06.839002265+02:00
+hash: fb5bef8714103bf4c386226dc75c44df9839ed55a3f3cc5444392d8a07c34139
+updated: 2017-10-12T19:47:10.711433505+02:00
 imports:
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
@@ -16,7 +16,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: 408a9c366a1c460d5e7682bb661dbfe47be131e8
+  version: 6609dfc6035e4642c61e7af768ed338d0ef06bfb
   subpackages:
   - debug
   - errors
@@ -27,13 +27,6 @@ imports:
   version: e55582cb1f4eaef30fc1454deeb8474f19bc47cd
   subpackages:
   - internal
-- name: github.com/goph/stdlib
-  version: 5703fbf5f4f844082ae11de7e6e28deb61dba669
-  subpackages:
-  - expvar
-  - net/http
-  - net/http/pprof
-  - x/net/trace
 - name: github.com/joho/godotenv
   version: a79fa1e548e2c689c241d10173efd51e5d689d5b
 - name: github.com/kelseyhightower/envconfig

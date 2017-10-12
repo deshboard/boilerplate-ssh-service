@@ -35,9 +35,10 @@ func main() {
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	var ext struct {
 		Closer       fxt.Closer
-		ErrChan      fxt.ErrChan
 		Logger       log.Logger
 		ErrorHandler emperror.Handler
+
+		DebugErr debug.Err
 	}
 
 	app := fx.New(
@@ -48,9 +49,9 @@ func main() {
 			fxlog.NewLogger,
 			errors.NewHandler,
 		),
-		debug.Bootstrap,
 		fx.Provide(
 			NewDebugConfig(config),
+			debug.NewServer,
 			debug.NewHealthCollector,
 		),
 		fx.Invoke(func(collector healthz.Collector) {
@@ -88,11 +89,15 @@ func main() {
 	select {
 	case sig := <-app.Done():
 		status.SetStatus(healthz.Unhealthy)
-		level.Info(ext.Logger).Log("msg", fmt.Sprintf("captured %v", sig))
-	case err := <-ext.ErrChan:
+		level.Info(ext.Logger).Log("msg", fmt.Sprintf("captured %v signal", sig))
+
+	case err := <-ext.DebugErr:
 		status.SetStatus(healthz.Unhealthy)
-		level.Debug(ext.Logger).Log("msg", "error received from error channel")
-		emperror.HandleIfErr(ext.ErrorHandler, err)
+
+		if err != nil {
+			err = emperror.WithStack(emperror.WithMessage(err, "debug server crashed"))
+			ext.ErrorHandler.Handle(err)
+		}
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
