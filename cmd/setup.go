@@ -46,7 +46,7 @@ func NewLoggerConfig(config *Config) (*log.Config, error) {
 	return c, nil
 }
 
-// NewDebugConfig creates a debug config constructor.
+// NewDebugConfig creates a debug config.
 func NewDebugConfig(config *Config) *debug.Config {
 	c := debug.NewConfig(config.DebugAddr)
 	c.Debug = config.Debug
