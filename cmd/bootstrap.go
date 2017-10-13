@@ -6,7 +6,6 @@ import (
 
 	"github.com/goph/fxt/debug"
 	"github.com/goph/fxt/log"
-	"github.com/goph/serverz"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -49,7 +48,7 @@ func NewLoggerConfig(config *Config) (*log.Config, error) {
 
 // NewDebugConfig creates a debug config constructor.
 func NewDebugConfig(config *Config) *debug.Config {
-	c := debug.NewConfig(serverz.NewAddr("tcp", config.DebugAddr))
+	c := debug.NewConfig(config.DebugAddr)
 	c.Debug = config.Debug
 
 	return c
