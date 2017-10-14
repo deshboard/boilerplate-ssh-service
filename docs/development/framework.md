@@ -3,9 +3,19 @@
 
 ## Overview
 
-This project does not use any third-party framework (except ones required by the application logic),
-but relies heavily on the standard library and separate third-party components.
-The integration layer for these components and the main execution logic can be found in the [cmd/](../cmd/) directory.
+The project uses Uber's [fx](https://github.com/uber-go/fx) application framework
+to manage application lifecycle and to resolve dependencies between application
+components.
+
+These components may be:
+
+- part of the standard library
+- separate third-party libraries
+- components provided by [fxt](https://github.com/goph/fxt),
+a set of constructors for common components
+
+The integration layer and the main execution logic
+can be found in the [cmd/](../cmd/) directory.
 
 
 ## Components
@@ -14,22 +24,45 @@ The integration layer for these components and the main execution logic can be f
 
 In order to effectively use metrics, you need to choose a metrics reporting mechanism.
 Common mechanisms are push-based (eg. StatsD) and pull-based (eg. Prometheus).
-In order to support both, this project comes with [go-kit's metrics package](https://github.com/go-kit/kit) installed,
-which is a metric reporting abstraction.
+In order to support both, using [go-kit's metrics package](https://github.com/go-kit/kit)
+is recommended, which is a metric reporting abstraction.
+(Go Kit comes preinstalled because of it's logger abstraction.)
 
-When using a pull-based solution you most likely have to register an HTTP endpoint in the debug server.
-You can do so in [debug.go](../cmd/debug.go)
+When using a pull-based solution you most likely have to register an HTTP endpoint in
+the debug server. The constructor provided by fxt exposes the handler, so you can
+register eg. the Prometheus endpoint using an invoke function:
 
-``` go
+
+Add the following to [bootstrap.go](../cmd/bootstrap.go)
+
+```go
 package main
 
 import (
-	"github.com/goph/stdlib/net/http"
+	"github.com/goph/fxt/debug"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// registerDebugRoutes allows to register custom routes in the debug server.
-func registerDebugRoutes(appCtx *application, h http.HandlerAcceptor) {
-	h.Handle("/metrics", promhttp.Handler())
+// RegisterPrometheusHandler registers the Prometheus metrics handler in the debug server.
+func RegisterPrometheusHandler(handler debug.Handler) {
+	handler.Handle("/metrics", promhttp.Handler())
+}
+```
+
+Then register it as an invoke function in [main.go](../cmd/main.go)
+
+```go
+package main
+
+import (
+	"go.uber.org/fx"
+)
+
+func main() {
+    fx.New(
+        //...
+    
+        fx.Invoke(RegisterPrometheusHandler),
+    )	
 }
 ```

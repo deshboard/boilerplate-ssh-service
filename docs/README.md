@@ -6,7 +6,6 @@ It also contains the documentation for the project.
 
 ## Table of Contents
 
-- [Architecture](architecture.md)
 - [Setup](setup.md)
 - [Advanced setup](advanced-setup.md)
 - [Development](development.md)
