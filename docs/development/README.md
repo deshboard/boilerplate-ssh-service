@@ -6,7 +6,7 @@ for setting the project environment up.
 
 ## Table of Contents
 
-- [Requirements](development/requirements.md)
-- [Framework overview](development/framework.md)
-- [Setup](development/setup.md)
-- [Testing](development/testing.md)
+- [Requirements](requirements.md)
+- [Framework overview](framework.md)
+- [Setup](setup.md)
+- [Testing](testing.md)
