@@ -82,6 +82,76 @@ and for [Jaeger](https://github.com/jaegertracing) which is a distributed tracin
 (also a hosted by [CNCF](https://cncf.io/)). Jaeger is not hardly coupled to the application,
 OpenTracing is, so any solutions implementing it's API can easily be integrated into the application.
 
+The following code integrates the global tracer into the application:
+
+```go
+package main
+
+import (
+	"github.com/goph/fxt/tracing"
+	"go.uber.org/fx"
+)
+
+func main() {
+    fx.New(
+        //...
+    
+        fx.Provide(tracing.NewTracer),
+    )	
+}
+```
+
+Integrating tracer is a little bit more complicated. It requires some configuration registered in the application:
+
+Add the following to [bootstrap.go](../cmd/bootstrap.go)
+
+```go
+package main
+
+import (
+	"github.com/goph/fxt/tracing/jaeger"
+	jaegerclient "github.com/uber/jaeger-client-go"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
+)
+
+// NewJaegerConfig returns a new Jaeger config.
+func NewJaegerConfig(config *Config) *jaeger.Config {
+	c := jaeger.NewConfig(ServiceName)
+	c.JaegerConfig = jaegercfg.Configuration{
+		Reporter: &jaegercfg.ReporterConfig{
+			LocalAgentHostPort: config.JaegerAddr,
+			LogSpans:           config.Debug,
+		},
+		Sampler: &jaegercfg.SamplerConfig{
+			Type:  jaegerclient.SamplerTypeConst,
+			Param: 1,
+		},
+	}
+
+	return c
+}
+```
+
+Then register Jaeger in [main.go](../cmd/main.go)
+
+```go
+package main
+
+import (
+	"github.com/goph/fxt/tracing/jaeger"
+	"go.uber.org/fx"
+)
+
+func main() {
+    fx.New(
+        //...
+    
+        NewJaegerConfig,
+        jaeger.NewTracer,
+    )	
+}
+```
+
 
 ### Metrics
 
