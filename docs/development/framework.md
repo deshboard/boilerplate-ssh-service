@@ -15,7 +15,7 @@ These components may be:
 a set of constructors for common components
 
 The integration layer and the main execution logic
-can be found in the [cmd/](../cmd/) directory.
+can be found in the [cmd/](../../cmd/) directory.
 
 
 ## Components
@@ -103,7 +103,7 @@ func main() {
 
 Integrating tracer is a little bit more complicated. It requires some configuration registered in the application:
 
-Add the following to [bootstrap.go](../cmd/bootstrap.go)
+Add the following to [bootstrap.go](../../cmd/bootstrap.go)
 
 ```go
 package main
@@ -132,7 +132,7 @@ func NewJaegerConfig(config *Config) *jaeger.Config {
 }
 ```
 
-Then register Jaeger in [main.go](../cmd/main.go)
+Then register Jaeger in [main.go](../../cmd/main.go)
 
 ```go
 package main
@@ -166,7 +166,7 @@ the debug server. The constructor provided by fxt exposes the handler, so you ca
 register eg. the Prometheus endpoint using an invoke function:
 
 
-Add the following to [bootstrap.go](../cmd/bootstrap.go)
+Add the following to [bootstrap.go](../../cmd/bootstrap.go)
 
 ```go
 package main
@@ -182,7 +182,7 @@ func RegisterPrometheusHandler(handler debug.Handler) {
 }
 ```
 
-Then register it as an invoke function in [main.go](../cmd/main.go)
+Then register it as an invoke function in [main.go](../../cmd/main.go)
 
 ```go
 package main
