@@ -13,7 +13,7 @@ import (
 func NewConfig() (*Config, error) {
 	config := new(Config)
 
-	// Load Config from flags first to determine environment prefix
+	// Load config from flags first to determine environment prefix
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	config.flags(flags)
 
@@ -21,7 +21,7 @@ func NewConfig() (*Config, error) {
 
 	flags.Parse(os.Args[1:])
 
-	// Load Config from environment
+	// Load config from environment (from the appropriate prefix)
 	err := envconfig.Process(*prefix, config)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func NewConfig() (*Config, error) {
 	return config, nil
 }
 
-// NewLoggerConfig creates a logger config constructor.
+// NewLoggerConfig creates a logger config for the logger constructor.
 func NewLoggerConfig(config *Config) (*log.Config, error) {
 	c := log.NewConfig()
 	f, err := log.ParseFormat(config.LogFormat)
@@ -49,7 +49,7 @@ func NewLoggerConfig(config *Config) (*log.Config, error) {
 	return c, nil
 }
 
-// NewDebugConfig creates a debug config.
+// NewDebugConfig creates a debug config for the debug server constructor.
 func NewDebugConfig(config *Config) *debug.Config {
 	addr := config.DebugAddr
 

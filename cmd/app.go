@@ -15,7 +15,7 @@ type ServiceParams struct {
 	ErrorHandler emperror.Handler `optional:"true"`
 }
 
-// NewService constructs a new service instance.
+// NewService returns a new service instance.
 func NewService(params ServiceParams) *app.Service {
 	return app.NewService(
 		app.Logger(params.Logger),
