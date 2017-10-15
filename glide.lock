@@ -1,16 +1,15 @@
-hash: b87f35fd27acce63d8c13fc27b488f2d47cf9fb2851e7e623fb34c1c986baefb
-updated: 2017-10-02T05:13:54.567244135+02:00
+hash: aa9376c1cc886f211b317d959e15710994947e1f6c25555d7f73c5b4fce302ab
+updated: 2017-10-15T23:37:12.843333157+02:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/gliderlabs/ssh
   version: bf3073636e5b2255b85a09640b2003b01ab4a070
 - name: github.com/go-kit/kit
-  version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
+  version: 4dc7be5d2d12881735283bcab7352178e190fc71
   subpackages:
   - log
   - log/level
-  - metrics
 - name: github.com/go-logfmt/logfmt
   version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
 - name: github.com/go-stack/stack
@@ -19,24 +18,14 @@ imports:
   version: 84194a32041fe2a0816fabf3fe54b0cc6156e8fc
   subpackages:
   - log
-- name: github.com/goph/fw
-  version: a0e08b00d044188ea1e6e42eaff36432ca4b7633
+- name: github.com/goph/fxt
+  version: caed0d051cafaa5e612d576f71e1d202cce0b60e
   subpackages:
-  - error
+  - debug
+  - errors
   - log
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
-- name: github.com/goph/serverz
-  version: e55582cb1f4eaef30fc1454deeb8474f19bc47cd
-  subpackages:
-  - internal
-- name: github.com/goph/stdlib
-  version: 5703fbf5f4f844082ae11de7e6e28deb61dba669
-  subpackages:
-  - expvar
-  - net/http
-  - net/http/pprof
-  - x/net/trace
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/joho/godotenv
@@ -45,16 +34,24 @@ imports:
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
   version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
-- name: github.com/opentracing/opentracing-go
-  version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
-  subpackages:
-  - log
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/spf13/cobra
-  version: e5f66de850af3302fbe378c8acded2b0fa55472c
+  version: 7b2c5ac9fc04fc5efafb60700713d4fa609b777b
 - name: github.com/spf13/pflag
-  version: be7121dd7a937a85e1e4b1ddda6a3edce3466110
+  version: a9789e855c7696159b7db0db7f440b449edf2b31
+- name: go.uber.org/atomic
+  version: 4e336646b2ef9fc6e47be8e21594178f98e5ebcf
+- name: go.uber.org/dig
+  version: f57771ac8fdc4c484fcd111a700659c6282e1509
+- name: go.uber.org/fx
+  version: a47f1657ce04f3d82db1ef230ffbb292b15af0ee
+  subpackages:
+  - internal/fxlog
+  - internal/fxreflect
+  - internal/lifecycle
+- name: go.uber.org/multierr
+  version: 3c4937480c32f4c13a875a1829af76c98ca3d40a
 - name: golang.org/x/crypto
   version: 9419663f5a44be8b34ca85f08abc5fe1be11f8a3
   subpackages:
@@ -70,7 +67,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 314a259e304ff91bd6985da2a7149bbf91237993
+  version: 686000749eaec0b8855b8eef5336cf63899fe51d
   subpackages:
   - unix
   - windows

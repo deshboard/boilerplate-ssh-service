@@ -3,68 +3,104 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
-	"os/signal"
-	"syscall"
 
+	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
+	"github.com/goph/fxt"
+	"github.com/goph/fxt/debug"
+	"github.com/goph/fxt/errors"
+	fxlog "github.com/goph/fxt/log"
 	"github.com/goph/healthz"
+	"go.uber.org/fx"
 )
 
 func main() {
-	app, err := bootstrap()
-	// Close resources even when there is an error
-	defer app.Close()
+	status := healthz.NewStatusChecker(healthz.Healthy)
+	var ext struct {
+		Config       *Config
+		Closer       fxt.Closer
+		Logger       log.Logger
+		ErrorHandler emperror.Handler
 
-	if err != nil {
-		app.ErrorHandler().Handle(err)
-
-		os.Exit(1)
+		DebugErr debug.Err
+		SSHErr   Err
 	}
 
+	app := fx.New(
+		fx.NopLogger,
+		fxt.Bootstrap,
+		fx.Provide(
+			NewConfig,
+
+			// Log and error handling
+			NewLoggerConfig,
+			fxlog.NewLogger,
+			errors.NewHandler,
+
+			// Debug server
+			NewDebugConfig,
+			debug.NewServer,
+			debug.NewHealthCollector,
+		),
+		fx.Invoke(func(collector healthz.Collector) {
+			collector.RegisterChecker(healthz.ReadinessCheck, status)
+		}),
+		fx.Extract(&ext),
+
+		fx.Provide(
+			NewSigner,
+			LoadRootAuthorizedKeys,
+			NewPublicKeyHandler,
+			NewSSHServer,
+		),
+	)
+
+	err := app.Err()
+	if err != nil {
+		panic(err)
+	}
+
+	// Close resources when the application stops running
+	defer ext.Closer.Close()
+
 	// Register error handler to recover from panics
-	defer emperror.HandleRecover(app.ErrorHandler())
+	defer emperror.HandleRecover(ext.ErrorHandler)
 
-	status := healthz.NewStatusChecker(healthz.Healthy)
-	app.healthCollector.RegisterChecker(healthz.ReadinessCheck, status)
-
-	level.Info(app.Logger()).Log(
+	level.Info(ext.Logger).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
 		"version", Version,
 		"commit_hash", CommitHash,
 		"build_date", BuildDate,
 	)
 
-	serverQueue := newServerQueue(app)
-	defer serverQueue.Close()
-
-	errChan := serverQueue.Start()
-
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+	err = app.Start(context.Background())
+	if err != nil {
+		panic(err)
+	}
 
 	select {
-	case err := <-errChan:
-		status.SetStatus(healthz.Unhealthy)
-		level.Debug(app.Logger()).Log("msg", "error received from error channel")
-		emperror.HandleIfErr(app.ErrorHandler(), err)
-	case s := <-signalChan:
-		level.Info(app.Logger()).Log("msg", fmt.Sprintf("captured %v", s))
-		status.SetStatus(healthz.Unhealthy)
+	case sig := <-app.Done():
+		level.Info(ext.Logger).Log("msg", fmt.Sprintf("captured %v signal", sig))
 
-		level.Debug(app.Logger()).Log(
-			"msg", "shutting down with timeout",
-			"timeout", app.config.ShutdownTimeout,
-		)
+	case err := <-ext.DebugErr:
+		if err != nil {
+			err = emperror.WithStack(emperror.WithMessage(err, "debug server crashed"))
+			ext.ErrorHandler.Handle(err)
+		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), app.config.ShutdownTimeout)
-
-		err := serverQueue.Shutdown(ctx)
-
-		emperror.HandleIfErr(app.ErrorHandler(), err)
-
-		// Cancel context if shutdown completed earlier
-		cancel()
+	case err := <-ext.SSHErr:
+		if err != nil {
+			err = emperror.WithStack(emperror.WithMessage(err, "ssh server crashed"))
+			ext.ErrorHandler.Handle(err)
+		}
 	}
+
+	status.SetStatus(healthz.Unhealthy)
+
+	ctx, cancel := context.WithTimeout(context.Background(), ext.Config.ShutdownTimeout)
+	defer cancel()
+
+	err = app.Stop(ctx)
+	emperror.HandleIfErr(ext.ErrorHandler, err)
 }

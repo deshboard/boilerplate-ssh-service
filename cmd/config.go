@@ -5,17 +5,34 @@ import (
 	"time"
 )
 
-// configuration holds any kind of config that is necessary for running.
-type configuration struct {
-	// Recommended values are: production, development, staging, release/123, etc
-	Environment string `default:"production"`
-	Debug       bool   `split_words:"true"`
-	LogFormat   string `split_words:"true" default:"json"`
+// defaultTimeout is used as a default for graceful shutdown timeout.
+var defaultTimeout = 15 * time.Second
 
-	DebugAddr       string        `ignored:"true"`
+// Config holds any kind of configuration that comes from the outside world and is necessary for running.
+type Config struct {
+	// Meaningful values are recommended (eg. production, development, staging, release/123, etc)
+	//
+	// "development" is treated special: address types will use the loopback interface as default when none is defined.
+	// This is useful when developing locally and listening on all interfaces requires elevated rights.
+	Environment string `default:"production"`
+
+	// Turns on some debug functionality: more verbose logs, exposed pprof, expvar and net trace in the debug server.
+	Debug bool `split_words:"true"`
+
+	// Defines the log format.
+	// Valid values are: json, logfmt
+	LogFormat string `split_words:"true" default:"json"`
+
+	// Address of the debug server (configured by debug.addr flag)
+	DebugAddr string `ignored:"true"`
+
+	// Timeout for graceful shutdown (configured by shutdown.timeout flag)
 	ShutdownTimeout time.Duration `ignored:"true"`
 
-	SSHAddr                string `ignored:"true"`
+	// Address of the SSH server (configured by ssh.addr flag)
+	SSHAddr string `ignored:"true"`
+
+	// SSH authentication settings
 	HostPrivateKey         string `split_words:"true"`
 	HostPrivateKeyFile     string `split_words:"true"`
 	RootLoginAllowed       bool   `split_words:"true"`
@@ -23,20 +40,12 @@ type configuration struct {
 	RootAuthorizedKeysFile string `split_words:"true"`
 }
 
-// flags configures a flagset.
+// Flags configures a FlagSet.
 //
-// Note: the current behaviour relies on the fact that at this point environment variables are already loaded.
-func (c *configuration) flags(flags *flag.FlagSet) {
-	defaultAddr := ""
+// It still requires resolution (call to FlagSet.Parse) which is out of scope for this method.
+func (c *Config) Flags(flags *flag.FlagSet) {
+	flags.StringVar(&c.DebugAddr, "debug.addr", ":10000", "Debug and health check address")
+	flags.DurationVar(&c.ShutdownTimeout, "shutdown.timeout", defaultTimeout, "Timeout for graceful shutdown")
 
-	// Listen on loopback interface in development mode
-	if c.Environment == "development" {
-		defaultAddr = "127.0.0.1"
-	}
-
-	// Load flags into configuration
-	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address")
-	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Timeout for graceful shutdown")
-
-	flags.StringVar(&c.SSHAddr, "ssh.addr", defaultAddr+":2222", "SSH service address")
+	flags.StringVar(&c.SSHAddr, "ssh.addr", ":2222", "SSH service address")
 }
