@@ -13,16 +13,19 @@ import (
 func NewConfig() (*Config, error) {
 	config := new(Config)
 
+	// Load Config from flags first to determine environment prefix
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	config.flags(flags)
+
+	prefix := flags.String("prefix", "", "Environment variable prefix (useful when multiple apps use the same environment)")
+
+	flags.Parse(os.Args[1:])
+
 	// Load Config from environment
-	err := envconfig.Process("", config)
+	err := envconfig.Process(*prefix, config)
 	if err != nil {
 		return nil, err
 	}
-
-	// Load Config from flags
-	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	config.flags(flags)
-	flags.Parse(os.Args[1:])
 
 	return config, nil
 }
@@ -48,7 +51,14 @@ func NewLoggerConfig(config *Config) (*log.Config, error) {
 
 // NewDebugConfig creates a debug config.
 func NewDebugConfig(config *Config) *debug.Config {
-	c := debug.NewConfig(config.DebugAddr)
+	addr := config.DebugAddr
+
+	// Listen on loopback interface in development mode
+	if config.Environment == "development" && addr[0] == ':' {
+		addr = "127.0.0.1" + addr
+	}
+
+	c := debug.NewConfig(addr)
 	c.Debug = config.Debug
 
 	return c
