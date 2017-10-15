@@ -14,15 +14,18 @@ func NewConfig() (*Config, error) {
 	config := new(Config)
 
 	// Load config from flags first to determine environment prefix
-	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	config.flags(flags)
+	flags := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	config.Flags(flags)
 
 	prefix := flags.String("prefix", "", "Environment variable prefix (useful when multiple apps use the same environment)")
 
-	flags.Parse(os.Args[1:])
+	err := flags.Parse(os.Args[1:])
+	if err != nil {
+		return nil, err
+	}
 
 	// Load config from environment (from the appropriate prefix)
-	err := envconfig.Process(*prefix, config)
+	err = envconfig.Process(*prefix, config)
 	if err != nil {
 		return nil, err
 	}

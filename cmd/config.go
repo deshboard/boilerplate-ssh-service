@@ -30,8 +30,10 @@ type Config struct {
 	ShutdownTimeout time.Duration `ignored:"true"`
 }
 
-// flags configures a flagset.
-func (c *Config) flags(flags *flag.FlagSet) {
+// Flags configures a FlagSet.
+//
+// It still requires resolution (call to FlagSet.Parse) which is out of scope for this method.
+func (c *Config) Flags(flags *flag.FlagSet) {
 	flags.StringVar(&c.DebugAddr, "debug.addr", ":10000", "Debug and health check address")
 	flags.DurationVar(&c.ShutdownTimeout, "shutdown", defaultTimeout, "Timeout for graceful shutdown")
 }
