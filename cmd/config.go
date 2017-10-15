@@ -26,7 +26,7 @@ type Config struct {
 	// Address of the debug server (configured by debug.addr flag)
 	DebugAddr string `ignored:"true"`
 
-	// Timeout for graceful shutdown (configured by shutdown flag)
+	// Timeout for graceful shutdown (configured by shutdown.timeout flag)
 	ShutdownTimeout time.Duration `ignored:"true"`
 }
 
@@ -35,5 +35,5 @@ type Config struct {
 // It still requires resolution (call to FlagSet.Parse) which is out of scope for this method.
 func (c *Config) Flags(flags *flag.FlagSet) {
 	flags.StringVar(&c.DebugAddr, "debug.addr", ":10000", "Debug and health check address")
-	flags.DurationVar(&c.ShutdownTimeout, "shutdown", defaultTimeout, "Timeout for graceful shutdown")
+	flags.DurationVar(&c.ShutdownTimeout, "shutdown.timeout", defaultTimeout, "Timeout for graceful shutdown")
 }
