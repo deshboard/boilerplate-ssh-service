@@ -20,10 +20,7 @@ type Config struct {
 }
 
 // flags configures a flagset.
-//
-// Note: the current behaviour relies on the fact that at this point environment variables are already loaded.
 func (c *Config) flags(flags *flag.FlagSet) {
-	// Load flags into Config
 	flags.StringVar(&c.DebugAddr, "debug.addr", ":10000", "Debug and health check address")
 	flags.DurationVar(&c.ShutdownTimeout, "shutdown", defaultTimeout, "Timeout for graceful shutdown")
 }
