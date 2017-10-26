@@ -31,17 +31,17 @@ func NewApplication(session ssh.Session) *Application {
 	}
 
 	app.commands = map[string]*cobra.Command{
-		"help": &cobra.Command{
+		"help": {
 			Use:   "help",
 			Short: "Shows the list of available commands",
 			Run:   (&helpCommand{app}).Run,
 		},
-		"man": &cobra.Command{
+		"man": {
 			Use:   "man command",
 			Short: "Shows the manual for a command",
 			Run:   (&manCommand{app}).Run,
 		},
-		"hello": &cobra.Command{
+		"hello": {
 			Use:   "hello",
 			Short: "Asks your name and welcomes you",
 			Run:   (&helloCommand{app}).Run,

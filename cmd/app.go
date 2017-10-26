@@ -19,9 +19,9 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/fxt"
 	"github.com/goph/healthz"
+	"github.com/pkg/errors"
 	"go.uber.org/dig"
 	gossh "golang.org/x/crypto/ssh"
-	"github.com/pkg/errors"
 )
 
 // AuthorizedKeys holds the full list of authorized keys.
