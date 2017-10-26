@@ -21,6 +21,7 @@ import (
 	"github.com/goph/healthz"
 	"go.uber.org/dig"
 	gossh "golang.org/x/crypto/ssh"
+	"github.com/pkg/errors"
 )
 
 // AuthorizedKeys holds the full list of authorized keys.
@@ -86,7 +87,7 @@ func NewSSHServer(params SSHServerParams) Err {
 
 			lis, err := net.Listen(network, addr)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 
 			go func() {
