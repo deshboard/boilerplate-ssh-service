@@ -14,7 +14,7 @@ DOCKER_LATEST ?= false
 
 # Dev variables
 GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")
-GO_PACKAGES = $(shell go list ./app/...)
+GO_PACKAGES = $(shell go list ./app/... ./cmd/...)
 
 .PHONY: setup
 setup:: dep .env .env.test ## Setup the project for development
