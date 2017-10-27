@@ -40,7 +40,7 @@ run: build .env ## Build and execute a binary
 
 .PHONY: watch
 watch: ## Watch for file changes and run the built binary
-	reflex -s -t 3s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
+	reflex -s -t 3s -d none -R 'vendor' -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
 
 .PHONY: build
 build: ## Build a binary
