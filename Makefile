@@ -38,10 +38,6 @@ run: TAGS += dev
 run: build .env ## Build and execute a binary
 	${BUILD_DIR}/${BINARY_NAME} ${ARGS}
 
-.PHONY: watch
-watch: ## Watch for file changes and run the built binary
-	reflex -s -t 3s -d none -R 'vendor' -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" run
-
 .PHONY: build
 build: ## Build a binary
 	CGO_ENABLED=0 go build -tags '${TAGS}' ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME} ${PACKAGE}/cmd
@@ -68,10 +64,6 @@ COLORIZE=sed ''/PASS/s//${PASS}/'' | sed ''/FAIL/s//${FAIL}/''
 test: .env.test ## Run unit tests
 	@go test -tags '${TAGS}' ${ARGS} ${GO_PACKAGES} | ${COLORIZE}
 
-.PHONY: watch-test
-watch-test: ## Watch for file changes and run tests
-	reflex -t 2s -d none -r '\.go$$' -- $(MAKE) ARGS="${ARGS}" test
-
 .PHONY: cs
 cs: ## Check that all source files follow the Go coding style
 	@gofmt -l ${GO_SOURCE_FILES} | read something && echo "Code differs from gofmt's style" 1>&2 && exit 1 || true
@@ -86,7 +78,6 @@ envcheck:: ## Check environment for all the necessary requirements
 	$(call executable_check,Glide,glide)
 	$(call executable_check,Docker,docker)
 	$(call executable_check,Docker Compose,docker-compose)
-	$(call executable_check,Reflex,reflex)
 
 define executable_check
     @printf "\033[36m%-30s\033[0m %s\n" "$(1)" `if which $(2) > /dev/null 2>&1; then echo "\033[0;32m✓\033[0m"; else echo "\033[0;31m✗\033[0m"; fi`

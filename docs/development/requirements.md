@@ -10,7 +10,6 @@
 
 These are not hard requirements of the project.
 
-- [Reflex](https://github.com/cespare/reflex) (required for watching code changes)
 - [Docker Compose](https://docs.docker.com/compose/) (may be required by some dependencies)
 
 

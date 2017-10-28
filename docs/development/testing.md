@@ -30,14 +30,6 @@ For example the following command will make the tests to run in verbose mode.
 $ make test ARGS="-v"
 ```
 
-In order to watch for code changes and run tests upon them you can run the special watch test command.
-
-``` bash
-$ make watch-test
-```
-
-**Note:** you need [Reflex](https://github.com/cespare/reflex) installed in your prefix for the above to work.
-
 Ultimately you can fall back to the builtin go test command:
 
 ``` bash
