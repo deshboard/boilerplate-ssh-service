@@ -42,13 +42,10 @@ run: build .env ## Build and execute a binary
 build: ## Build a binary
 	CGO_ENABLED=0 go build -tags '${TAGS}' ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME} ${PACKAGE}/cmd
 
-.PHONY: build-docker
-build-docker:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY_NAME}-docker ${PACKAGE}/cmd
-
 .PHONY: docker
-docker: build-docker ## Build a Docker image
-	docker build --build-arg BUILD_DIR=${BUILD_DIR} --build-arg BINARY_NAME=${BINARY_NAME}-docker -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+docker: BINARY_NAME := ${BINARY_NAME}-docker
+docker: build ## Build a Docker image
+	docker build --build-arg BUILD_DIR=${BUILD_DIR} --build-arg BINARY_NAME=${BINARY_NAME} -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
 ifeq (${DOCKER_LATEST}, true)
 	docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
 endif
