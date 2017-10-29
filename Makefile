@@ -13,7 +13,7 @@ DOCKER_TAG ?= ${VERSION}
 DOCKER_LATEST ?= false
 
 # Dev variables
-GO_SOURCE_FILES = $(shell find . -type f -name "*.go" -not -name "bindata.go" -not -path "./vendor/*")
+GO_SOURCE_FILES = ./app ./cmd
 GO_PACKAGES = $(shell go list ./app/... ./cmd/...)
 
 .PHONY: setup
