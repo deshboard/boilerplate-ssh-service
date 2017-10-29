@@ -61,10 +61,6 @@ test: .env.test ## Run unit tests
 cs: ## Check that all source files follow the Go coding style
 	@gofmt -l ${GO_SOURCE_FILES} | read something && echo "Code differs from gofmt's style" 1>&2 && exit 1 || true
 
-.PHONY: csfix
-csfix: ## Fix Go coding style violations
-	@gofmt -l -w -s ${GO_SOURCE_FILES}
-
 .PHONY: envcheck
 envcheck:: ## Check environment for all the necessary requirements
 	$(call executable_check,Go,go)
