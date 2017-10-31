@@ -54,8 +54,19 @@ endif
 check:: test cs ## Run tests and linters
 
 .PHONY: test
-test: .env.test ## Run unit tests
-	@go test -tags '${TAGS}' ${ARGS} ${GO_PACKAGES}
+test: acceptance integration ## Run all tests
+
+.PHONY: unit
+unit: .env.test ## Run unit tests
+	@go test -tags '${TAGS}' ${ARGS} ./app/... ./cmd/...
+
+.PHONY: integration
+integration: .env.test ## Run integration tests
+	@go test -tags 'integration' ${ARGS} ./app/... ./cmd/...
+
+.PHONY: acceptance
+acceptance: .env.test ## Run acceptance tests
+	@go test ${ARGS} ./test/acceptance/...
 
 .PHONY: cs
 cs: ## Check that all source files follow the Go coding style

@@ -1,11 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Acceptance" type="GoTestRunConfiguration" factoryName="Go Test">
-    <module name="metadata" />
+    <module name="" />
     <working_directory value="$PROJECT_DIR$/" />
-    <go_parameters value="-tags acceptance" />
     <framework value="gotest" />
     <kind value="DIRECTORY" />
-    <directory value="$PROJECT_DIR$/app" />
+    <directory value="$PROJECT_DIR$/test/acceptance/" />
     <filePath value="$PROJECT_DIR$" />
     <method />
   </configuration>

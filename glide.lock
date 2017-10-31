@@ -1,5 +1,5 @@
-hash: f61dc9b2f59b4a3818b9583f98c55d482e5b3a0bfea526089e67f3dcb9725216
-updated: 2017-10-26T13:04:22.422648209+02:00
+hash: dd6c578710d2291560a3e0a66b38d1368937a90b1b53f7f80e0dbf140b6e7480
+updated: 2017-10-31T01:02:38.895314805+01:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -19,7 +19,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: 14a49380464fc2dd32d7f2999d8de9ce8ff73540
+  version: 6654931ac99bb2bcb9eb20e107ff5f42a9cfa64e
   subpackages:
   - debug
   - errors
@@ -37,7 +37,7 @@ imports:
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/spf13/cobra
-  version: 7b2c5ac9fc04fc5efafb60700713d4fa609b777b
+  version: b3426bbac13d7110c4d8fce456ea0012f79f3b8b
 - name: github.com/spf13/pflag
   version: 97afa5e7ca8a08a383cb259e06636b5e2cc7897f
 - name: go.uber.org/atomic
@@ -67,7 +67,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 3e3646d2c706c21b222a5dbcaa6db12b3e0cc765
+  version: 661970f62f5897bc0cd5fdca7e087ba8a98a8fa1
   subpackages:
   - unix
   - windows
