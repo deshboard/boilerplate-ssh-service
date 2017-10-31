@@ -14,7 +14,6 @@ DOCKER_LATEST ?= false
 
 # Dev variables
 GO_SOURCE_FILES = ./app ./cmd
-GO_PACKAGES = $(shell go list ./app/... ./cmd/...)
 
 .PHONY: setup
 setup:: dep .env .env.test ## Setup the project for development
