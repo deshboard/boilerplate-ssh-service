@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/deshboard/boilerplate-service/pkg/context/app"
+	"github.com/deshboard/boilerplate-service/pkg/app"
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	"go.uber.org/dig"
@@ -16,9 +16,9 @@ type ServiceParams struct {
 }
 
 // NewService returns a new service instance.
-func NewService(params ServiceParams) *context.Service {
-	return context.NewService(
-		context.Logger(params.Logger),
-		context.ErrorHandler(params.ErrorHandler),
+func NewService(params ServiceParams) *app.Service {
+	return app.NewService(
+		app.Logger(params.Logger),
+		app.ErrorHandler(params.ErrorHandler),
 	)
 }

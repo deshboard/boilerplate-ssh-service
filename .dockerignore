@@ -1,6 +1,6 @@
 *
 
-!app/
+!pkg/app/
 !build/
 !cmd/
 !glide.*

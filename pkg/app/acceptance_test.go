@@ -1,4 +1,6 @@
-package context_test
+// +build acceptance
+
+package app_test
 
 import (
 	"github.com/DATA-DOG/godog"
