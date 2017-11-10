@@ -24,11 +24,11 @@ func init() {
 
 	// Load defaults for info variables
 	if Version == "" {
-		Version = "<unknown>"
+		Version = "<dev>"
 	}
 
 	if CommitHash == "" {
-		CommitHash = "<unknown>"
+		CommitHash = "<dev>"
 	}
 
 	if BuildDate == "" {
