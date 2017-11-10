@@ -13,7 +13,7 @@ DOCKER_TAG ?= ${VERSION}
 DOCKER_LATEST ?= false
 
 # Dev variables
-GO_SOURCE_FILES = ./app ./cmd
+GO_SOURCE_FILES = ./pkg ./cmd
 
 .PHONY: setup
 setup:: dep .env .env.test ## Setup the project for development
@@ -53,19 +53,20 @@ endif
 check:: test cs ## Run tests and linters
 
 .PHONY: test
-test: acceptance integration ## Run all tests
+test: ## Run all tests
+	@go test -tags 'acceptance integration unit' ${ARGS} ./pkg/... ./cmd/...
 
 .PHONY: unit
 unit: .env.test ## Run unit tests
-	@go test -tags '${TAGS}' ${ARGS} ./app/... ./cmd/...
+	@go test -tags '${TAGS}' ${ARGS} ./pkg/... ./cmd/...
 
 .PHONY: integration
 integration: .env.test ## Run integration tests
-	@go test -tags 'integration' ${ARGS} ./app/... ./cmd/...
+	@go test -tags 'integration' ${ARGS} ./pkg/... ./cmd/...
 
 .PHONY: acceptance
 acceptance: .env.test ## Run acceptance tests
-	@go test ${ARGS} ./test/acceptance/...
+	@go test -tags 'acceptance' ${ARGS} ./pkg/... ./cmd/...
 
 .PHONY: cs
 cs: ## Check that all source files follow the Go coding style
