@@ -1,0 +1,34 @@
+FROM golang:1.9 as builder
+
+RUN curl https://glide.sh/get | sh
+
+COPY glide.yaml glide.lock /src/
+
+RUN set -xe \
+    && export PACKAGE_NAME=`grep -m 1 -o "package: .*" /src/glide.yaml | sed -n 's/package: //p'` \
+    && export PACKAGE_PATH="/go/src/$PACKAGE_NAME" \
+    && mkdir -p $PACKAGE_PATH \
+    && cp -r /src/* $PACKAGE_PATH \
+    && cd $PACKAGE_PATH \
+    && echo "PACKAGE_NAME=$PACKAGE_NAME" > /source \
+    && echo "PACKAGE_PATH=$PACKAGE_PATH" > /source \
+    && cd $PACKAGE_PATH \
+    && glide install
+
+COPY . /src/
+
+RUN set -xe \
+    && . /source \
+    && cp -rT /src $PACKAGE_PATH \
+    && cd $PACKAGE_PATH \
+    && make build \
+    && cp build/`make var-BINARY_NAME` /service
+
+
+FROM scratch
+
+COPY --from=builder /service /service
+
+EXPOSE 10000
+CMD ["/service", "-debug.addr", ":10000"]
+HEALTHCHECK --interval=2m --timeout=3s CMD curl -f http://localhost:10000/healthz || exit 1

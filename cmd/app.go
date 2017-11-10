@@ -13,7 +13,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/deshboard/boilerplate-ssh-service/app"
+	"github.com/deshboard/boilerplate-ssh-service/pkg/app"
 	"github.com/gliderlabs/ssh"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
