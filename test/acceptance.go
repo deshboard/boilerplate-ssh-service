@@ -17,11 +17,9 @@ func init() {
 	acceptanceRunner = new(godogRunner)
 }
 
-type featureContextFunc func(s *godog.Suite)
-
 type godogRunner struct {
 	featurePaths []string
-	featureContexts []featureContextFunc
+	featureContexts []func(s *godog.Suite)
 }
 
 func (r *godogRunner) registerFeaturePath(featurePath string) {
