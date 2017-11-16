@@ -4,15 +4,19 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"time"
 
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
-	"github.com/goph/healthz"
 	"github.com/kelseyhightower/envconfig"
 )
 
+// defaultShutdownTimeout is used as a default for graceful shutdown timeout.
+var defaultShutdownTimeout = 15 * time.Second
+
 func main() {
 	prefix := flag.String("prefix", "", "Environment variable prefix (useful when multiple apps use the same environment)")
+	shutdownTimeout := flag.Duration("shutdown.timeout", defaultShutdownTimeout, "Timeout for graceful shutdown")
 
 	config := NewConfig(flag.CommandLine)
 
@@ -51,11 +55,11 @@ func main() {
 
 	app.Wait()
 
-	app.Status(healthz.Unhealthy)
-
-	ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), *shutdownTimeout)
 	defer cancel()
 
 	err = app.Stop(ctx)
-	emperror.HandleIfErr(app.ErrorHandler(), err)
+	if err != nil {
+		app.ErrorHandler().Handle(err)
+	}
 }

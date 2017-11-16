@@ -1,7 +1,6 @@
-package main
+package app
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/go-kit/kit/log"
@@ -71,11 +70,6 @@ func (a *Application) Close() error {
 	return a.context.Closer.Close()
 }
 
-// Status sets the current health status of the application.
-func (a *Application) Status(status healthz.Status) {
-	a.context.Status.SetStatus(status)
-}
-
 // Logger returns the application logger.
 func (a *Application) Logger() log.Logger {
 	return a.context.Logger
@@ -98,47 +92,6 @@ func (a *Application) Wait() {
 			a.context.ErrorHandler.Handle(err)
 		}
 	}
-}
 
-// NewConfig creates the application Config from flags and the environment.
-func NewConfig(flags *flag.FlagSet) *Config {
-	config := new(Config)
-
-	config.Flags(flags)
-
-	return config
-}
-
-// NewLoggerConfig creates a logger config for the logger constructor.
-func NewLoggerConfig(config *Config) (*fxlog.Config, error) {
-	c := fxlog.NewConfig()
-	f, err := fxlog.ParseFormat(config.LogFormat)
-	if err != nil {
-		return nil, err
-	}
-
-	c.Format = f
-	c.Debug = config.Debug
-	c.Context = []interface{}{
-		"environment", config.Environment,
-		"service", ServiceName,
-		"tag", LogTag,
-	}
-
-	return c, nil
-}
-
-// NewDebugConfig creates a debug config for the debug server constructor.
-func NewDebugConfig(config *Config) *fxdebug.Config {
-	addr := config.DebugAddr
-
-	// Listen on loopback interface in development mode
-	if config.Environment == "development" && addr[0] == ':' {
-		addr = "127.0.0.1" + addr
-	}
-
-	c := fxdebug.NewConfig(addr)
-	c.Debug = config.Debug
-
-	return c
+	a.context.Status.SetStatus(healthz.Unhealthy)
 }
