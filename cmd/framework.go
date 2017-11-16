@@ -2,35 +2,18 @@ package main
 
 import (
 	"flag"
-	"os"
 
 	"github.com/goph/fxt/debug"
 	"github.com/goph/fxt/log"
-	"github.com/kelseyhightower/envconfig"
 )
 
 // NewConfig creates the application Config from flags and the environment.
-func NewConfig() (*Config, error) {
+func NewConfig(flags *flag.FlagSet) *Config {
 	config := new(Config)
 
-	// Load config from flags first to determine environment prefix
-	flags := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	config.Flags(flags)
 
-	prefix := flags.String("prefix", "", "Environment variable prefix (useful when multiple apps use the same environment)")
-
-	err := flags.Parse(os.Args[1:])
-	if err != nil {
-		return nil, err
-	}
-
-	// Load config from environment (from the appropriate prefix)
-	err = envconfig.Process(*prefix, config)
-	if err != nil {
-		return nil, err
-	}
-
-	return config, nil
+	return config
 }
 
 // NewLoggerConfig creates a logger config for the logger constructor.

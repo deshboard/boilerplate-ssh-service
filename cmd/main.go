@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 
 	"github.com/go-kit/kit/log"
@@ -12,11 +13,24 @@ import (
 	fxerrors "github.com/goph/fxt/errors"
 	fxlog "github.com/goph/fxt/log"
 	"github.com/goph/healthz"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 	"go.uber.org/fx"
 )
 
 func main() {
+	prefix := flag.String("prefix", "", "Environment variable prefix (useful when multiple apps use the same environment)")
+
+	config := NewConfig(flag.CommandLine)
+
+	flag.Parse()
+
+	// Load config from environment (from the appropriate prefix)
+	err := envconfig.Process(*prefix, config)
+	if err != nil {
+		panic(err)
+	}
+
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	var ext struct {
 		Config       *Config
@@ -31,7 +45,9 @@ func main() {
 		fx.NopLogger,
 		fxt.Bootstrap,
 		fx.Provide(
-			NewConfig,
+			func() *Config {
+				return config
+			},
 
 			// Log and error handling
 			NewLoggerConfig,
@@ -49,7 +65,7 @@ func main() {
 		fx.Extract(&ext),
 	)
 
-	err := app.Err()
+	err = app.Err()
 	if err != nil {
 		panic(err)
 	}
