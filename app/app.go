@@ -24,6 +24,13 @@ type Application struct {
 	closer fxt.Closer
 }
 
+// ApplicationInfo is an optional set of information that can be set by the runtime environment (eg. console application).
+type ApplicationInfo struct {
+	Version    string
+	CommitHash string
+	BuildDate  string
+}
+
 // Context is a set of dependencies of the application extracted from the container.
 type Context struct {
 	Config       *Config
@@ -36,18 +43,27 @@ type Context struct {
 }
 
 // NewApp creates a new application.
-func NewApp(config *Config) *Application {
+func NewApp(config *Config, info *ApplicationInfo) *Application {
 	context := new(Context)
+
+	constructors := []interface{}{
+		func() *Config {
+			return config
+		},
+	}
+
+	if info != nil {
+		constructors = append(constructors, func() *ApplicationInfo {
+			return info
+		})
+	}
 
 	return &Application{
 		App: fx.New(
 			fx.NopLogger,
 			fxt.Bootstrap,
+			fx.Provide(constructors...),
 			fx.Provide(
-				func() *Config {
-					return config
-				},
-
 				// Log and error handling
 				NewLoggerConfig,
 				fxlog.NewLogger,

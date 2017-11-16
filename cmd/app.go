@@ -19,5 +19,11 @@ func NewConfig(flags *flag.FlagSet) *app.Config {
 
 // NewApp creates a new application.
 func NewApp(config *app.Config) *app.Application {
-	return app.NewApp(config)
+	info := &app.ApplicationInfo{
+		Version:    Version,
+		CommitHash: CommitHash,
+		BuildDate:  BuildDate,
+	}
+
+	return app.NewApp(config, info)
 }
