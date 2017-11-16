@@ -1,14 +1,10 @@
-package main
+package app
 
 import (
 	"flag"
-	"time"
 )
 
-// defaultTimeout is used as a default for graceful shutdown timeout.
-var defaultTimeout = 15 * time.Second
-
-// Config holds any kind of configuration that comes from the outside world and is necessary for running.
+// Config holds any kind of configuration that comes from the outside world and is necessary for running the application.
 type Config struct {
 	// Meaningful values are recommended (eg. production, development, staging, release/123, etc)
 	//
@@ -26,9 +22,6 @@ type Config struct {
 	// Address of the debug server (configured by debug.addr flag)
 	DebugAddr string `ignored:"true"`
 
-	// Timeout for graceful shutdown (configured by shutdown.timeout flag)
-	ShutdownTimeout time.Duration `ignored:"true"`
-
 	// Address of the SSH server (configured by ssh.addr flag)
 	SSHAddr string `ignored:"true"`
 
@@ -45,7 +38,6 @@ type Config struct {
 // It still requires resolution (call to FlagSet.Parse) which is out of scope for this method.
 func (c *Config) Flags(flags *flag.FlagSet) {
 	flags.StringVar(&c.DebugAddr, "debug.addr", ":10000", "Debug and health check address")
-	flags.DurationVar(&c.ShutdownTimeout, "shutdown.timeout", defaultTimeout, "Timeout for graceful shutdown")
 
 	flags.StringVar(&c.SSHAddr, "ssh.addr", ":2222", "SSH service address")
 }

@@ -2,73 +2,46 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
+	"time"
 
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
-	"github.com/goph/fxt"
-	fxdebug "github.com/goph/fxt/debug"
-	fxerrors "github.com/goph/fxt/errors"
-	fxlog "github.com/goph/fxt/log"
-	"github.com/goph/healthz"
-	"github.com/pkg/errors"
-	"go.uber.org/fx"
+	"github.com/kelseyhightower/envconfig"
 )
 
-func main() {
-	status := healthz.NewStatusChecker(healthz.Healthy)
-	var ext struct {
-		Config       *Config
-		Closer       fxt.Closer
-		Logger       log.Logger
-		ErrorHandler emperror.Handler
+// defaultShutdownTimeout is used as a default for graceful shutdown timeout.
+var defaultShutdownTimeout = 15 * time.Second
 
-		DebugErr fxdebug.Err
-		SSHErr   Err
+func main() {
+	prefix := flag.String("prefix", "", "Environment variable prefix (useful when multiple apps use the same environment)")
+	shutdownTimeout := flag.Duration("shutdown.timeout", defaultShutdownTimeout, "Timeout for graceful shutdown")
+
+	config := NewConfig(flag.CommandLine)
+
+	flag.Parse()
+
+	// Load config from environment (from the appropriate prefix)
+	err := envconfig.Process(*prefix, config)
+	if err != nil {
+		panic(err)
 	}
 
-	app := fx.New(
-		fx.NopLogger,
-		fxt.Bootstrap,
-		fx.Provide(
-			NewConfig,
+	app := NewApp(config)
 
-			// Log and error handling
-			NewLoggerConfig,
-			fxlog.NewLogger,
-			fxerrors.NewHandler,
-
-			// Debug server
-			NewDebugConfig,
-			fxdebug.NewServer,
-			fxdebug.NewHealthCollector,
-		),
-		fx.Invoke(func(collector healthz.Collector) {
-			collector.RegisterChecker(healthz.ReadinessCheck, status)
-		}),
-		fx.Extract(&ext),
-
-		fx.Provide(
-			NewSigner,
-			LoadRootAuthorizedKeys,
-			NewPublicKeyHandler,
-			NewSSHServer,
-		),
-	)
-
-	err := app.Err()
+	err = app.Err()
 	if err != nil {
 		panic(err)
 	}
 
 	// Close resources when the application stops running
-	defer ext.Closer.Close()
+	defer app.Close()
 
 	// Register error handler to recover from panics
-	defer emperror.HandleRecover(ext.ErrorHandler)
+	defer emperror.HandleRecover(app.ErrorHandler())
 
-	level.Info(ext.Logger).Log(
+	level.Info(app.Logger()).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
 		"version", Version,
 		"commit_hash", CommitHash,
@@ -80,28 +53,13 @@ func main() {
 		panic(err)
 	}
 
-	select {
-	case sig := <-app.Done():
-		level.Info(ext.Logger).Log("msg", fmt.Sprintf("captured %v signal", sig))
+	app.Wait()
 
-	case err := <-ext.DebugErr:
-		if err != nil {
-			err = errors.Wrap(err, "debug server crashed")
-			ext.ErrorHandler.Handle(err)
-		}
-
-	case err := <-ext.SSHErr:
-		if err != nil {
-			err = errors.Wrap(err, "ssh server crashed")
-			ext.ErrorHandler.Handle(err)
-		}
-	}
-
-	status.SetStatus(healthz.Unhealthy)
-
-	ctx, cancel := context.WithTimeout(context.Background(), ext.Config.ShutdownTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), *shutdownTimeout)
 	defer cancel()
 
 	err = app.Stop(ctx)
-	emperror.HandleIfErr(ext.ErrorHandler, err)
+	if err != nil {
+		app.ErrorHandler().Handle(err)
+	}
 }

@@ -1,11 +1,12 @@
 package: github.com/deshboard/boilerplate-ssh-service
 import:
+- package: github.com/DATA-DOG/godog
+  version: ^0.7.4
 - package: github.com/kelseyhightower/envconfig
   version: ^1.3.0
 - package: github.com/joho/godotenv
   version: ^1.2.0
 - package: github.com/goph/fxt
-  version: ^0.5.2
+  version: ^0.6.1
 testImport:
-- package: github.com/DATA-DOG/godog
-  version: ^0.7.2
+- package: github.com/stretchr/testify

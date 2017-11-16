@@ -1,8 +1,17 @@
-hash: dd6c578710d2291560a3e0a66b38d1368937a90b1b53f7f80e0dbf140b6e7480
-updated: 2017-10-31T01:02:38.895314805+01:00
+hash: 4be13befbaa1eb1c98bfd996e7850c90939d3d410de0be9e28761198160707f7
+updated: 2017-11-16T15:17:14.057423895+01:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
+- name: github.com/DATA-DOG/godog
+  version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
+  subpackages:
+  - colors
+  - gherkin
+- name: github.com/deshboard/boilerplate-service
+  version: c891bc118b4a3dc2855c5d30caa444c2b1c5f60a
+  subpackages:
+  - app
 - name: github.com/gliderlabs/ssh
   version: bf3073636e5b2255b85a09640b2003b01ab4a070
 - name: github.com/go-kit/kit
@@ -19,7 +28,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: 6654931ac99bb2bcb9eb20e107ff5f42a9cfa64e
+  version: 3a07bbb8ec0e51abc0f79f17363ae86c44a1837f
   subpackages:
   - debug
   - errors
@@ -37,13 +46,13 @@ imports:
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/spf13/cobra
-  version: b3426bbac13d7110c4d8fce456ea0012f79f3b8b
+  version: 2da4a54c5ceefcee7ca5dd0eea1e18a3b6366489
 - name: github.com/spf13/pflag
-  version: 97afa5e7ca8a08a383cb259e06636b5e2cc7897f
+  version: 4c012f6dcd9546820e378d0bdda4d8fc772cdfea
 - name: go.uber.org/atomic
-  version: 4e336646b2ef9fc6e47be8e21594178f98e5ebcf
+  version: 8474b86a5a6f79c443ce4b2992817ff32cf208b8
 - name: go.uber.org/dig
-  version: f57771ac8fdc4c484fcd111a700659c6282e1509
+  version: a752dd97d0e0718ba977eaaca94a23a4d28b7a08
 - name: go.uber.org/fx
   version: a47f1657ce04f3d82db1ef230ffbb292b15af0ee
   subpackages:
@@ -53,7 +62,7 @@ imports:
 - name: go.uber.org/multierr
   version: 3c4937480c32f4c13a875a1829af76c98ca3d40a
 - name: golang.org/x/crypto
-  version: 2509b142fb2b797aa7587dad548f113b2c0f20ce
+  version: 9f005a07e0d31d45e6656d241bb5c0f2efd4bc94
   subpackages:
   - curve25519
   - ed25519
@@ -67,13 +76,20 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 661970f62f5897bc0cd5fdca7e087ba8a98a8fa1
+  version: bf42f188b9bc6f2cf5b8ee5a912ef1aedd0eba4c
   subpackages:
   - unix
   - windows
 testImports:
-- name: github.com/DATA-DOG/godog
-  version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
   subpackages:
-  - colors
-  - gherkin
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert
