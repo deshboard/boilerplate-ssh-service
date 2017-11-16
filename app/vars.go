@@ -1,4 +1,4 @@
-package main
+package app
 
 // ServiceName is an identifier-like name used anywhere this app needs to be identified.
 //
@@ -15,4 +15,4 @@ const FriendlyServiceName = "Boilerplate service"
 // It represents an identifier which can be used to separate logs from different sources.
 //
 // Falls back to the ServiceName.
-const LogTag string = ServiceName
+const LogTag = ServiceName
