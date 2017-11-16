@@ -5,17 +5,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
-	"github.com/goph/fxt"
-	fxdebug "github.com/goph/fxt/debug"
-	fxerrors "github.com/goph/fxt/errors"
-	fxlog "github.com/goph/fxt/log"
 	"github.com/goph/healthz"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/pkg/errors"
-	"go.uber.org/fx"
 )
 
 func main() {
@@ -31,39 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	status := healthz.NewStatusChecker(healthz.Healthy)
-	var ext struct {
-		Config       *Config
-		Closer       fxt.Closer
-		Logger       log.Logger
-		ErrorHandler emperror.Handler
-
-		DebugErr fxdebug.Err
-	}
-
-	app := fx.New(
-		fx.NopLogger,
-		fxt.Bootstrap,
-		fx.Provide(
-			func() *Config {
-				return config
-			},
-
-			// Log and error handling
-			NewLoggerConfig,
-			fxlog.NewLogger,
-			fxerrors.NewHandler,
-
-			// Debug server
-			NewDebugConfig,
-			fxdebug.NewServer,
-			fxdebug.NewHealthCollector,
-		),
-		fx.Invoke(func(collector healthz.Collector) {
-			collector.RegisterChecker(healthz.ReadinessCheck, status)
-		}),
-		fx.Extract(&ext),
-	)
+	app := NewApp(config)
 
 	err = app.Err()
 	if err != nil {
@@ -71,12 +32,12 @@ func main() {
 	}
 
 	// Close resources when the application stops running
-	defer ext.Closer.Close()
+	defer app.Close()
 
 	// Register error handler to recover from panics
-	defer emperror.HandleRecover(ext.ErrorHandler)
+	defer emperror.HandleRecover(app.ErrorHandler())
 
-	level.Info(ext.Logger).Log(
+	level.Info(app.Logger()).Log(
 		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
 		"version", Version,
 		"commit_hash", CommitHash,
@@ -88,22 +49,13 @@ func main() {
 		panic(err)
 	}
 
-	select {
-	case sig := <-app.Done():
-		level.Info(ext.Logger).Log("msg", fmt.Sprintf("captured %v signal", sig))
+	app.Wait()
 
-	case err := <-ext.DebugErr:
-		if err != nil {
-			err = errors.Wrap(err, "debug server crashed")
-			ext.ErrorHandler.Handle(err)
-		}
-	}
+	app.Status(healthz.Unhealthy)
 
-	status.SetStatus(healthz.Unhealthy)
-
-	ctx, cancel := context.WithTimeout(context.Background(), ext.Config.ShutdownTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 	defer cancel()
 
 	err = app.Stop(ctx)
-	emperror.HandleIfErr(ext.ErrorHandler, err)
+	emperror.HandleIfErr(app.ErrorHandler(), err)
 }
