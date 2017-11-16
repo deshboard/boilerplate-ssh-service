@@ -1,6 +1,11 @@
-hash: 79c7ff8f1ff4c1dfdeab11879b14352e2f5f956b7dc380feec75d1a5f0f21e18
-updated: 2017-10-30T17:18:39.010412402+01:00
+hash: e1087060340334cc06e18f8c5737c314ca60d98954d7d19f31af18140b1716df
+updated: 2017-11-16T08:57:57.053267715+01:00
 imports:
+- name: github.com/DATA-DOG/godog
+  version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
+  subpackages:
+  - colors
+  - gherkin
 - name: github.com/go-kit/kit
   version: 4dc7be5d2d12881735283bcab7352178e190fc71
   subpackages:
@@ -15,7 +20,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: 6654931ac99bb2bcb9eb20e107ff5f42a9cfa64e
+  version: ea3420c297ede3f052aa5b5892fa5c50b4ba2f3b
   subpackages:
   - debug
   - errors
@@ -31,9 +36,9 @@ imports:
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: go.uber.org/atomic
-  version: 4e336646b2ef9fc6e47be8e21594178f98e5ebcf
+  version: 8474b86a5a6f79c443ce4b2992817ff32cf208b8
 - name: go.uber.org/dig
-  version: f57771ac8fdc4c484fcd111a700659c6282e1509
+  version: a752dd97d0e0718ba977eaaca94a23a4d28b7a08
 - name: go.uber.org/fx
   version: a47f1657ce04f3d82db1ef230ffbb292b15af0ee
   subpackages:
@@ -48,9 +53,4 @@ imports:
   - context
   - internal/timeseries
   - trace
-testImports:
-- name: github.com/DATA-DOG/godog
-  version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
-  subpackages:
-  - colors
-  - gherkin
+testImports: []
