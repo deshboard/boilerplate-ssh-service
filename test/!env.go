@@ -13,7 +13,7 @@ func init() {
 		panic("cannot load environment: no caller information")
 	}
 
-	root := path.Clean(path.Join(path.Dir(filename), "../../"))
+	root := path.Clean(path.Join(path.Dir(filename), "../"))
 
 	_ = godotenv.Load(path.Join(root, ".env.test"))
 	_ = godotenv.Load(path.Join(root, ".env.dist"))
