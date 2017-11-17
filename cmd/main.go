@@ -23,14 +23,11 @@ func main() {
 	flag.Parse()
 
 	// Load config from environment (from the appropriate prefix)
-	err := envconfig.Process(*prefix, config)
-	if err != nil {
-		panic(err)
-	}
+	envconfig.MustProcess(*prefix, config)
 
 	app := NewApp(config)
 
-	err = app.Err()
+	err := app.Err()
 	if err != nil {
 		panic(err)
 	}
