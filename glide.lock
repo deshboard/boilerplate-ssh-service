@@ -1,5 +1,5 @@
 hash: 8836093343e76ab27e4b898c8ab55e541eeb94cf72ff51d74d785365ab404560
-updated: 2017-11-20T10:16:21.881643585+01:00
+updated: 2017-12-19T01:01:25.802201155+01:00
 imports:
 - name: github.com/DATA-DOG/godog
   version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
@@ -20,7 +20,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: 328972b9d340f5600fe4f5fcbb1ccee34c562d0a
+  version: 2f98768f016a75ccd8ad167b9daf6d9f78251be2
   subpackages:
   - debug
   - errors
@@ -38,9 +38,11 @@ imports:
 - name: go.uber.org/atomic
   version: 8474b86a5a6f79c443ce4b2992817ff32cf208b8
 - name: go.uber.org/dig
-  version: a752dd97d0e0718ba977eaaca94a23a4d28b7a08
+  version: d100de9c8cc8358591507951141bc107713ba671
+  subpackages:
+  - internal/digreflect
 - name: go.uber.org/fx
-  version: a47f1657ce04f3d82db1ef230ffbb292b15af0ee
+  version: 35bf66c87beb2c8ec1a68cf00b54542e2d169c0b
   subpackages:
   - internal/fxlog
   - internal/fxreflect
@@ -48,7 +50,7 @@ imports:
 - name: go.uber.org/multierr
   version: 3c4937480c32f4c13a875a1829af76c98ca3d40a
 - name: golang.org/x/net
-  version: 1c05540f6879653db88113bc4a2b70aec4bd491f
+  version: a8b9294777976932365dabb6640cf1468d95c70f
   subpackages:
   - context
   - internal/timeseries
