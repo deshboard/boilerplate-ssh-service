@@ -21,5 +21,5 @@ type Config struct {
 	DebugAddr string `flag:"" split_words:"true" default:":10000" usage:"Debug and health check server address"`
 
 	// Timeout for graceful shutdown
-	ShutdownTimeout time.Duration `flag:"shutdown-timeout" default:"15s" usage:"Timeout for graceful shutdown"`
+	ShutdownTimeout time.Duration `flag:"" split_words:"true" default:"15s" usage:"Timeout for graceful shutdown"`
 }

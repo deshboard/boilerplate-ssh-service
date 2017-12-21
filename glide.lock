@@ -1,5 +1,5 @@
-hash: 862409e4f681f59b47b13b4ba4890fa2945db4c510e3caff47bee7a769a3d2aa
-updated: 2017-12-19T03:48:39.834170779+01:00
+hash: 3ca77f98d7247e22fc1fdc56ecf939a085b10c239e8c899bca1c33c2ae039cc7
+updated: 2017-12-21T22:03:20.707501347+01:00
 imports:
 - name: github.com/DATA-DOG/godog
   version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
@@ -30,7 +30,7 @@ imports:
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/nest
-  version: 6d6db62886c960addfb7f40df939931151b65708
+  version: 00316c4ef4e1e69203faedd025ad5e25cd3e6948
 - name: github.com/hashicorp/hcl
   version: 23c074d0eceb2b8a5bfdbb271ab780cde70f05a8
   subpackages:
@@ -87,7 +87,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 571f7bbbe08da2a8955aed9d4db316e78630e9a3
+  version: d818ba11af4465e00c1998bd3f8a55603b422290
   subpackages:
   - unix
 - name: golang.org/x/text
