@@ -1,8 +1,6 @@
 package app
 
-import (
-	"flag"
-)
+import "time"
 
 // Config holds any kind of configuration that comes from the outside world and is necessary for running the application.
 type Config struct {
@@ -10,22 +8,18 @@ type Config struct {
 	//
 	// "development" is treated special: address types will use the loopback interface as default when none is defined.
 	// This is useful when developing locally and listening on all interfaces requires elevated rights.
-	Environment string `default:"production"`
+	Environment string `env:"" default:"production"`
 
 	// Turns on some debug functionality: more verbose logs, exposed pprof, expvar and net trace in the debug server.
-	Debug bool `split_words:"true"`
+	Debug bool `env:""`
 
 	// Defines the log format.
 	// Valid values are: json, logfmt
-	LogFormat string `split_words:"true" default:"json"`
+	LogFormat string `env:"" split_words:"true" default:"json"`
 
-	// Address of the debug server (configured by debug.addr flag)
-	DebugAddr string `ignored:"true"`
-}
+	// Debug and health check server address
+	DebugAddr string `flag:"" split_words:"true" default:":10000" usage:"Debug and health check server address"`
 
-// Flags configures a FlagSet.
-//
-// It still requires resolution (call to FlagSet.Parse) which is out of scope for this method.
-func (c *Config) Flags(flags *flag.FlagSet) {
-	flags.StringVar(&c.DebugAddr, "debug.addr", ":10000", "Debug and health check address")
+	// Timeout for graceful shutdown
+	ShutdownTimeout time.Duration `flag:"" split_words:"true" default:"15s" usage:"Timeout for graceful shutdown"`
 }
