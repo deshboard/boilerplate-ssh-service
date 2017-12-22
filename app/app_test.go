@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func newConfig() *Config {
-	return &Config{
+func newConfig() Config {
+	return Config{
 		LogFormat: "logfmt",
 	}
 }

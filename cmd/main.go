@@ -16,7 +16,7 @@ func main() {
 	configurator := nest.NewConfigurator()
 	configurator.SetName(FriendlyServiceName)
 
-	err := configurator.Load(config)
+	err := configurator.Load(&config)
 	if err == nest.ErrFlagHelp {
 		os.Exit(0)
 	} else if err != nil {

@@ -7,12 +7,12 @@ import (
 const FriendlyServiceName = app.FriendlyServiceName
 
 // NewConfig creates the application Config from flags and the environment.
-func NewConfig() *app.Config {
-	return new(app.Config)
+func NewConfig() app.Config {
+	return app.Config{}
 }
 
 // NewApp creates a new application.
-func NewApp(config *app.Config) *app.Application {
+func NewApp(config app.Config) *app.Application {
 	info := app.ApplicationInfo{
 		Version:    Version,
 		CommitHash: CommitHash,
