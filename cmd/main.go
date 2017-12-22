@@ -2,29 +2,24 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
-	"time"
+	"os"
 
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
-	"github.com/kelseyhightower/envconfig"
+	"github.com/goph/nest"
 )
 
-// defaultShutdownTimeout is used as a default for graceful shutdown timeout.
-var defaultShutdownTimeout = 15 * time.Second
-
 func main() {
-	prefix := flag.String("prefix", "", "Environment variable prefix (useful when multiple apps use the same environment)")
-	shutdownTimeout := flag.Duration("shutdown.timeout", defaultShutdownTimeout, "Timeout for graceful shutdown")
+	config := NewConfig()
 
-	config := NewConfig(flag.CommandLine)
+	configurator := nest.NewConfigurator()
+	configurator.SetName(FriendlyServiceName)
 
-	flag.Parse()
-
-	// Load config from environment (from the appropriate prefix)
-	err := envconfig.Process(*prefix, config)
-	if err != nil {
+	err := configurator.Load(config)
+	if err == nest.ErrFlagHelp {
+		os.Exit(0)
+	} else if err != nil {
 		panic(err)
 	}
 
@@ -55,7 +50,7 @@ func main() {
 
 	app.Wait()
 
-	ctx, cancel := context.WithTimeout(context.Background(), *shutdownTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 	defer cancel()
 
 	err = app.Stop(ctx)

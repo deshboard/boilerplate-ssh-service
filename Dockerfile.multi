@@ -30,5 +30,4 @@ FROM scratch
 COPY --from=builder /service /service
 
 EXPOSE 10000
-CMD ["/service", "-debug.addr", ":10000"]
-HEALTHCHECK --interval=2m --timeout=3s CMD curl -f http://localhost:10000/healthz || exit 1
+CMD ["/service", "--debug-addr", ":10000"]
