@@ -13,7 +13,7 @@ func NewConfig() *app.Config {
 
 // NewApp creates a new application.
 func NewApp(config *app.Config) *app.Application {
-	info := &app.ApplicationInfo{
+	info := app.ApplicationInfo{
 		Version:    Version,
 		CommitHash: CommitHash,
 		BuildDate:  BuildDate,

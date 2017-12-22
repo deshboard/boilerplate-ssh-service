@@ -15,7 +15,7 @@ func newConfig() *Config {
 
 func TestNewApp(t *testing.T) {
 	config := newConfig()
-	info := &ApplicationInfo{
+	info := ApplicationInfo{
 		Version:    "<test>",
 		CommitHash: "<test>",
 		BuildDate:  time.Now().Format(time.RFC3339),

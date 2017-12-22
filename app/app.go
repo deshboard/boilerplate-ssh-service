@@ -43,7 +43,7 @@ type Context struct {
 }
 
 // NewApp creates a new application.
-func NewApp(config *Config, info *ApplicationInfo) *Application {
+func NewApp(config *Config, info ApplicationInfo) *Application {
 	context := new(Context)
 
 	constructors := []interface{}{
@@ -52,11 +52,9 @@ func NewApp(config *Config, info *ApplicationInfo) *Application {
 		},
 	}
 
-	if info != nil {
-		constructors = append(constructors, func() *ApplicationInfo {
-			return info
-		})
-	}
+	constructors = append(constructors, func() ApplicationInfo {
+		return info
+	})
 
 	return &Application{
 		App: fx.New(
