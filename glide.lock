@@ -1,6 +1,8 @@
-hash: 3ca77f98d7247e22fc1fdc56ecf939a085b10c239e8c899bca1c33c2ae039cc7
-updated: 2017-12-21T22:03:20.707501347+01:00
+hash: e41a3994c7ecdd86bf73b468bf6c1d27c0bbb2714ab1bf210f77f2eb96c9280c
+updated: 2017-12-22T01:38:51.486168209+01:00
 imports:
+- name: github.com/anmitsu/go-shlex
+  version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/DATA-DOG/godog
   version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
   subpackages:
@@ -8,6 +10,8 @@ imports:
   - gherkin
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+- name: github.com/gliderlabs/ssh
+  version: bf3073636e5b2255b85a09640b2003b01ab4a070
 - name: github.com/go-kit/kit
   version: 4dc7be5d2d12881735283bcab7352178e190fc71
   subpackages:
@@ -42,6 +46,8 @@ imports:
   - json/parser
   - json/scanner
   - json/token
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/joho/godotenv
   version: a79fa1e548e2c689c241d10173efd51e5d689d5b
 - name: github.com/kr/logfmt
@@ -60,6 +66,8 @@ imports:
   - mem
 - name: github.com/spf13/cast
   version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
+- name: github.com/spf13/cobra
+  version: ccaecb155a2177302cb56cae929251a256d0f646
 - name: github.com/spf13/jwalterweatherman
   version: 12bd96e66386c1960ab0f74ced1362f66f552f7b
 - name: github.com/spf13/pflag
@@ -80,6 +88,11 @@ imports:
   - internal/lifecycle
 - name: go.uber.org/multierr
   version: 3c4937480c32f4c13a875a1829af76c98ca3d40a
+- name: golang.org/x/crypto
+  version: 1351f936d976c60a0a48d728281922cf63eafb8d
+  subpackages:
+  - ssh
+  - ssh/terminal
 - name: golang.org/x/net
   version: a8b9294777976932365dabb6640cf1468d95c70f
   subpackages:
