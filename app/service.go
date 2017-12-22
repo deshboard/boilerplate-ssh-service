@@ -34,7 +34,7 @@ type Err <-chan error
 type SSHServerParams struct {
 	dig.In
 
-	Config           *Config
+	Config           Config
 	Signer           ssh.Signer
 	PublicKeyHandler ssh.PublicKeyHandler
 	Logger           log.Logger        `optional:"true"`
@@ -104,7 +104,7 @@ func NewSSHServer(params SSHServerParams) Err {
 }
 
 // NewSigner creates a host key signer.
-func NewSigner(config *Config) (ssh.Signer, error) {
+func NewSigner(config Config) (ssh.Signer, error) {
 	if config.HostPrivateKey == "" && config.HostPrivateKeyFile != "" {
 		file, err := os.Open(config.HostPrivateKeyFile)
 		if err != nil {
@@ -139,7 +139,7 @@ func NewSigner(config *Config) (ssh.Signer, error) {
 }
 
 // LoadRootAuthorizedKeys loads authorized keys for the root user.
-func LoadRootAuthorizedKeys(config *Config) (AuthorizedKeys, error) {
+func LoadRootAuthorizedKeys(config Config) (AuthorizedKeys, error) {
 	if config.RootAuthorizedKeys == "" && config.RootAuthorizedKeysFile != "" {
 		file, err := os.Open(config.RootAuthorizedKeysFile)
 		if err != nil {
@@ -177,7 +177,7 @@ func LoadRootAuthorizedKeys(config *Config) (AuthorizedKeys, error) {
 }
 
 // NewPublicKeyHandler returns a new function which handles public key authentication.
-func NewPublicKeyHandler(config *Config, keys AuthorizedKeys, logger log.Logger) ssh.PublicKeyHandler {
+func NewPublicKeyHandler(config Config, keys AuthorizedKeys, logger log.Logger) ssh.PublicKeyHandler {
 	return func(ctx ssh.Context, key ssh.PublicKey) bool {
 		if ctx.User() == "root" {
 			if !config.RootLoginAllowed {

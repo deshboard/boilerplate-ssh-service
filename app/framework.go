@@ -6,7 +6,7 @@ import (
 )
 
 // NewLoggerConfig creates a logger config for the logger constructor.
-func NewLoggerConfig(config *Config) (*fxlog.Config, error) {
+func NewLoggerConfig(config Config) (*fxlog.Config, error) {
 	c := fxlog.NewConfig()
 	f, err := fxlog.ParseFormat(config.LogFormat)
 	if err != nil {
@@ -25,7 +25,7 @@ func NewLoggerConfig(config *Config) (*fxlog.Config, error) {
 }
 
 // NewDebugConfig creates a debug config for the debug server constructor.
-func NewDebugConfig(config *Config) *fxdebug.Config {
+func NewDebugConfig(config Config) *fxdebug.Config {
 	addr := config.DebugAddr
 
 	// Listen on loopback interface in development mode
