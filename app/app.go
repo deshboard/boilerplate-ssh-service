@@ -50,11 +50,10 @@ func NewApp(config *Config, info ApplicationInfo) *Application {
 		func() *Config {
 			return config
 		},
+		func() ApplicationInfo {
+			return info
+		},
 	}
-
-	constructors = append(constructors, func() ApplicationInfo {
-		return info
-	})
 
 	return &Application{
 		App: fx.New(
