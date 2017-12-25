@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Integration" type="GoTestRunConfiguration" factoryName="Go Test">
-    <module name="boilerplate-service" />
+    <module name="" />
     <working_directory value="$PROJECT_DIR$/" />
     <go_parameters value="-tags &quot;integration&quot;" />
     <framework value="gotest" />
