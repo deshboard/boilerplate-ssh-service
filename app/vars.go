@@ -4,7 +4,7 @@ package app
 //
 // It identifies the service itself, the actual instance needs to be identified via environment
 // and other details.
-const ServiceName = "boilerplate.http.service"
+const ServiceName = "boilerplate.ssh.service"
 
 // FriendlyServiceName is the visible name of the service.
 const FriendlyServiceName = "Boilerplate SSH service"
