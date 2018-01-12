@@ -1,5 +1,5 @@
-hash: a3c5331edbbf806b068a22b9e123bd91db3cca7b26227bee21a14576a630b0e2
-updated: 2018-01-02T15:40:35.654963744+01:00
+hash: 65f321c0d6d77ba35a8f51ce82cb25bd5c9303fc0a7061cc64cbc880a52e7431
+updated: 2018-01-12T17:34:37.493015761+01:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -9,7 +9,7 @@ imports:
   - colors
   - gherkin
 - name: github.com/fsnotify/fsnotify
-  version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+  version: c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9
 - name: github.com/gliderlabs/ssh
   version: bf3073636e5b2255b85a09640b2003b01ab4a070
 - name: github.com/go-kit/kit
@@ -26,7 +26,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: 2f98768f016a75ccd8ad167b9daf6d9f78251be2
+  version: d2c126f512e40950640156f9ef91a5abdf1cfa57
   subpackages:
   - debug
   - errors
@@ -55,7 +55,7 @@ imports:
 - name: github.com/magiconair/properties
   version: 49d762b9817ba1c2e9d0c69183c2b4a8b8f1d934
 - name: github.com/mitchellh/mapstructure
-  version: 06020f85339e21b2478f756a78e295255ffa4d6a
+  version: b4575eea38cca1123ec2dc90c26529b5c5acfcff
 - name: github.com/pelletier/go-toml
   version: 0131db6d737cfbbfb678f8b7d92e55e27ce46224
 - name: github.com/pkg/errors
@@ -69,7 +69,7 @@ imports:
 - name: github.com/spf13/cobra
   version: b95ab734e27d33e0d8fbabf71ca990568d4e2020
 - name: github.com/spf13/jwalterweatherman
-  version: 12bd96e66386c1960ab0f74ced1362f66f552f7b
+  version: 7c0cea34c8ece3fbeb2b27ab9b59511d360fb394
 - name: github.com/spf13/pflag
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/spf13/viper
@@ -94,17 +94,17 @@ imports:
   - ssh
   - ssh/terminal
 - name: golang.org/x/net
-  version: a8b9294777976932365dabb6640cf1468d95c70f
+  version: f5079bd7f6f74e23c4d65efa0f4ce14cbd6a3c0f
   subpackages:
   - context
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 83801418e1b59fb1880e363299581ee543af32ca
+  version: c4489faa6e5ab84c0ef40d6ee878f7a030281f0f
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 19e51611da83d6be54ddafce4a4af510cb3e9ea4
+  version: 3bd178b88a8180be2df394a1fbb81313916f0e7b
   subpackages:
   - transform
   - unicode/norm
@@ -120,6 +120,6 @@ testImports:
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  version: b91bfb9ebec76498946beb6af7c0230c7cc7ba6c
   subpackages:
   - assert
