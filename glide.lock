@@ -1,5 +1,5 @@
-hash: c9b5fb8d7e090d4fb40e5335dbc88dbc8acc8dfbcfd4f90365477cda716cf17a
-updated: 2018-01-12T17:11:27.971639767+01:00
+hash: d152d80bb2cbb41415284ce2fedd945932a8964a7c4c183d22c25a3420a24bf6
+updated: 2018-01-14T01:29:51.568921517+01:00
 imports:
 - name: github.com/DATA-DOG/godog
   version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
@@ -22,7 +22,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: d2c126f512e40950640156f9ef91a5abdf1cfa57
+  version: 7a0340b6e5c8ec000b15cedde816487042746c33
   subpackages:
   - debug
   - errors
@@ -30,7 +30,7 @@ imports:
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/nest
-  version: 9150a9a1d4c9e4d9165726d9d748b2f0a485ad95
+  version: 5105bccf2d19b2e604506a47c4ea4a2cb35b8e05
 - name: github.com/hashicorp/hcl
   version: 23c074d0eceb2b8a5bfdbb271ab780cde70f05a8
   subpackages:
