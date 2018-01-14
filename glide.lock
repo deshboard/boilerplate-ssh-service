@@ -1,5 +1,5 @@
-hash: 65f321c0d6d77ba35a8f51ce82cb25bd5c9303fc0a7061cc64cbc880a52e7431
-updated: 2018-01-12T17:34:37.493015761+01:00
+hash: 18c8171a5a3a67d4ef9cf5d94db437818953aa5b464435baf3c1ab22b64a6326
+updated: 2018-01-14T01:38:21.953127481+01:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
@@ -26,7 +26,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: d2c126f512e40950640156f9ef91a5abdf1cfa57
+  version: 7a0340b6e5c8ec000b15cedde816487042746c33
   subpackages:
   - debug
   - errors
@@ -34,7 +34,7 @@ imports:
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/nest
-  version: 9150a9a1d4c9e4d9165726d9d748b2f0a485ad95
+  version: 5105bccf2d19b2e604506a47c4ea4a2cb35b8e05
 - name: github.com/hashicorp/hcl
   version: 23c074d0eceb2b8a5bfdbb271ab780cde70f05a8
   subpackages:

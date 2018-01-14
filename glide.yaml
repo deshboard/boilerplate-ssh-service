@@ -3,10 +3,10 @@ import:
 - package: github.com/DATA-DOG/godog
   version: ~0.7.4
 - package: github.com/goph/nest
-  version: ~0.4.0
+  version: ~0.5.0
 - package: github.com/joho/godotenv
   version: ^1.2.0
 - package: github.com/goph/fxt
-  version: ~0.7.0
+  version: ~0.8.0
 testImport:
 - package: github.com/stretchr/testify
