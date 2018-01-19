@@ -46,20 +46,13 @@ type Context struct {
 func NewApp(config Config, info ApplicationInfo) *Application {
 	context := new(Context)
 
-	constructors := []interface{}{
-		func() Config {
-			return config
-		},
-		func() ApplicationInfo {
-			return info
-		},
-	}
-
 	return &Application{
 		App: fx.New(
 			fx.NopLogger,
 			fxt.Bootstrap,
-			fx.Provide(constructors...),
+			fx.Provide(func() (Config, ApplicationInfo) {
+				return config, info
+			}),
 			fx.Provide(
 				// Log and error handling
 				NewLoggerConfig,
