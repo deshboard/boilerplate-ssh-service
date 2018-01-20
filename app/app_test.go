@@ -4,7 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/goph/fxt"
+	"go.uber.org/fx"
+	"go.uber.org/fx/fxtest"
 )
 
 func newConfig() Config {
@@ -13,15 +15,22 @@ func newConfig() Config {
 	}
 }
 
-func TestNewApp(t *testing.T) {
-	config := newConfig()
-	info := ApplicationInfo{
+func newApplicationInfo() ApplicationInfo {
+	return ApplicationInfo{
 		Version:    "<test>",
 		CommitHash: "<test>",
 		BuildDate:  time.Now().Format(time.RFC3339),
 	}
+}
 
-	app := NewApp(config, info)
+func TestApp(t *testing.T) {
+	app := fxtest.New(
+		t,
+		fx.NopLogger,
+		fxt.Bootstrap,
+		fx.Provide(newConfig, newApplicationInfo),
+		Module,
+	)
 
-	assert.NoError(t, app.Err())
+	app.RequireStart().RequireStop()
 }
