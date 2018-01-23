@@ -2,10 +2,11 @@ package main
 
 import (
 	"github.com/deshboard/boilerplate-service/app"
+	"github.com/go-kit/kit/log"
+	"github.com/goph/emperror"
 	"github.com/goph/nest"
+	"go.uber.org/fx"
 )
-
-type Config = app.Config
 
 // AppModule is an alias so that the main file does not have to import the app package.
 var AppModule = app.Module
@@ -29,4 +30,13 @@ func NewApplicationInfo() app.ApplicationInfo {
 		CommitHash: CommitHash,
 		BuildDate:  BuildDate,
 	}
+}
+
+// Context is a set of dependencies of the application extracted from the container.
+type Context struct {
+	fx.In
+
+	Config       app.Config
+	Logger       log.Logger
+	ErrorHandler emperror.Handler
 }

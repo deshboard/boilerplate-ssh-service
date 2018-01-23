@@ -1,32 +1,30 @@
+// +build acceptance
+
 package app
 
 import (
-	"context"
-	"time"
-
-	"github.com/DATA-DOG/godog"
+	"github.com/deshboard/boilerplate-service/pkg/app"
 	"github.com/goph/fxt"
+	"github.com/goph/fxt/dev"
+	"github.com/goph/fxt/test"
+	"go.uber.org/fx"
 )
 
-func AppContext(app *fxt.App) func(s *godog.Suite) {
-	return func(s *godog.Suite) {
-		s.BeforeScenario(func(scenario interface{}) {
-			err := app.Start(context.Background())
-			if err != nil {
-				panic(err)
-			}
-		})
+func init() {
+	dev.LoadEnvFromFile("../.env.test")
+	dev.LoadEnvFromFile("../.env.dist")
 
-		s.AfterScenario(func(scenario interface{}, err error) {
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-			defer cancel()
+	acceptanceRunner = test.NewGodogRunner()
 
-			err = app.Stop(ctx)
-			if err != nil {
-				panic(err)
-			}
+	var config Config
 
-			app.Close()
-		})
-	}
+	a := fxt.New(
+		fx.NopLogger,
+		fx.Provide(newConfig, newApplicationInfo),
+		Module,
+		fx.Populate(&config),
+	)
+
+	acceptanceRunner.RegisterFeatureContext(test.AppContext(a))
+	app.RegisterSuite(acceptanceRunner)
 }

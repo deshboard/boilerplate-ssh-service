@@ -14,11 +14,12 @@ import (
 
 func main() {
 	c := new(Context)
+	runner := new(Runner)
 	app := fxt.New(
 		fx.NopLogger,
 		fx.Provide(NewConfig, NewApplicationInfo),
 		AppModule,
-		fx.Populate(c),
+		fx.Populate(c, runner),
 	)
 
 	err := app.Err()
@@ -46,7 +47,7 @@ func main() {
 		panic(err)
 	}
 
-	c.Wait(app)
+	runner.Run(app, c)
 
 	ctx, cancel := context.WithTimeout(context.Background(), c.Config.ShutdownTimeout)
 	defer cancel()
