@@ -17,8 +17,6 @@ import (
 type Context struct {
 	fx.In
 
-	fxt.Closer
-
 	Config       Config
 	Logger       log.Logger
 	ErrorHandler emperror.Handler
@@ -28,7 +26,7 @@ type Context struct {
 }
 
 // Wait waits for the application to finish or exit because of some error.
-func (c *Context) Wait(app *fx.App) {
+func (c *Context) Wait(app *fxt.App) {
 	select {
 	case sig := <-app.Done():
 		level.Info(c.Logger).Log("msg", fmt.Sprintf("captured %v signal", sig))

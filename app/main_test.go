@@ -1,24 +1,25 @@
-package test
+package app
 
 import (
 	"os"
 	"testing"
+
+	"github.com/goph/fxt/test"
+	"github.com/goph/fxt/test/is"
 )
 
-var unit bool
-var acceptance bool
-var integration bool
+var acceptanceRunner *test.GodogRunner
 
-func Main(m *testing.M) {
+func TestMain(m *testing.M) {
 	result := 0
 
 	var runners []func() int
 
-	if acceptance {
+	if is.Acceptance {
 		runners = append(runners, acceptanceRunner.Run)
 	}
 
-	if unit || integration || !acceptance {
+	if is.Unit || is.Integration || !is.Acceptance {
 		runners = append(runners, m.Run)
 	}
 

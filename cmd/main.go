@@ -14,9 +14,8 @@ import (
 
 func main() {
 	c := new(Context)
-	app := fx.New(
+	app := fxt.New(
 		fx.NopLogger,
-		fxt.Bootstrap,
 		fx.Provide(NewConfig, NewApplicationInfo),
 		AppModule,
 		fx.Populate(c),
@@ -30,7 +29,7 @@ func main() {
 	}
 
 	// Close resources when the application stops running
-	defer c.Close()
+	defer app.Close()
 
 	// Register error handler to recover from panics
 	defer emperror.HandleRecover(c.ErrorHandler)
