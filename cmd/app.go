@@ -4,6 +4,7 @@ import (
 	"github.com/deshboard/boilerplate-service/app"
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
+	"github.com/goph/fxt"
 	"github.com/goph/nest"
 	"go.uber.org/fx"
 )
@@ -24,8 +25,8 @@ func NewConfig() (app.Config, error) {
 }
 
 // NewApplicationInfo provides the application information about itself.
-func NewApplicationInfo() app.ApplicationInfo {
-	return app.ApplicationInfo{
+func NewApplicationInfo() fxt.ApplicationInfo {
+	return fxt.ApplicationInfo{
 		Version:    Version,
 		CommitHash: CommitHash,
 		BuildDate:  BuildDate,
@@ -37,6 +38,7 @@ type Context struct {
 	fx.In
 
 	Config       app.Config
+	Runner       app.Runner
 	Logger       log.Logger
 	ErrorHandler emperror.Handler
 }
