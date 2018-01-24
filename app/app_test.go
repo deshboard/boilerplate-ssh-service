@@ -4,24 +4,41 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/goph/fxt"
+	"github.com/goph/fxt/test/fxtest"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/fx"
 )
 
-func newConfig() Config {
-	return Config{
-		LogFormat: "logfmt",
-	}
-}
-
-func TestNewApp(t *testing.T) {
-	config := newConfig()
-	info := ApplicationInfo{
+func newApplicationInfo() fxt.ApplicationInfo {
+	return fxt.ApplicationInfo{
 		Version:    "<test>",
 		CommitHash: "<test>",
 		BuildDate:  time.Now().Format(time.RFC3339),
 	}
+}
 
-	app := NewApp(config, info)
+func TestApp(t *testing.T) {
+	var runner Runner
 
-	assert.NoError(t, app.Err())
+	app := fxtest.New(
+		t,
+		fx.NopLogger,
+		fx.Provide(newConfig, newApplicationInfo),
+		Module,
+		fx.Populate(&runner),
+	)
+
+	app.RequireStart()
+
+	go func() {
+		// TODO: improve this test
+		time.Sleep(10 * time.Millisecond)
+		app.RequireStop()
+	}()
+
+	err := runner.Run(app)
+	require.NoError(t, err)
+
+	app.Close()
 }

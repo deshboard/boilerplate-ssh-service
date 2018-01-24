@@ -2,31 +2,29 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
+	"github.com/goph/fxt"
 	"github.com/goph/nest"
+	"go.uber.org/dig"
+	"go.uber.org/fx"
 )
 
 func main() {
-	config := NewConfig()
+	c := new(Context)
+	app := fxt.New(
+		fx.NopLogger,
+		fx.Provide(NewConfig, NewApplicationInfo),
+		AppModule,
+		fx.Populate(c),
+	)
 
-	configurator := nest.NewConfigurator()
-	configurator.SetName(FriendlyServiceName)
-
-	err := configurator.Load(&config)
-	if err == nest.ErrFlagHelp {
+	err := app.Err()
+	if dig.RootCause(err) == nest.ErrFlagHelp {
 		os.Exit(0)
 	} else if err != nil {
-		panic(err)
-	}
-
-	app := NewApp(config)
-
-	err = app.Err()
-	if err != nil {
 		panic(err)
 	}
 
@@ -34,10 +32,10 @@ func main() {
 	defer app.Close()
 
 	// Register error handler to recover from panics
-	defer emperror.HandleRecover(app.ErrorHandler())
+	defer emperror.HandleRecover(c.ErrorHandler)
 
-	level.Info(app.Logger()).Log(
-		"msg", fmt.Sprintf("starting %s", FriendlyServiceName),
+	level.Info(c.Logger).Log(
+		"msg", "starting",
 		"version", Version,
 		"commit_hash", CommitHash,
 		"build_date", BuildDate,
@@ -48,13 +46,16 @@ func main() {
 		panic(err)
 	}
 
-	app.Wait()
+	err = c.Runner.Run(app)
+	if err != nil {
+		c.ErrorHandler.Handle(err)
+	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), c.Config.ShutdownTimeout)
 	defer cancel()
 
 	err = app.Stop(ctx)
 	if err != nil {
-		app.ErrorHandler().Handle(err)
+		c.ErrorHandler.Handle(err)
 	}
 }

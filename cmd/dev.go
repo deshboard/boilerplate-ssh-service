@@ -3,24 +3,15 @@
 package main
 
 import (
-	"path"
-	"runtime"
 	"time"
 
-	"github.com/joho/godotenv"
+	"github.com/goph/fxt/dev"
 )
 
 // Load environment configuration in development environment.
 func init() {
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("cannot load environment: no caller information")
-	}
-
-	root := path.Clean(path.Join(path.Dir(filename), "../"))
-
-	_ = godotenv.Load(path.Join(root, ".env"))
-	_ = godotenv.Load(path.Join(root, ".env.dist"))
+	dev.LoadEnvFromFile("../.env")
+	dev.LoadEnvFromFile("../.env.dist")
 
 	// Load defaults for info variables
 	if Version == "" {
