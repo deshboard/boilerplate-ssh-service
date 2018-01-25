@@ -14,7 +14,7 @@ DOCKER_LATEST ?= false
 
 # Dev variables
 GO_TEST_PACKAGES = ./pkg/... ./app/... ./cmd/...
-GO_SOURCE_FILES = ./pkg ./cmd
+GO_SOURCE_FILES = ./pkg ./app ./cmd
 
 .PHONY: setup
 setup:: dep .env .env.test ## Setup the project for development
