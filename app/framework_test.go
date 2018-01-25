@@ -31,8 +31,8 @@ func TestNewLoggerConfig(t *testing.T) {
 }
 
 func TestNewDebugConfig(t *testing.T) {
-	tests := map[string]struct{
-		config Config
+	tests := map[string]struct {
+		config   Config
 		expected *fxdebug.Config
 	}{
 		"production": {
