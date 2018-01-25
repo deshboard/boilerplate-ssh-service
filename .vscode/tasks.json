@@ -14,7 +14,7 @@
         },
         {
             "taskName": "test",
-            "command": "make test -v",
+            "command": "make test ARGS=\"-v\"",
             "type": "shell",
             "group": {
                 "kind": "test",
@@ -22,20 +22,20 @@
             }
         },
         {
+            "taskName": "test unit",
+            "command": "make unit ARGS=\"-v\"",
+            "type": "shell",
+            "group": "test"
+        },
+        {
             "taskName": "test integration",
-            "command": "make test TAGS=\"integration\" ARGS=\"-v\"",
+            "command": "make integration ARGS=\"-v\"",
             "type": "shell",
             "group": "test"
         },
         {
             "taskName": "test acceptance",
-            "command": "make test TAGS=\"acceptance\" ARGS=\"-v\"",
-            "type": "shell",
-            "group": "test"
-        },
-        {
-            "taskName": "test all",
-            "command": "make test TAGS=\"acceptance integration\" ARGS=\"-v\"",
+            "command": "make acceptance ARGS=\"-v\"",
             "type": "shell",
             "group": "test"
         }
