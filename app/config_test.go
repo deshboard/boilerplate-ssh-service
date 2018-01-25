@@ -38,37 +38,63 @@ func newConfig() (Config, error) {
 }
 
 func TestConfig(t *testing.T) {
-	os.Clearenv()
 	defer func() {
 		os.Clearenv()
 		dev.LoadEnvFromFile("../.env.test")
 		dev.LoadEnvFromFile("../.env.dist")
 	}()
 
-	env := map[string]string{
-		"ENVIRONMENT": "test",
-		"DEBUG":       "false",
-		"LOG_FORMAT":  "json",
+	tests := map[string]struct {
+		env      map[string]string
+		args     []string
+		actual   Config
+		expected Config
+	}{
+		"full config": {
+			map[string]string{
+				"ENVIRONMENT": "test",
+				"DEBUG":       "false",
+				"LOG_FORMAT":  "logfmt",
+			},
+			[]string{"service", "--debug-addr", ":10001", "--shutdown-timeout", "10s"},
+			Config{},
+			Config{
+				Environment:     "test",
+				Debug:           false,
+				LogFormat:       log.LogfmtFormat.String(),
+				DebugAddr:       ":10001",
+				ShutdownTimeout: 10 * time.Second,
+			},
+		},
+		"defaults": {
+			map[string]string{},
+			[]string{},
+			Config{},
+			Config{
+				Environment:     "production",
+				Debug:           false,
+				LogFormat:       log.JsonFormat.String(),
+				DebugAddr:       ":10000",
+				ShutdownTimeout: 15 * time.Second,
+			},
+		},
 	}
 
-	for key, value := range env {
-		os.Setenv(key, value)
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			os.Clearenv()
+
+			for key, value := range test.env {
+				os.Setenv(key, value)
+			}
+
+			configurator := nest.NewConfigurator()
+			configurator.SetName(FriendlyServiceName)
+			configurator.SetArgs(test.args)
+
+			err := configurator.Load(&test.actual)
+			require.NoError(t, err)
+			assert.Equal(t, test.expected, test.actual)
+		})
 	}
-
-	expected := Config{
-		Environment:     "test",
-		Debug:           false,
-		LogFormat:       log.JsonFormat.String(),
-		DebugAddr:       ":10000",
-		ShutdownTimeout: 15 * time.Second,
-	}
-	actual := Config{}
-
-	configurator := nest.NewConfigurator()
-	configurator.SetName(FriendlyServiceName)
-	configurator.SetArgs([]string{})
-
-	err := configurator.Load(&actual)
-	require.NoError(t, err)
-	assert.Equal(t, expected, actual)
 }
