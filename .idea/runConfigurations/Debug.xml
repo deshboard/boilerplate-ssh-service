@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Service" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="true" show_console_on_std_out="true" show_console_on_std_err="true">
-    <output_file path="$PROJECT_DIR$/build/service.log" is_save="true" />
+  <configuration default="false" name="Debug" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="true" show_console_on_std_out="true" show_console_on_std_err="true">
+    <output_file path="$PROJECT_DIR$/build/debug.log" is_save="true" />
     <module name="" />
     <working_directory value="$PROJECT_DIR$/" />
     <go_parameters value="-tags 'dev'" />
