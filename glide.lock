@@ -1,5 +1,5 @@
-hash: 90ef23d09faa664213e519d19bd7b0f2c039f1e1ecae122730a61208a30468ff
-updated: 2018-01-24T17:29:53.789270472+01:00
+hash: cf819958cef5201cef5ecac9bcabe63fb75750e71ac86cdfc5abbd272361379b
+updated: 2018-02-04T03:34:18.710717577+01:00
 imports:
 - name: github.com/DATA-DOG/godog
   version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
@@ -22,15 +22,17 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: f67c6923cfd505e447508a7c505dabbf1903e741
+  version: e211115d82bfa39a929b6de28455e36ef749d39f
   subpackages:
   - debug
   - dev
   - errors
   - log
   - test
+  - test/acceptance
   - test/fxtest
   - test/is
+  - test/nettest
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/nest
@@ -71,7 +73,7 @@ imports:
 - name: github.com/spf13/viper
   version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
 - name: github.com/stretchr/testify
-  version: b91bfb9ebec76498946beb6af7c0230c7cc7ba6c
+  version: 12b6f73e6084dad08a7c6e575284b177ecafbc71
   subpackages:
   - assert
   - require

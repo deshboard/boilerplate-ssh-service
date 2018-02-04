@@ -8,26 +8,19 @@ import (
 	"github.com/goph/fxt/test/is"
 )
 
-var acceptanceRunner *test.GodogRunner
+var runnerFactoryRegistry test.RunnerFactoryRegistry
 
 func TestMain(m *testing.M) {
-	result := 0
-
-	var runners []func() int
-
-	if is.Acceptance {
-		runners = append(runners, acceptanceRunner.Run)
+	runner, err := runnerFactoryRegistry.CreateRunner()
+	if err != nil {
+		panic(err)
 	}
 
 	if is.Unit || is.Integration || !is.Acceptance {
-		runners = append(runners, m.Run)
+		runner = test.AppendRunner(runner, m)
 	}
 
-	for _, run := range runners {
-		if r := run(); r > result {
-			result = r
-		}
-	}
+	result := runner.Run()
 
 	os.Exit(result)
 }
