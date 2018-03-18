@@ -7,4 +7,4 @@ import:
 - package: github.com/goph/nest
   version: ~0.5.3
 - package: github.com/goph/fxt
-  version: ~0.17.0
+  version: ~0.20.0
