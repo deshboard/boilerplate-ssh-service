@@ -1,10 +1,10 @@
-hash: bd3e00bc5676128edfecf71aed9ba6b911c2e79c80886a6fe81d83875d8d661b
-updated: 2018-02-04T04:10:29.437685511+01:00
+hash: 7514096402842e0c651e47168d4fb8fbcb1f5515aa6c8cb276246ec6783eaeba
+updated: 2018-03-18T12:08:41.876308+01:00
 imports:
 - name: github.com/anmitsu/go-shlex
   version: 648efa622239a2f6ff949fed78ee37b48d499ba4
 - name: github.com/DATA-DOG/godog
-  version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
+  version: 0371765570d36374bef4ab9f62ed0491f0862a3c
   subpackages:
   - colors
   - gherkin
@@ -26,7 +26,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: e211115d82bfa39a929b6de28455e36ef749d39f
+  version: b50b05f6619192ab5c978ca96f62925fe0a251b8
   subpackages:
   - debug
   - dev
@@ -73,7 +73,7 @@ imports:
 - name: github.com/spf13/cast
   version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/cobra
-  version: 3a7eb146bae5ebf9be598570234cde56c82d16cc
+  version: c6c44e6fdcc30161c7f4480754da7230d01c06e3
 - name: github.com/spf13/jwalterweatherman
   version: 7c0cea34c8ece3fbeb2b27ab9b59511d360fb394
 - name: github.com/spf13/pflag
@@ -121,13 +121,13 @@ imports:
   - transform
   - unicode/norm
 - name: gopkg.in/yaml.v2
-  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
+  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  version: adab96458c51a58dc1783b3335dcce5461522e75
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
-  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  version: 792786c7400a136282c1664665ae0a8db921c6c2
   subpackages:
   - difflib
